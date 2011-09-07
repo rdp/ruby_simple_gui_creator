@@ -161,8 +161,8 @@ end
       Thread.new { sleep 2; out.to_front } # it gets hidden, unfortunately, so try and bring it again to the front...
       #out.remove_notify # allow our app to exit [?]
       got = out.go
-      raise 'must exist' unless File.exist? go
       raise 'cancelled choosing existing file' unless got # I think we always want to raise...
+      raise 'must exist' unless File.exist? got
       got
     end
     
@@ -200,7 +200,7 @@ end
   end
   
   def self.show_in_explorer filename_or_path
-    raise 'nonexist' unless File.exist?(filename_or_path)
+    raise 'nonexist cannot reveal in explorer?' unless File.exist?(filename_or_path)
     begin
         c = "explorer /e,/select,\"#{File.expand_path(filename_or_path).to_filename}\"" 
         system c # command returns immediately...so system is ok
