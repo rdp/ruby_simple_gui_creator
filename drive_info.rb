@@ -15,11 +15,10 @@ This file is part of Sensible Cinema.
     You should have received a copy of the GNU General Public License
     along with Sensible Cinema.  If not, see <http://www.gnu.org/licenses/>.
 =end
-require 'digest/md5'
-require 'rubygems'
-require 'sane'
+
+require 'os'
 require 'ostruct'
-require 'benchmark'
+
 class DriveInfo
 
  def self.md5sum_disk(dir)
