@@ -18,14 +18,15 @@ This file is part of Sensible Cinema.
 
 require 'os'
 require 'ostruct'
+require 'sane'
 
 class DriveInfo
 
  def self.md5sum_disk(dir)
    if OS.mac?
-     command = "#{__DIR__}/../vendor/mac_dvdid/bin/dvdid #{dir}"
+     command = "#{__DIR__}/vendor/mac_dvdid/bin/dvdid #{dir}"
    else
-     command = "#{__DIR__}/../vendor/dvdid.exe #{dir}"
+     command = "#{__DIR__}/vendor/dvdid.exe #{dir}"
    end
    output = `#{command}` # can take like 2.2s
    raise 'dvdid command failed?' + command unless $?.exitstatus == 0
@@ -43,7 +44,7 @@ class DriveInfo
   most_space.MountPoint + "/"
  end
 
- def self.get_all_drives_as_ostructs # not just DVD drives...
+ def self.get_all_drives_as_ostructs # gets all drives not just DVD drives...
   if OS.mac?
     require 'plist'
     Dir['/Volumes/*'].map{|dir|
@@ -55,7 +56,8 @@ class DriveInfo
      d2.Description = parsed['OpticalDeviceType']
      d2.MountPoint = parsed['MountPoint']
      if d2.MountPoint == '/'
-       d2.MountPoint = File.expand_path '~' # better ? I guess?
+	   # try to guess a more writable default location...this works I guess?
+       d2.MountPoint = File.expand_path '~'
      end
      d2
     }
