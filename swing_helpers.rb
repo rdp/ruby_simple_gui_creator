@@ -98,9 +98,19 @@ end
  ToolTipManager.sharedInstance().setDismissDelay(10000)
 
  class JFrame
+  
    def close
      dispose # sigh
    end
+  
+   def bring_to_front # kludgey...but said to work for swing apps
+    java.awt.EventQueue.invokeLater{
+      setVisible(true); # unminimize
+      toFront();
+      repaint();
+    }      
+   end
+  
   end
   
   # wrapped in sensible-cinema-base
@@ -146,7 +156,12 @@ end
   class FileDialog
     def go
       show
-      File.expand_path(get_directory + '/' + get_file) if get_file # get_file implies they picked something...
+      if get_file 
+        # they picked something...
+        File.expand_path(get_directory + '/' + get_file)
+      else
+        nil
+      end
     end
     
     # this actually allows for non existing files [oopsy] LODO
@@ -159,8 +174,6 @@ end
         dir = dir.gsub(File::Separator, File::ALT_SEPARATOR) if File::ALT_SEPARATOR
         out.setDirectory(dir) 
       end
-      Thread.new { sleep 2; out.to_front } # it gets hidden, unfortunately, so try and bring it again to the front...
-      #out.remove_notify # allow our app to exit [?]
       got = out.go
       raise 'cancelled choosing existing file' unless got # I think we always want to raise...
       raise 'must exist' unless File.exist? got
