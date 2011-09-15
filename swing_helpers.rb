@@ -178,7 +178,8 @@ end
       out.set_title title
       if use_this_dir
         # FileDialog only accepts paths a certain way...
-        dir = File.expand_path(use_this_dir).gsub(File::Separator, File::ALT_SEPARATOR)
+        dir = File.expand_path(use_this_dir)
+        dir = dir.gsub(File::Separator, File::ALT_SEPARATOR) if File::ALT_SEPARATOR
         out.setDirectory(dir) 
       end
       got = out.go
