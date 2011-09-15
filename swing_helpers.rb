@@ -111,15 +111,15 @@ end
     }      
    end
   
-    def open_url_to_view_it_non_blocking url
+  end
+  
+  def self.open_url_to_view_it_non_blocking url
       if OS.windows?
         system("start #{url.gsub('&', '^&')}") # LODO would launchy help/work here with the full url?
       else
-        system_non_blocking "#{OS.open_file_command} \"#{url}\"" # LODO test
+        system_non_blocking "#{OS.open_file_command} \"#{url}\"" # LODO test!
       end
     end
-  
-  end
   
   # wrapped in sensible-cinema-base
   class JFileChooser
