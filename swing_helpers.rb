@@ -239,6 +239,7 @@ end
     
     def initialize parent, options_array, prompt_for_top_entry
       super parent, true
+        
       @selected_idx = nil
       box = JComboBox.new
       box.add_action_listener do |e|
