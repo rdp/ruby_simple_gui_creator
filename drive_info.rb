@@ -18,7 +18,6 @@ This file is part of Sensible Cinema.
 
 require 'os'
 require 'ostruct'
-require 'sane'
 
 class DriveInfo
 
