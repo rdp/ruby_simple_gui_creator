@@ -234,6 +234,42 @@ end
       JOptionPane.showMessageDialog(nil, message, title, style) # I think nil is ok here, it still blocks
   end
 
+
+  class DropDownSelector < JDialog # JDialog is blocking...
+    
+    def initialize parent, options_array, prompt_for_top_entry
+      super parent, true
+        
+      @selected_idx = nil
+      box = JComboBox.new
+      box.add_action_listener do |e|
+        idx = box.get_selected_index
+        if idx != 0
+          # don't count choosing the first as a real entry
+          @selected_idx = box.get_selected_index - 1
+          dispose
+        end
+      end
+
+      box.add_item @prompt = prompt_for_top_entry # put something in index 0
+      options_array.each{|drive|
+        box.add_item drive
+      }
+      add box
+      pack # how do you get this arbitrary size? what the...
+      
+    end
+    
+    # returns index from initial array that they selected, or raises if they hit the x on it
+    def go
+      show # blocking...
+      raise 'did not select, exited early ' + @prompt unless @selected_idx
+      @selected_idx
+    end
+    
+  end
+
+
 end
 
 class String
