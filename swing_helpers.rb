@@ -35,7 +35,7 @@ module SwingHelpers
     
     # accepts :yes => "yes text", :no => "no text"
     # returns  :yes :no :cancel: or :exited
-    def self.show_select_buttons_prompt message, names_hash = {}
+    def self.show_select_buttons_prompt message, names_hash = {} # JOptionPane
       old = ['no', 'yes', 'ok'].map{|name| 'OptionPane.' + name + 'ButtonText'}.map{|name| [name, UIManager.get(name)]}
       if names_hash[:yes]
         UIManager.put("OptionPane.yesButtonText", names_hash[:yes])
