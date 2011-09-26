@@ -2,15 +2,17 @@ require 'java'
 
 class PlayAudio
   import "sun.audio.AudioStream"
+  SunAudio = AudioStream
   import "sun.audio.AudioDataStream"
   import "sun.audio.AudioPlayer"
+  SunAudioPlayer = AudioPlayer
   import "sun.audio.ContinuousAudioDataStream"
   
   private
   def self.play filename
     i = java.io.FileInputStream.new(filename)
     a = AudioStream.new(i)
-    sun.audio.AudioPlayer.player.start(a)
+    SunAudioPlayer.player.start(a)
     a
   end
   
@@ -19,8 +21,12 @@ class PlayAudio
     a = AudioStream.new(i)
     b = a.get_data # failing means too big of data...
     c = ContinuousAudioDataStream.new(b)
-    sun.audio.AudioPlayer.player.start(c)
+    SunAudioPlayer.player.start(c)
     c
+  end
+  
+  def self.stop audio_stream
+    SunAudioPlayer.player.stop audio_stream
   end
   
   public
@@ -40,21 +46,30 @@ class PlayAudio
   
   def stop
     raise unless @audio_stream
-    AudioPlayer.player.stop(@audio_stream)
+    PlayAudio.stop @audio_stream
     @audio_stream = nil
   end
     
 end
 
 if $0 == __FILE__ # unit tests :)
- puts 'syntax: filename.wav'
+ puts 'syntax: filename.wav less than 1MB'
  a = PlayAudio.new ARGV[0]
  a.start
- sleep 0.1
+ sleep 1
  a.stop
-
+ p 'silence'
+ sleep 1
+ p 'resume, looping'
  a = PlayAudio.new ARGV[0]
  a.loop
- sleep 10
+ sleep 5
+ a.stop
+ p 'silence'
+ sleep 1
+ p 'resume normal'
+ a = PlayAudio.new ARGV[0]
+ a.start
+ sleep 2
  a.stop
 end
