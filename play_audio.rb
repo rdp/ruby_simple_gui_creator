@@ -46,6 +46,7 @@ class PlayAudio
     @clip.close
     @audioInputStream.close
   end
+  
   def stop
     @done = true
     shutdown

@@ -239,7 +239,9 @@ end
   end
   
   def self.show_blocking_message_dialog message, title = message.split("\n")[0], style= JOptionPane::INFORMATION_MESSAGE
+    puts "please use GUI window popup... #{message[0..20]} ..."
     JOptionPane.showMessageDialog(nil, message, title, style) # I think nil is ok here, it still blocks
+    puts 'Done with popup'
   end
   
   def self.show_non_blocking_message_dialog message, close_button_text = 'Close'
