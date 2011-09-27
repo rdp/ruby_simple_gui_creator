@@ -6,10 +6,11 @@ class PlayAudio
   import "sun.audio.AudioPlayer"
   import "sun.audio.ContinuousAudioDataStream"
   
+  private
   def self.play filename
     i = java.io.FileInputStream.new(filename)
     a = AudioStream.new(i)
-    AudioPlayer.player.start(a)
+    sun.audio.AudioPlayer.player.start(a)
     a
   end
   
@@ -18,10 +19,11 @@ class PlayAudio
     a = AudioStream.new(i)
     b = a.get_data # failing means too big of data...
     c = ContinuousAudioDataStream.new(b)
-    AudioPlayer.player.start(c)
+    sun.audio.AudioPlayer.player.start(c)
     c
   end
   
+  public
   def initialize filename
     @filename = filename
   end
@@ -31,7 +33,7 @@ class PlayAudio
     @audio_stream = PlayAudio.play @filename
   end
   
-  def loop # will fail is stream > 1 MB
+  def loop # will fail for stream > 1 MB
     raise if @audio_stream
     @audio_stream = PlayAudio.loop @filename
   end
