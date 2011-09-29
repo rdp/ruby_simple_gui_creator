@@ -39,6 +39,8 @@ module SwingHelpers
     # example, if you specify :cancel => 'cancel' then it won't raise if they cancel
     # raises if they select cancel or exit, unless you pass in :exited => true as an option
     def self.show_select_buttons_prompt message, names_hash = {}
+      names_hash[:yes] ||= 'yes'
+      names_hash[:no] ||= 'no'
       old = ['no', 'yes', 'ok'].map{|name| 'OptionPane.' + name + 'ButtonText'}.map{|name| [name, UIManager.get(name)]}
       if names_hash[:yes]
         UIManager.put("OptionPane.yesButtonText", names_hash[:yes])
