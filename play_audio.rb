@@ -1,60 +1,71 @@
 require 'java'
 
 class PlayAudio
-  import "sun.audio.AudioStream"
-  import "sun.audio.AudioDataStream"
-  import "sun.audio.AudioPlayer"
-  import "sun.audio.ContinuousAudioDataStream"
+  include_package 'javax.sound.sampled'
+  import java.io.File;
+  import java.io.IOException;
+  Type = javax.sound.sampled.LineEvent::Type
   
-  private
-  def self.play filename
-    i = java.io.FileInputStream.new(filename)
-    a = AudioStream.new(i)
-    sun.audio.AudioPlayer.player.start(a)
-    a
-  end
-  
-  def self.loop filename
-    i = java.io.FileInputStream.new(filename)
-    a = AudioStream.new(i)
-    b = a.get_data # failing means too big of data...
-    c = ContinuousAudioDataStream.new(b)
-    sun.audio.AudioPlayer.player.start(c)
-    c
-  end
-  
-  public
   def initialize filename
+    raise 'no filename?' unless filename
     @filename = filename
+    @done = false
+  end
+  
+  def warmup
+    @audioInputStream = AudioSystem.getAudioInputStream(java.io.File.new @filename)
+    @clip = AudioSystem.getClip
+    @done = false
+    @clip.add_line_listener { |line_event|
+        if (line_event.get_type == Type::STOP || line_event.get_type == Type::CLOSE)
+          @done = true;
+          shutdown
+        end
+    }
+    @clip.open(@audioInputStream)
   end
   
   def start
-    raise if @audio_stream
-    @audio_stream = PlayAudio.play @filename
+    warmup
+    @clip.start
   end
   
-  def loop # will fail for stream > 1 MB
-    raise if @audio_stream
-    @audio_stream = PlayAudio.loop @filename
+  def loop
+    warmup
+    @clip.loop(Clip::LOOP_CONTINUOUSLY)
+  end
+    
+  
+  def join_finish
+    while !@done
+      sleep 0.01
+    end
+  end
+  
+  def shutdown
+    @clip.close
+    @audioInputStream.close
   end
   
   def stop
-    raise unless @audio_stream
-    AudioPlayer.player.stop(@audio_stream)
-    @audio_stream = nil
+    @done = true
+    shutdown
   end
-    
 end
 
-if $0 == __FILE__ # unit tests :)
- puts 'syntax: filename.wav'
- a = PlayAudio.new ARGV[0]
- a.start
- sleep 0.1
- a.stop
-
- a = PlayAudio.new ARGV[0]
- a.loop
- sleep 10
- a.stop
+if $0 == __FILE__
+  p = PlayAudio.new ARGV[0]
+  p.start
+  p 'playing'
+  sleep 2
+  p.stop
+  p.join_finish
+  p 'silence'
+  sleep 2
+  p 'looping'
+  p.loop
+  sleep 2
+  p.stop
+  p 'silence'
+  sleep 2
 end

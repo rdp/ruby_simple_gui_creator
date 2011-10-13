@@ -34,8 +34,13 @@ module SwingHelpers
     JOptionReturnValuesTranslator = {0 => :yes, 1 => :no, 2 => :cancel, -1 => :exited}
     
     # accepts :yes => "yes text", :no => "no text"
-    # returns  :yes :no :cancel: or :exited
-    def self.show_select_buttons_prompt message, names_hash = {} # JOptionPane
+    # returns  :yes :no :cancel or :exited
+    # you must specify text for valid options.
+    # example, if you specify :cancel => 'cancel' then it won't raise if they cancel
+    # raises if they select cancel or exit, unless you pass in :exited => true as an option
+    def self.show_select_buttons_prompt message, names_hash = {}
+      names_hash[:yes] ||= 'yes'
+      names_hash[:no] ||= 'no'
       old = ['no', 'yes', 'ok'].map{|name| 'OptionPane.' + name + 'ButtonText'}.map{|name| [name, UIManager.get(name)]}
       if names_hash[:yes]
         UIManager.put("OptionPane.yesButtonText", names_hash[:yes])
@@ -52,7 +57,11 @@ module SwingHelpers
       title = message.split(' ')[0..5].join(' ')
       returned = JOptionPane.showConfirmDialog nil, message, title, JOptionPane::YES_NO_CANCEL_OPTION # LODO self?
       old.each{|name, old_setting| UIManager.put(name, old_setting)}
-      JOptionReturnValuesTranslator[returned]
+      out = JOptionReturnValuesTranslator[returned]
+      if !names_hash.key?(out)
+        raise 'canceled or exited:' + out
+      end
+      out
     end
     
 end
@@ -211,6 +220,7 @@ end
       setDefaultCloseOperation JFrame::DISPOSE_ON_CLOSE
       setLocationRelativeTo nil # center it on the screen
     end
+    alias close dispose # yipes
   end
   
   def self.get_user_input(message, default = '', cancel_ok = false)
@@ -231,15 +241,20 @@ end
   end
   
   def self.show_blocking_message_dialog message, title = message.split("\n")[0], style= JOptionPane::INFORMATION_MESSAGE
-      JOptionPane.showMessageDialog(nil, message, title, style) # I think nil is ok here, it still blocks
+    puts "please use GUI window popup... #{message[0..20]} ..."
+    JOptionPane.showMessageDialog(nil, message, title, style) # I think nil is ok here, it still blocks
+    puts 'Done with popup'
   end
-
+  
+  def self.show_non_blocking_message_dialog message, close_button_text = 'Close'
+    NonBlockingDialog.new(message, close_button_text)
+  end
 
   class DropDownSelector < JDialog # JDialog is blocking...
     
     def initialize parent, options_array, prompt_for_top_entry
       super parent, true
-        
+      @drop_down_elements = options_array
       @selected_idx = nil
       box = JComboBox.new
       box.add_action_listener do |e|
@@ -261,10 +276,16 @@ end
     end
     
     # returns index from initial array that they selected, or raises if they hit the x on it
-    def go
-      show # blocking...
+    def go_selected_index
+      show # blocks...
       raise 'did not select, exited early ' + @prompt unless @selected_idx
       @selected_idx
+    end
+    
+    def go_selected_value
+      show # blocks...
+      raise 'did not select, exited early ' + @prompt unless @selected_idx
+      @drop_down_elements[@selected_idx]
     end
     
   end
