@@ -234,7 +234,7 @@ end
   def self.show_in_explorer filename_or_path
     raise 'nonexist cannot reveal in explorer?' unless File.exist?(filename_or_path)
     begin
-        c = "explorer /e,/select,\"#{File.expand_path(filename_or_path).to_filename}\"" 
+        c = "explorer /e,/select,\"#{filename_or_path.to_filename}\"" 
         system c # command returns immediately...so system is ok
     rescue => why_does_this_happen_ignore_this_exception_it_probably_actually_succeeded
     end
@@ -244,6 +244,7 @@ end
     puts "please use GUI window popup... #{message[0..20]} ..."
     JOptionPane.showMessageDialog(nil, message, title, style) # I think nil is ok here, it still blocks
     puts 'Done with popup'
+    true
   end
   
   def self.show_non_blocking_message_dialog message, close_button_text = 'Close'
@@ -296,9 +297,9 @@ end
 class String
  def to_filename
   if File::ALT_SEPARATOR
-    self.gsub('/', File::ALT_SEPARATOR)
+    File.expand_path(self).gsub('/', File::ALT_SEPARATOR)
   else
-    self
+    File.expand_path(self)
   end
  end
 end
