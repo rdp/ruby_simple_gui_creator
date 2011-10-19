@@ -243,12 +243,13 @@ end
   def self.show_blocking_message_dialog message, title = message.split("\n")[0], style= JOptionPane::INFORMATION_MESSAGE
     puts "please use GUI window popup... #{message[0..20]} ..."
     JOptionPane.showMessageDialog(nil, message, title, style) # I think nil is ok here, it still blocks
+    # the above has no return value <sigh>
     puts 'Done with popup'
     true
   end
   
   def self.show_non_blocking_message_dialog message, close_button_text = 'Close'
-    NonBlockingDialog.new(message, close_button_text)
+    NonBlockingDialog.new(message, close_button_text) # we don't care if they close this one via the x
   end
 
   class DropDownSelector < JDialog # JDialog is blocking...
@@ -278,12 +279,14 @@ end
     
     # returns index from initial array that they selected, or raises if they hit the x on it
     def go_selected_index
+      puts 'select from dropdown window'
       show # blocks...
       raise 'did not select, exited early ' + @prompt unless @selected_idx
       @selected_idx
     end
     
     def go_selected_value
+      puts 'select from dropdown window'
       show # blocks...
       raise 'did not select, exited early ' + @prompt unless @selected_idx
       @drop_down_elements[@selected_idx]
