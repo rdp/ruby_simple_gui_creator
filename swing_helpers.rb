@@ -39,8 +39,9 @@ module SwingHelpers
     # example, if you specify :cancel => 'cancel' then it won't raise if they cancel
     # raises if they select cancel or exit, unless you pass in :exited => true as an option
     def self.show_select_buttons_prompt message, names_hash = {}
-      names_hash[:yes] ||= 'yes'
-      names_hash[:no] ||= 'no'
+      names_hash[:yes] ||= 'Yes'
+      names_hash[:no] ||= 'No'
+      # ok ?
       old = ['no', 'yes', 'ok'].map{|name| 'OptionPane.' + name + 'ButtonText'}.map{|name| [name, UIManager.get(name)]}
       if names_hash[:yes]
         UIManager.put("OptionPane.yesButtonText", names_hash[:yes])
@@ -55,7 +56,7 @@ module SwingHelpers
         UIManager.put("OptionPane.noButtonText", names_hash[:cancel])
       end
       title = message.split(' ')[0..5].join(' ')
-      returned = JOptionPane.showConfirmDialog nil, message, title, JOptionPane::YES_NO_CANCEL_OPTION # LODO self?
+      returned = JOptionPane.showConfirmDialog nil, message, title, JOptionPane::YES_NO_CANCEL_OPTION
       old.each{|name, old_setting| UIManager.put(name, old_setting)}
       out = JOptionReturnValuesTranslator[returned]
       if !names_hash.key?(out)
@@ -79,12 +80,10 @@ end
        begin
          block.call
        rescue Exception => e
-         puts 'got fatal exception thrown in button [ignoring]', e, e.class
-        if $VERBOSE
-         puts e.backtrace, e
-        else
-         puts e.backtrace[0], e
-        end
+         puts "got fatal exception thrown in button [canceled] #{e} #{e.class} #{e.backtrace[0]}"
+         if $VERBOSE
+          puts e.backtrace, e
+         end
        end        
      end
      self
