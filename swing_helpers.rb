@@ -125,7 +125,8 @@ end
       if OS.windows?
         system("start #{url.gsub('&', '^&')}") # LODO would launchy help/work here with the full url?
       else
-        system_non_blocking "#{OS.open_file_command} \"#{url}\"" # LODO test!
+        system "#{OS.open_file_command} \"#{url}\""
+        sleep 2 # disallow exiting immediately after...LODO
       end
     end
   
@@ -230,12 +231,6 @@ end
     received
   end
 
-  def self.show_url_in_browser url
-         command = OS.doze? ? "start" : "open"
-         system("#{command} #{url}")
-         sleep 2 if OS.mac? # disallow exiting too early...
-  end
-  
   def self.show_in_explorer filename_or_path
     raise 'nonexist cannot reveal in explorer?' unless File.exist?(filename_or_path)
     if OS.doze?
