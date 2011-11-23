@@ -16,10 +16,10 @@ This file is part of Sensible Cinema.
     along with Sensible Cinema.  If not, see <http://www.gnu.org/licenses/>.
 =end
 require File.expand_path(File.dirname(__FILE__) + '/common')
-require 'os'
-require_relative '../lib/swing_helpers'
-module SensibleSwing
-describe SensibleSwing do
+require_relative '../swing_helpers'
+
+module SwingHelpers
+describe 'functionality' do
 
   it "should close its modeless dialog" do
    
@@ -33,12 +33,24 @@ describe SensibleSwing do
   
   it "should be able to convert filenames well" do
     if OS.windows?
-      "a/b/c".to_filename.should == "a\\b\\c"
+      "a/b/c".to_filename.should == File.expand_path("a\\b\\c")
     else
-      "a/b/c".to_filename.should == "a/b/c"
+      "a/b/c".to_filename.should == File.expand_path("a/b/c")
     end
   end
 
-end
+  it "should reveal a file" do
+    FileUtils.touch "a b"
+    SwingHelpers.show_in_explorer "a b"
+    Dir.mkdir "a dir"
+    SwingHelpers.show_in_explorer "a dir"
+  end
+
+  it "should reveal a url" do
+    SwingHelper.show_url_in_browser "www.google.com"
+  end
+
+  end
+
 end
 puts 'close the windows...'

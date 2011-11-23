@@ -16,7 +16,7 @@ This file is part of Sensible Cinema.
     along with Sensible Cinema.  If not, see <http://www.gnu.org/licenses/>.
 =end
 require 'java'
-
+require 'sane' # gem
 module SwingHelpers 
   
  include_package 'javax.swing'
@@ -60,7 +60,7 @@ module SwingHelpers
       old.each{|name, old_setting| UIManager.put(name, old_setting)}
       out = JOptionReturnValuesTranslator[returned]
       if !out || !names_hash.key?(out)
-        raise 'canceled or exited:' + out
+        raise 'canceled or exited:' + out.to_s
       end
       out
     end
@@ -125,7 +125,8 @@ end
       if OS.windows?
         system("start #{url.gsub('&', '^&')}") # LODO would launchy help/work here with the full url?
       else
-        system_non_blocking "#{OS.open_file_command} \"#{url}\"" # LODO test!
+        system "#{OS.open_file_command} \"#{url}\""
+        sleep 2 # disallow exiting immediately after...LODO
       end
     end
   
@@ -229,13 +230,21 @@ end
     end
     received
   end
-  
+
   def self.show_in_explorer filename_or_path
     raise 'nonexist cannot reveal in explorer?' + filename_or_path unless File.exist?(filename_or_path)
-    begin
+    if OS.doze?
+      begin
         c = "explorer /e,/select,\"#{filename_or_path.to_filename}\"" 
         system c # command returns immediately...so system is ok
-    rescue => why_does_this_happen_ignore_this_exception_it_probably_actually_succeeded
+      rescue => why_does_this_happen_ignore_this_exception_it_probably_actually_succeeded
+      end
+    elsif OS.mac?
+      c = File.expand_path(__DIR__ + "/vendor/reveal") + " \"" + File.expand_path(filename_or_path) + "\""
+      puts c
+      system c
+    else
+      raise 'os unsupported?'
     end
   end
   

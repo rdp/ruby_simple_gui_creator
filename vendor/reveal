@@ -1,0 +1,134 @@
+#!/bin/zsh
+
+commandName=${0##*/}
+
+usage() {
+  if [[ $1 != '' ]] ; then echo 1>&2 "\n$1" ; fi
+  echo 1>&2 "
+Usage: $commandName
+       $commandName [ -l ] [ -v ] item ...
+     
+Tells the Finder to reveal the current directory or a list of the given items.
+The -l argument tells the Finder to set the last window it opens to list view.
+The -v argument causes the AppleScript to be echoed to stderr.
+
+In the multiple-arguments case, the Finder will open one window that cantains
+all of the items and select them all.  Maybe someday it will do that even if
+the items are not all in the same folder (using list view and expanded subfolders).
+
+Author: Dave@Yost.com  2002-12-09, 2004-06-05, 2006-07-07
+Version 1.2
+"
+  exit 2
+}
+
+zparseopts -D -K - -help=argHelp l=argList v=argVerbose
+
+if [[ $#argHelp != 0 ]] ; then
+  usage
+fi
+
+case $1 in
+-*) usage "Unknown option: $1"
+  ;;
+esac
+
+#-----------------------------------------
+
+# unix path -> old-style Mac path for AppleScript
+colonize() {
+  sed 's,.*,"&",
+       s,/,\&,g
+       s,:,/,g
+       s,^"&Volumes&,",
+       s,^"&.*,& of startup disk,' \
+  | sed 's,&,:,g' \
+  | tr -d '\012'
+}
+
+# Reveal unix paths in the Finder
+reveal() {
+  if [ $# = 0 ] ; then
+    args=( . )
+  else
+    args=( $* )
+  fi
+
+  itemList=
+  for x in $args
+  do
+    case "$x" in
+    /*) item="$x" ;;
+    .)  item="`/bin/pwd`" ;;
+    *)  item="`/bin/pwd`/$x" ;;
+    esac
+    
+    # All /x/../ -> /
+    previtem=
+    while [ "$previtem" != "$item" ]
+    do
+      previtem="$item"
+      item=`echo "$item" | sed 's,[^/]*/\.\./,,'`
+    done
+    
+    if [ $item = / ] ; then
+      itemColonized="startup disk"
+    else
+      itemColonized="item $(echo -n $item | colonize)"
+    fi
+    
+    # Add it to the list
+    if [ "$itemList" = "" ] ; then
+      itemList="Â
+      $itemColonized"
+    else
+      itemList="$itemList, Â
+      $itemColonized"
+    fi
+  done
+  
+  script='
+  tell application "Finder"
+    reveal { '$itemList' Â
+    }'
+  if [ "$#argList" != 0 ] ; then
+    script="$script
+    get every Finder window whose index is 1
+    set the current view of item 1 of the result to list view"
+  fi
+  script="$script"'
+    activate
+  end tell'
+  if [[ $#argVerbose != 0 ]] ; then
+    echo 1>&2 "[osascript -e '$script
+']"
+  fi
+  osascript -e "$script"
+}
+
+test() {
+  # If there are any mounted volumes, try the first one.
+  mountedVolume=`mount | grep Volumes | sed -n '1s,^[^ ]* on \(.*\) (*[^(]*,\1,p'`
+  if [ "$mountedVolume" != "" ] ; then
+    $commandName "$mountedVolume"
+  fi
+  cd /Library
+  $commandName
+  $commandName "/"
+  $commandName Preferences
+  $commandName "/Applications/QuickTime Player.app" \
+       "/Applications/Utilities/Java/../../System Preferences.app"
+}
+
+case $# in
+0) reveal "`/bin/pwd`"
+   ;;
+*) case "$1" in
+   --test)
+      test
+      ;;
+   *) $commandName $*
+      ;;
+   esac
+   ;;
+esac
