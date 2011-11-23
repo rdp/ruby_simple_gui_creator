@@ -59,7 +59,7 @@ module SwingHelpers
       returned = JOptionPane.showConfirmDialog nil, message, title, JOptionPane::YES_NO_CANCEL_OPTION
       old.each{|name, old_setting| UIManager.put(name, old_setting)}
       out = JOptionReturnValuesTranslator[returned]
-      if !names_hash.key?(out)
+      if !out || !names_hash.key?(out)
         raise 'canceled or exited:' + out
       end
       out
@@ -231,7 +231,7 @@ end
   end
   
   def self.show_in_explorer filename_or_path
-    raise 'nonexist cannot reveal in explorer?' unless File.exist?(filename_or_path)
+    raise 'nonexist cannot reveal in explorer?' + filename_or_path unless File.exist?(filename_or_path)
     begin
         c = "explorer /e,/select,\"#{filename_or_path.to_filename}\"" 
         system c # command returns immediately...so system is ok
