@@ -46,6 +46,10 @@ describe 'functionality' do
     SwingHelpers.show_in_explorer "a dir"
   end
 
+  it "should reveal a url" do
+    SwingHelper.show_url_in_browser "www.google.com"
+  end
+
   end
 
 end

@@ -60,7 +60,7 @@ module SwingHelpers
       old.each{|name, old_setting| UIManager.put(name, old_setting)}
       out = JOptionReturnValuesTranslator[returned]
       if !names_hash.key?(out)
-        raise 'canceled or exited:' + out
+        raise 'canceled or exited:' + out.to_s
       end
       out
     end
@@ -228,6 +228,12 @@ end
       raise 'user cancelled' unless received
     end
     received
+  end
+
+  def self.show_url_in_browser url
+         command = OS.doze? ? "start" : "open"
+         system("#{command} #{url}")
+         sleep 2 if OS.mac? # disallow exiting too early...
   end
   
   def self.show_in_explorer filename_or_path
