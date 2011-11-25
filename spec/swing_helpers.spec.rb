@@ -42,12 +42,12 @@ describe 'functionality' do
   it "should reveal a file" do
     FileUtils.touch "a b"
     SwingHelpers.show_in_explorer "a b"
-    Dir.mkdir "a dir"
+    Dir.mkdir "a dir" unless File.exist?('a dir')
     SwingHelpers.show_in_explorer "a dir"
   end
 
   it "should reveal a url" do
-    SwingHelper.show_url_in_browser "www.google.com"
+    SwingHelpers.open_url_to_view_it_non_blocking "http://www.google.com"
   end
 
   end

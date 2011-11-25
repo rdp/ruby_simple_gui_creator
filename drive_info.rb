@@ -22,6 +22,7 @@ require 'ostruct'
 class DriveInfo
 
  def self.md5sum_disk(dir)
+   dir = '"' + dir + '"'
    if OS.mac?
      command = "#{__DIR__}/vendor/mac_dvdid/bin/dvdid #{dir}"
    else

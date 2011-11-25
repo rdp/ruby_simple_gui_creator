@@ -122,6 +122,7 @@ end
   end
   
   def self.open_url_to_view_it_non_blocking url
+      raise unless url =~ /^http/i
       if OS.windows?
         system("start #{url.gsub('&', '^&')}") # LODO would launchy help/work here with the full url?
       else
@@ -240,7 +241,7 @@ end
       rescue => why_does_this_happen_ignore_this_exception_it_probably_actually_succeeded
       end
     elsif OS.mac?
-      c = File.expand_path(__DIR__ + "/vendor/reveal") + " \"" + File.expand_path(filename_or_path) + "\""
+      c = "open -R " + "\"" + File.expand_path(filename_or_path) + "\""
       puts c
       system c
     else
