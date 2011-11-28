@@ -168,7 +168,9 @@ end
       out.go
     end
 	
-	def self.new_existing_dir_chooser_and_go title=nil, default_dir = nil
+  end
+
+  def self.new_existing_dir_chooser_and_go title=nil, default_dir = nil
        chooser = JFileChooser.new;
        chooser.setCurrentDirectory(JFile.new default_dir) if default_dir
        chooser.set_title title
@@ -180,9 +182,8 @@ end
       else
         raise "No Selection "
       end
-	end
   end
-  
+
   # awt...the native looking one...
   class FileDialog
     def go
