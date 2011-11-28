@@ -167,7 +167,20 @@ end
       end
       out.go
     end
-    
+	
+	def self.new_existing_dir_chooser_and_go title=nil, default_dir = nil
+       chooser = JFileChooser.new;
+       chooser.setCurrentDirectory(JFile.new default_dir) if default_dir
+       chooser.set_title title
+       chooser.setFileSelectionMode(JFileChooser::DIRECTORIES_ONLY)
+       chooser.setAcceptAllFileFilterUsed(false)
+
+      if (chooser.showOpenDialog(nil) == JFileChooser::APPROVE_OPTION)
+        return chooser.getSelectedFile().get_absolute_path
+      else
+        raise "No Selection "
+      end
+	end
   end
   
   # awt...the native looking one...

@@ -49,7 +49,12 @@ describe 'functionality' do
   it "should reveal a url" do
     SwingHelpers.open_url_to_view_it_non_blocking "http://www.google.com"
   end
-
+  
+  it "should select folders" do
+    raise unless File.directory?(JFileChooser.new_existing_dir_chooser_and_go 'hello', '.')
+    raise unless File.directory?(JFileChooser.new_existing_dir_chooser_and_go)
+  end
+  
   end
 
 end
