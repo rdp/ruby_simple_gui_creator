@@ -51,8 +51,10 @@ describe 'functionality' do
   end
   
   it "should select folders" do
-    raise unless File.directory?(SwingHelpers.new_existing_dir_chooser_and_go 'hello', '.')
-    raise unless File.directory?(SwingHelpers.new_existing_dir_chooser_and_go)
+    raise unless File.directory?(c = SwingHelpers.new_existing_dir_chooser_and_go('hello', '.'))
+    p c
+    raise unless File.directory?(c = SwingHelpers.new_existing_dir_chooser_and_go)
+    p c
   end
   
   end

@@ -176,12 +176,13 @@ end
        chooser.set_title title
        chooser.setFileSelectionMode(JFileChooser::DIRECTORIES_ONLY)
        chooser.setAcceptAllFileFilterUsed(false)
+       chooser.set_approve_button_text "Select Directory"
 
-      if (chooser.showOpenDialog(nil) == JFileChooser::APPROVE_OPTION)
-        return chooser.getSelectedFile().get_absolute_path
-      else
-        raise "No Selection "
-      end
+       if (chooser.showOpenDialog(nil) == JFileChooser::APPROVE_OPTION)
+         return chooser.getSelectedFile().get_absolute_path
+       else
+         raise "No Selection "
+       end
   end
 
   # awt...the native looking one...
