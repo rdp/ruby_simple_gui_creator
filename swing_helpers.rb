@@ -247,15 +247,16 @@ end
   end
 
   def self.show_in_explorer filename_or_path
-    raise 'nonexist cannot reveal in explorer?' + filename_or_path unless File.exist?(filename_or_path)
+    raise 'nonexistent file cannot reveal in explorer?' + filename_or_path unless File.exist?(filename_or_path)
     if OS.doze?
       begin
-        c = "explorer /e,/select,\"#{filename_or_path.to_filename}\"" 
+        c = "explorer /e,/select,#{filename_or_path.to_filename}" 
+        puts c
         system c # command returns immediately...so system is ok
       rescue => why_does_this_happen_ignore_this_exception_it_probably_actually_succeeded
       end
     elsif OS.mac?
-      c = "open -R " + "\"" + File.expand_path(filename_or_path) + "\""
+      c = "open -R " + "\"" + filename_or_path.to_filename + "\""
       puts c
       system c
     else
