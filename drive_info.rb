@@ -44,6 +44,7 @@ class DriveInfo
   most_space.MountPoint + "/"
  end
 
+ # device point is like "where to point mplayer at this succer"
  def self.get_all_drives_as_ostructs # gets all drives not just DVD drives...
   if OS.mac?
     require 'plist'
@@ -56,9 +57,10 @@ class DriveInfo
      d2.Description = parsed['OpticalDeviceType']
      d2.MountPoint = parsed['MountPoint']
      if d2.MountPoint == '/'
-	   # try to guess a more writable default location...this works I guess?
+       # try to guess a more writable default location...this works I guess?
        d2.MountPoint = File.expand_path '~'
      end
+     d2.DevicePoint = parsed['DeviceNode']
      d2
     }
   else
@@ -69,7 +71,8 @@ class DriveInfo
       d2.VolumeName = d.VolumeName
       d2.Name = d.Name
       d2.FreeSpace = d.FreeSpace.to_i
-      d2.MountPoint = d.Name[0..2] # needed...
+      d2.MountPoint = d.Name[0..2] # like f:\
+      d2.DevicePoint = d2.MountPoint
       d2
     } 
   end

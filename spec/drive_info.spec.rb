@@ -16,7 +16,7 @@ This file is part of Sensible Cinema.
     along with Sensible Cinema.  If not, see <http://www.gnu.org/licenses/>.
 =end
 require File.expand_path(File.dirname(__FILE__) + '/common')
-require_relative '../lib/drive_info'
+require_relative '../drive_info'
 require 'socket'
 
 describe 'dvd_drive_info' do
@@ -26,12 +26,15 @@ describe 'dvd_drive_info' do
       File.binwrite("VTS_01_0.IFO", "b")
       File.binwrite("VIDEO_TS.IFO", "a")
     end
+    # different because of different volume names I think
     DriveInfo.md5sum_disk("./").should ==  
-      if Socket.gethostname == "PACKR-B1C04F564"
+      if Socket.gethostname == "PACKR-B1C04F564" # work is different? huh? maybe I need to clean first...
         "b715cc2a|5e217436"
       elsif OS.windows? # blacky
         "ff83793c|dfaedb42"
-      else # mac
+      elsif OS.mac?
+       "e293328f|519cd647"
+     else
         raise 'unknown here...' + DriveInfo.md5sum_disk("./")
       end
   end
