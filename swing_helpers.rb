@@ -167,9 +167,24 @@ end
       end
       out.go
     end
-    
+	
   end
-  
+
+  def self.new_existing_dir_chooser_and_go title=nil, default_dir = nil
+       chooser = JFileChooser.new;
+       chooser.setCurrentDirectory(JFile.new default_dir) if default_dir
+       chooser.set_title title
+       chooser.setFileSelectionMode(JFileChooser::DIRECTORIES_ONLY)
+       chooser.setAcceptAllFileFilterUsed(false)
+       chooser.set_approve_button_text "Select Directory"
+
+       if (chooser.showOpenDialog(nil) == JFileChooser::APPROVE_OPTION)
+         return chooser.getSelectedFile().get_absolute_path
+       else
+         raise "No Selection "
+       end
+  end
+
   # awt...the native looking one...
   class FileDialog
     def go
@@ -233,15 +248,16 @@ end
   end
 
   def self.show_in_explorer filename_or_path
-    raise 'nonexist cannot reveal in explorer?' + filename_or_path unless File.exist?(filename_or_path)
+    raise 'nonexistent file cannot reveal in explorer?' + filename_or_path unless File.exist?(filename_or_path)
     if OS.doze?
       begin
-        c = "explorer /e,/select,\"#{filename_or_path.to_filename}\"" 
+        c = "explorer /e,/select,#{filename_or_path.to_filename}" 
+        puts c
         system c # command returns immediately...so system is ok
       rescue => why_does_this_happen_ignore_this_exception_it_probably_actually_succeeded
       end
     elsif OS.mac?
-      c = "open -R " + "\"" + File.expand_path(filename_or_path) + "\""
+      c = "open -R " + "\"" + filename_or_path.to_filename + "\""
       puts c
       system c
     else

@@ -49,7 +49,14 @@ describe 'functionality' do
   it "should reveal a url" do
     SwingHelpers.open_url_to_view_it_non_blocking "http://www.google.com"
   end
-
+  
+  it "should select folders" do
+    raise unless File.directory?(c = SwingHelpers.new_existing_dir_chooser_and_go('hello', '.'))
+    p c
+    raise unless File.directory?(c = SwingHelpers.new_existing_dir_chooser_and_go)
+    p c
+  end
+  
   end
 
 end
