@@ -33,6 +33,20 @@ class DriveInfo
    output.strip
  end
 
+ @@drive_cache = nil
+ @@drive_cache_mutex = Mutex.new
+ def self.create_looping_drive_cacher
+  # has to be in its own thread or wmi will choke
+    Thread.new {
+      loop {
+        @@drive_cache_mutex.synchronize { # in case they request it very fast...
+          @@drive_cache = get_all_drives_as_ostructs_internal
+        }
+        sleep 3
+      }
+    }
+  end
+
  def self.get_dvd_drives_as_openstruct
    disks = get_all_drives_as_ostructs
    disks.select{|d| d.Description =~ /CD-ROM/ && File.exist?(d.Name + "/VIDEO_TS")}
@@ -46,38 +60,47 @@ class DriveInfo
 
  # device point is like "where to point mplayer at this succer"
  def self.get_all_drives_as_ostructs # gets all drives not just DVD drives...
-  if OS.mac?
-    require 'plist'
-    Dir['/Volumes/*'].map{|dir|
-     parsed = Plist.parse_xml(`diskutil info -plist "#{dir}"`)
-     d2 = OpenStruct.new
-     d2.VolumeName = parsed["VolumeName"]
-     d2.Name = dir # DevNode?
-     d2.FreeSpace = parsed["FreeSpace"].to_i
-     d2.Description = parsed['OpticalDeviceType']
-     d2.MountPoint = parsed['MountPoint']
-     if d2.MountPoint == '/'
-       # try to guess a more writable default location...this works I guess?
-       d2.MountPoint = File.expand_path '~'
-     end
-     d2.DevicePoint = parsed['DeviceNode']
-     d2
-    }
-  else
-    require 'ruby-wmi'
-    disks = WMI::Win32_LogicalDisk.find(:all)
-    disks.map{|d| d2 = OpenStruct.new
-      d2.Description = d.Description
-      d2.VolumeName = d.VolumeName
-      d2.Name = d.Name
-      d2.FreeSpace = d.FreeSpace.to_i
-      d2.MountPoint = d.Name[0..2] # like f:\
-      d2.DevicePoint = d2.MountPoint
-      d2
-    } 
+  @@drive_cache_mutex.synchronize {
+    if @@drive_cache
+      return @@drive_cache
+    end
+  }
+  get_all_drives_as_ostructs_internal
   end
- end
 
+  private
+  def self.get_all_drives_as_ostructs_internal
+    if OS.mac?
+      require 'plist'
+      Dir['/Volumes/*'].map{|dir|
+       parsed = Plist.parse_xml(`diskutil info -plist "#{dir}"`)
+       d2 = OpenStruct.new
+       d2.VolumeName = parsed["VolumeName"]
+       d2.Name = dir # DevNode?
+       d2.FreeSpace = parsed["FreeSpace"].to_i
+       d2.Description = parsed['OpticalDeviceType']
+       d2.MountPoint = parsed['MountPoint']
+       if d2.MountPoint == '/'
+         # try to guess a more writable default location...this works I guess?
+         d2.MountPoint = File.expand_path '~'
+       end
+       d2.DevicePoint = parsed['DeviceNode']
+       d2
+      }
+    else
+      require 'ruby-wmi'
+      disks = WMI::Win32_LogicalDisk.find(:all)
+      disks.map{|d| d2 = OpenStruct.new
+        d2.Description = d.Description
+        d2.VolumeName = d.VolumeName
+        d2.Name = d.Name
+        d2.FreeSpace = d.FreeSpace.to_i
+        d2.MountPoint = d.Name[0..2] # like f:\
+        d2.DevicePoint = d2.MountPoint
+        d2
+      } 
+    end
+  end
 end
 
 if $0 == __FILE__
