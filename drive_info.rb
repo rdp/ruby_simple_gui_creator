@@ -42,7 +42,7 @@ class DriveInfo
         @@drive_cache_mutex.synchronize { # in case they request it very fast...
           @@drive_cache = get_all_drives_as_ostructs_internal
         }
-        sleep 3
+        sleep 1
       }
     }
   end
@@ -58,15 +58,16 @@ class DriveInfo
   most_space.MountPoint + "/"
  end
 
- # device point is like "where to point mplayer at this succer"
+ # DevicePoint is like "where to point mplayer at this succer"
  def self.get_all_drives_as_ostructs # gets all drives not just DVD drives...
   @@drive_cache_mutex.synchronize {
     if @@drive_cache
-      return @@drive_cache
+      @@drive_cache
+    else
+      get_all_drives_as_ostructs_internal
     end
   }
-  get_all_drives_as_ostructs_internal
-  end
+ end
 
   private
   def self.get_all_drives_as_ostructs_internal
@@ -84,7 +85,7 @@ class DriveInfo
          # try to guess a more writable default location...this works I guess?
          d2.MountPoint = File.expand_path '~'
        end
-       d2.DevicePoint = parsed['DeviceNode']
+       d2.DevicePoint = parsed['DeviceNode'].sub('disk', 'rdisk') # I've heard using rdisk is better/faster...
        d2
       }
     else
