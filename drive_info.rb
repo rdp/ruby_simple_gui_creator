@@ -44,7 +44,7 @@ class DriveInfo
   most_space.MountPoint + "/"
  end
 
- # device point is like "where to point mplayer at this succer"
+ # DevicePoint is like "where to point mplayer at this succer"
  def self.get_all_drives_as_ostructs # gets all drives not just DVD drives...
   if OS.mac?
     require 'plist'
@@ -60,7 +60,7 @@ class DriveInfo
        # try to guess a more writable default location...this works I guess?
        d2.MountPoint = File.expand_path '~'
      end
-     d2.DevicePoint = parsed['DeviceNode']
+     d2.DevicePoint = parsed['DeviceNode'].gsub('disk', 'rdisk') # I've heard using rdisk is better/faster...
      d2
     }
   else
