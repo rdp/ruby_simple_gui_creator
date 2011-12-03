@@ -18,6 +18,7 @@ This file is part of Sensible Cinema.
 
 require 'os'
 require 'ostruct'
+require 'thread'
 
 class DriveInfo
 
@@ -37,7 +38,7 @@ class DriveInfo
  @@drive_cache_mutex = Mutex.new
  def self.create_looping_drive_cacher
   # has to be in its own thread or wmi will choke
-    Thread.new {
+    @caching_thread ||= Thread.new {
       loop {
         @@drive_cache_mutex.synchronize { # in case they request it very fast...
           @@drive_cache = get_all_drives_as_ostructs_internal
