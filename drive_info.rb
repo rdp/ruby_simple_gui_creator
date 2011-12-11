@@ -52,6 +52,12 @@ class DriveInfo
    disks = get_all_drives_as_ostructs
    disks.select{|d| d.Description =~ /CD-ROM/ && File.exist?(d.Name + "/VIDEO_TS")}
  end
+ 
+ def self.get_dvd_drive_even_if_empty
+   raise unless OS.doze? # no idea how to do this in mac :P
+   disks = get_all_drives_as_ostructs
+   disks.select{|d| d.Description =~ /CD-ROM/}
+ end
   
  def self.get_drive_with_most_space_with_slash
   disks = get_all_drives_as_ostructs
