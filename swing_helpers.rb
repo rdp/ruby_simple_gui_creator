@@ -242,6 +242,7 @@ end
   end
   
   def self.get_user_input(message, default = '', cancel_ok = false)
+    p 'please enter the information in the prompt:' + message
     received = javax.swing.JOptionPane.showInputDialog(message, default)
     if !cancel_ok
       raise 'user cancelled' unless received
@@ -268,7 +269,7 @@ end
   end
   
   def self.show_blocking_message_dialog message, title = message.split("\n")[0], style= JOptionPane::INFORMATION_MESSAGE
-    puts "please use GUI window popup... #{message[0..20]} ..."
+    puts "please use GUI window popup... #{message} ..."
     JOptionPane.showMessageDialog(nil, message, title, style) # I think nil is ok here, it still blocks
     # the above has no return value <sigh>
     puts 'Done with popup'
