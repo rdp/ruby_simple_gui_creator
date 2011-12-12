@@ -20,8 +20,9 @@ require 'sane' # gem
 module SwingHelpers 
   
  include_package 'javax.swing'
+ # will use  these constants (http://jira.codehaus.org/browse/JRUBY-5107)
  [JProgressBar, JButton, JFrame, JLabel, JPanel, JOptionPane,
-   JFileChooser, JComboBox, JDialog, SwingUtilities, JSlider] # grab these constants (http://jira.codehaus.org/browse/JRUBY-5107)
+   JFileChooser, JComboBox, JDialog, SwingUtilities, JSlider, JPasswordField] 
  include_package 'java.awt'
  [FlowLayout, Font, BorderFactory, BorderLayout]
  include_class java.awt.event.ActionListener
@@ -171,18 +172,18 @@ end
   end
 
   def self.new_existing_dir_chooser_and_go title=nil, default_dir = nil
-       chooser = JFileChooser.new;
-       chooser.setCurrentDirectory(JFile.new default_dir) if default_dir
-       chooser.set_title title
-       chooser.setFileSelectionMode(JFileChooser::DIRECTORIES_ONLY)
-       chooser.setAcceptAllFileFilterUsed(false)
-       chooser.set_approve_button_text "Select Directory"
+    chooser = JFileChooser.new;
+    chooser.setCurrentDirectory(JFile.new default_dir) if default_dir
+    chooser.set_title title
+    chooser.setFileSelectionMode(JFileChooser::DIRECTORIES_ONLY)
+    chooser.setAcceptAllFileFilterUsed(false)
+    chooser.set_approve_button_text "Select Directory"
 
-       if (chooser.showOpenDialog(nil) == JFileChooser::APPROVE_OPTION)
-         return chooser.getSelectedFile().get_absolute_path
-       else
-         raise "No Selection "
-       end
+    if (chooser.showOpenDialog(nil) == JFileChooser::APPROVE_OPTION)
+     return chooser.getSelectedFile().get_absolute_path
+    else
+     raise "No Selection "
+    end
   end
 
   # awt...the native looking one...
@@ -217,7 +218,6 @@ end
   
   class NonBlockingDialog < JDialog
     def initialize title_and_display_text, close_button_text = 'Close'
-      super nil
       lines = title_and_display_text.split("\n")
       set_title lines[0]
       get_content_pane.set_layout nil
@@ -229,19 +229,21 @@ end
       close = JButton.new( close_button_text ).on_clicked {
         self.dispose
       }
-      close.set_bounds(125,30+15*lines.length,70,25)
+      number_of_lines = lines.length
+      close.set_bounds(125,30+15*number_of_lines, close_button_text.length * 15,25)
       get_content_pane.add close
-      set_size 550, 100+15*lines.length # XXX variable width? or use swing build in better?
+      set_size 550, 100+(15*number_of_lines) # XXX variable width? or use swing build in better?
       set_visible true
       setDefaultCloseOperation JFrame::DISPOSE_ON_CLOSE
       setLocationRelativeTo nil # center it on the screen
+      
     end
     alias close dispose # yipes
   end
   
   def self.get_user_input(message, default = '', cancel_ok = false)
     received = javax.swing.JOptionPane.showInputDialog(message, default)
-    unless cancel_ok
+    if !cancel_ok
       raise 'user cancelled' unless received
     end
     received
@@ -275,6 +277,21 @@ end
   
   def self.show_non_blocking_message_dialog message, close_button_text = 'Close'
     NonBlockingDialog.new(message, close_button_text) # we don't care if they close this one via the x
+  end
+  
+  def self.get_password_input text
+    p 'please enter password at prompt'
+    pwd = JPasswordField.new(10)
+    if JOptionPane.showConfirmDialog(nil, pwd, text, JOptionPane::OK_CANCEL_OPTION) < 0
+      raise 'cancelled'
+    else
+      # convert to ruby string [?]
+      out = ''
+      pwd.password.each{|b|
+        out << b
+      }
+      out
+    end
   end
 
   class DropDownSelector < JDialog # JDialog is blocking...
