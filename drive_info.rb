@@ -36,17 +36,40 @@ class DriveInfo
 
  @@drive_cache = nil
  @@drive_cache_mutex = Mutex.new
+ @@drive_changed_notifies = []
  def self.create_looping_drive_cacher
-  # has to be in its own thread or wmi will choke
+    # has to be in its own thread or wmi will choke...
     @caching_thread ||= Thread.new {
+      # use a dir glob to avoid having to use wmi too frequently (or accessing disks too often, which we might still be doing accidentally anyway)
+      if OS.doze?
+  		  old_drive_glob = '{' + DriveInfo.get_dvd_drive_even_if_empty.map{|dr| dr.MountPoint[0..0]}.join(',') + '}:/.' # must be in the thread for wmi
+      else
+        old_drive_glob = '/Volumes/*'
+      end
+      previously_known_about_discs = nil
       loop {
-        @@drive_cache_mutex.synchronize { # in case they request it very fast...
-          @@drive_cache = get_all_drives_as_ostructs_internal
+        @@drive_cache_mutex.synchronize { # in case the first update takes too long, basically, so they miss it LODO still a tiny race condition in here...might be useless...
+          cur_disks = Dir[old_drive_glob]
+  		    if cur_disks != previously_known_about_discs
+	          p 'updating disks...'
+            @@drive_cache = get_all_drives_as_ostructs_internal
+            previously_known_about_discs = cur_disks
+		      end
+          @@drive_changed_notifies.each{|block| block.call}
         }
-        sleep 1
+        sleep 0.5
       }
     }
-  end
+ end
+
+ def self.add_notify_on_changed_disks &block
+  raise unless block
+  @@drive_changed_notifies << block
+  @@drive_cache_mutex.synchronize {
+    block.call if @@drive_cache # should be called at least once, right, on init?
+  }
+  true
+ end
 
  def self.get_dvd_drives_as_openstruct
    disks = get_all_drives_as_ostructs
