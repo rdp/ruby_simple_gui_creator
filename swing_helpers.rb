@@ -218,6 +218,7 @@ end
   
   class NonBlockingDialog < JDialog
     def initialize title_and_display_text, close_button_text = 'Close'
+      super nil # so that set_title will work
       lines = title_and_display_text.split("\n")
       set_title lines[0]
       get_content_pane.set_layout nil
