@@ -48,15 +48,17 @@ class DriveInfo
       end
       previously_known_about_discs = nil
       loop {
+	  should_update = false
         @@drive_cache_mutex.synchronize { # in case the first update takes too long, basically, so they miss it LODO still a tiny race condition in here...might be useless...
           cur_disks = Dir[old_drive_glob]
   		    if cur_disks != previously_known_about_discs
 	          p 'updating disks...'
+			  should_update = true
             @@drive_cache = get_all_drives_as_ostructs_internal
             previously_known_about_discs = cur_disks
 		      end
         }
-        @@drive_changed_notifies.each{|block| block.call}
+        @@drive_changed_notifies.each{|block| block.call} if should_update
         sleep 0.5
       }
     }
