@@ -55,8 +55,8 @@ class DriveInfo
             @@drive_cache = get_all_drives_as_ostructs_internal
             previously_known_about_discs = cur_disks
 		      end
-          @@drive_changed_notifies.each{|block| block.call}
         }
+        @@drive_changed_notifies.each{|block| block.call}
         sleep 0.5
       }
     }
@@ -65,9 +65,9 @@ class DriveInfo
  def self.add_notify_on_changed_disks &block
   raise unless block
   @@drive_changed_notifies << block
-  @@drive_cache_mutex.synchronize {
-    block.call if @@drive_cache # should be called at least once, right, on init?
-  }
+  should_call = false
+  @@drive_cache_mutex.synchronize { should_call = true if @@drive_cache }
+  block.call if should_call # should be called at least once, right, on init?
   true
  end
 
