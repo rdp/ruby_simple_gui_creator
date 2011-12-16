@@ -197,25 +197,24 @@ end
         nil
       end
     end
-    
-    # this actually allows for non existing files [oopsy] LODO
-    def self.new_previously_existing_file_selector_and_go title, use_this_dir = nil
-      out = FileDialog.new(nil, title, FileDialog::LOAD) # LODO no self in here... ?
-      out.set_title title
-      if use_this_dir
-        # FileDialog only accepts paths a certain way...
-        dir = File.expand_path(use_this_dir)
-        dir = dir.gsub(File::Separator, File::ALT_SEPARATOR) if File::ALT_SEPARATOR
-        out.setDirectory(dir) 
-      end
-      got = out.go
-      raise 'cancelled choosing existing file' unless got # I think we always want to raise...
-      raise 'must exist' unless File.exist? got
-      got
-    end
-    
   end
   
+  # this actually allows for non existing files [oopsy] LODO
+  def self.new_previously_existing_file_selector_and_go title, use_this_dir = nil
+    out = FileDialog.new(nil, title, FileDialog::LOAD) # LODO no self in here... ?
+    out.set_title title
+    if use_this_dir
+      # FileDialog only accepts paths a certain way...
+      dir = File.expand_path(use_this_dir)
+      dir = dir.gsub(File::Separator, File::ALT_SEPARATOR) if File::ALT_SEPARATOR
+      out.setDirectory(dir) 
+    end
+    got = out.go
+    raise 'cancelled choosing existing file' unless got # I think we always want to raise...
+    raise 'must exist' unless File.exist? got
+    got
+  end
+    
   class NonBlockingDialog < JDialog
     def initialize title_and_display_text, close_button_text = 'Close'
       super nil # so that set_title will work
@@ -300,6 +299,7 @@ end
     
     def initialize parent, options_array, prompt_for_top_entry
       super parent, true
+      set_title prompt_for_top_entry
       @drop_down_elements = options_array
       @selected_idx = nil
       box = JComboBox.new
