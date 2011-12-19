@@ -81,8 +81,9 @@ end
        begin
          block.call
        rescue Exception => e
-         puts "got fatal exception thrown in button [aborted] #{e} #{e.class} #{e.backtrace[0]}"
+         puts 'button cancelled somehow!' + e.to_s
          if $VERBOSE
+          puts "got fatal exception thrown in button [aborted] #{e} #{e.class} #{e.backtrace[0]}"
           puts e.backtrace, e
          end
        end        
