@@ -61,7 +61,7 @@ module SwingHelpers
       old.each{|name, old_setting| UIManager.put(name, old_setting)}
       out = JOptionReturnValuesTranslator[returned]
       if !out || !names_hash.key?(out)
-        raise 'canceled or exited:' + out.to_s
+        raise 'canceled or exited an option prompt:' + out.to_s + ' ' + message
       end
       out
     end
