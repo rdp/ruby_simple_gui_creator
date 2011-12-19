@@ -102,6 +102,14 @@ end
      self.set_tool_tip_text text   
    end
   
+   def enable
+    set_enabled true
+   end
+  
+   def disable
+    set_enabled false
+  end
+  
  end
 
  ToolTipManager.sharedInstance().setDismissDelay(10000)

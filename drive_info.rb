@@ -39,29 +39,36 @@ class DriveInfo
  @@drive_changed_notifies = []
  def self.create_looping_drive_cacher
     # has to be in its own thread or wmi will choke...
+    looped_at_least_once = false
     @caching_thread ||= Thread.new {
       # use a dir glob to avoid having to use wmi too frequently (or accessing disks too often, which we might still be doing accidentally anyway)
       if OS.doze?
-  		  old_drive_glob = '{' + DriveInfo.get_dvd_drive_even_if_empty.map{|dr| dr.MountPoint[0..0]}.join(',') + '}:/.' # must be in the thread for wmi
+  		  old_drive_glob = '{' + DriveInfo.get_dvd_drives_even_if_no_disc_present.map{|dr| dr.MountPoint[0..0]}.join(',') + '}:/.' # must be in the thread for wmi
       else
         old_drive_glob = '/Volumes/*'
       end
       previously_known_about_discs = nil
       loop {
-	  should_update = false
+	      should_update = false
         @@drive_cache_mutex.synchronize { # in case the first update takes too long, basically, so they miss it LODO still a tiny race condition in here...might be useless...
           cur_disks = Dir[old_drive_glob]
   		    if cur_disks != previously_known_about_discs
-	          p 'updating disks...'
-			  should_update = true
+	          p 'disks have changed...'
+			      should_update = true
             @@drive_cache = get_all_drives_as_ostructs_internal
             previously_known_about_discs = cur_disks
 		      end
         }
         @@drive_changed_notifies.each{|block| block.call} if should_update
+        looped_at_least_once = true
         sleep 0.5
       }
     }
+    # maintain some thread startup sanity :P
+    while(!looped_at_least_once)
+      sleep 0.01
+    end
+    true
  end
 
  def self.add_notify_on_changed_disks &block
@@ -78,7 +85,7 @@ class DriveInfo
    disks.select{|d| d.Description =~ /CD-ROM/ && File.exist?(d.Name + "/VIDEO_TS")}
  end
  
- def self.get_dvd_drive_even_if_empty
+ def self.get_dvd_drives_even_if_no_disc_present
    raise unless OS.doze? # no idea how to do this in mac :P
    disks = get_all_drives_as_ostructs
    disks.select{|d| d.Description =~ /CD-ROM/}
@@ -93,10 +100,10 @@ class DriveInfo
  # DevicePoint is like "where to point mplayer at this succer"
  def self.get_all_drives_as_ostructs # gets all drives not just DVD drives...
   @@drive_cache_mutex.synchronize {
-    if @@drive_cache
+    if @@drive_cache # means we're using it
       @@drive_cache
     else
-      get_all_drives_as_ostructs_internal
+      get_all_drives_as_ostructs_internal # first time through for the startup thread goes here too
     end
   }
  end
