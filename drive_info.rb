@@ -51,6 +51,7 @@ class DriveInfo
       loop {
 	      should_update = false
         @@drive_cache_mutex.synchronize { # in case the first update takes too long, basically, so they miss it LODO still a tiny race condition in here...might be useless...
+          looped_at_least_once = true # let the spawning thread continue quickly
           cur_disks = Dir[old_drive_glob]
   		    if cur_disks != previously_known_about_discs
 	          p 'updating disk lists...'
@@ -60,7 +61,6 @@ class DriveInfo
 		      end
         }
         @@drive_changed_notifies.each{|block| block.call} if should_update
-        looped_at_least_once = true
         sleep 0.5
       }
     }
@@ -85,11 +85,6 @@ class DriveInfo
    disks.select{|d| d.Description =~ /CD-ROM/ && File.exist?(d.Name + "/VIDEO_TS")}
  end
  
- def self.get_dvd_drives_even_if_no_disc_present
-   raise unless OS.doze? # no idea how to do this in mac :P
-   disks = get_all_drives_as_ostructs
-   disks.select{|d| d.Description =~ /CD-ROM/}
- end
   
  def self.get_drive_with_most_space_with_slash
   disks = get_all_drives_as_ostructs
@@ -97,10 +92,9 @@ class DriveInfo
   most_space.MountPoint + "/"
  end
 
- # DevicePoint is like "where to point mplayer at this succer"
  def self.get_all_drives_as_ostructs # gets all drives not just DVD drives...
   @@drive_cache_mutex.synchronize {
-    if @@drive_cache # means we're using it
+    if @caching_thread
       @@drive_cache
     else
       get_all_drives_as_ostructs_internal # first time through for the startup thread goes here too
@@ -108,7 +102,15 @@ class DriveInfo
   }
  end
 
-  private
+ private
+
+ def self.get_dvd_drives_even_if_no_disc_present # private since it uses internal
+   raise unless OS.doze? # no idea how to do this in mac :P
+   disks = get_all_drives_as_ostructs_internal
+   disks.select{|d| d.Description =~ /CD-ROM/}
+ end
+
+  # DevicePoint is like "where to point mplayer at this succer"
   def self.get_all_drives_as_ostructs_internal
     if OS.mac?
       require 'plist'
