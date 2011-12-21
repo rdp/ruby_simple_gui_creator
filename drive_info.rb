@@ -40,30 +40,34 @@ class DriveInfo
  def self.create_looping_drive_cacher
     # has to be in its own thread or wmi will choke...
     looped_at_least_once = false
-    @caching_thread ||= Thread.new {
-      # use a dir glob to avoid having to use wmi too frequently (or accessing disks too often, which we might still be doing accidentally anyway)
-      if OS.doze?
-  		  old_drive_glob = '{' + DriveInfo.get_dvd_drives_even_if_no_disc_present.map{|dr| dr.MountPoint[0..0]}.join(',') + '}:/.' # must be in the thread for wmi
-      else
-        old_drive_glob = '/Volumes/*'
-      end
-      previously_known_about_discs = nil
-      loop {
-	      should_update = false
-        @@drive_cache_mutex.synchronize { # in case the first update takes too long, basically, so they miss it LODO still a tiny race condition in here...might be useless...
-          looped_at_least_once = true # let the spawning thread continue quickly
-          cur_disks = Dir[old_drive_glob]
-  		    if cur_disks != previously_known_about_discs
-	          p 'updating disk lists...'
-			      should_update = true
-            @@drive_cache = get_all_drives_as_ostructs_internal
-            previously_known_about_discs = cur_disks
-		      end
+    if @cacheing_thread
+      looped_at_least_once = true
+    else
+      @caching_thread = Thread.new {
+        # use a dir glob to avoid having to use wmi too frequently (or accessing disks too often, which we might still be doing accidentally anyway)
+        if OS.doze?
+    		  old_drive_glob = '{' + DriveInfo.get_dvd_drives_even_if_no_disc_present.map{|dr| dr.MountPoint[0..0]}.join(',') + '}:/.' # must be in the thread for wmi
+        else
+          old_drive_glob = '/Volumes/*'
+        end
+        previously_known_about_discs = nil
+        loop {
+  	      should_update = false
+          @@drive_cache_mutex.synchronize { # in case the first update takes too long, basically, so they miss it LODO still a tiny race condition in here...might be useless...
+            looped_at_least_once = true # let the spawning thread continue quickly
+            cur_disks = Dir[old_drive_glob]
+    		    if cur_disks != previously_known_about_discs
+  	          p 'updating disk lists...'
+  			      should_update = true
+              @@drive_cache = get_all_drives_as_ostructs_internal
+              previously_known_about_discs = cur_disks
+  		      end
+          }
+          @@drive_changed_notifies.each{|block| block.call} if should_update
+          sleep 0.5
         }
-        @@drive_changed_notifies.each{|block| block.call} if should_update
-        sleep 0.5
       }
-    }
+    end
     # maintain some thread startup sanity :P
     while(!looped_at_least_once)
       sleep 0.01
