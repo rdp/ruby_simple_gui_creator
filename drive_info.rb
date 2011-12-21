@@ -23,13 +23,14 @@ require 'thread'
 class DriveInfo
 
  def self.md5sum_disk(dir)
-   dir = '"' + dir + '"'
    if OS.mac?
-     command = "#{__DIR__}/vendor/mac_dvdid/bin/dvdid #{dir}"
+     exe = "#{__DIR__}/vendor/mac_dvdid/bin/dvdid"
    else
-     command = "#{__DIR__}/vendor/dvdid.exe #{dir}"
+     exe = "#{__DIR__}/vendor/dvdid.exe"
    end
-   output = `#{command}` # can take like 2.2s
+   raise exe + 'non exist?' unless File.exist? exe
+   command = "#{exe} \"#{dir}\""
+   output = `#{command}` # can take like 2.2s to spin up the disk...
    raise 'dvdid command failed?' + command unless $?.exitstatus == 0
    output.strip
  end
@@ -40,7 +41,7 @@ class DriveInfo
  def self.create_looping_drive_cacher
     # has to be in its own thread or wmi will choke...
     looped_at_least_once = false
-    if @cacheing_thread
+    if @caching_thread
       looped_at_least_once = true
     else
       @caching_thread = Thread.new {

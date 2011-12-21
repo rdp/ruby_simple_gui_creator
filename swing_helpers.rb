@@ -264,7 +264,6 @@ end
     if OS.doze?
       begin
         c = "explorer /e,/select,#{filename_or_path.to_filename}" 
-        puts c
         system c # command returns immediately...so system is ok
       rescue => why_does_this_happen_ignore_this_exception_it_probably_actually_succeeded
       end
