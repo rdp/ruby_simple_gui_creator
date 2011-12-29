@@ -254,8 +254,6 @@ end
   def self.get_user_input(message, default = '', cancel_or_blank_ok = false)
     p 'please enter the information in the prompt:' + message
     received = javax.swing.JOptionPane.showInputDialog(message, default)
-    unless cancel_or_blank_ok
-    received = javax.swing.JOptionPane.showInputDialog(message, default)
     if !cancel_or_blank_ok
       raise 'user cancelled input prompt' unless received
   	  raise 'did not enter anything?' unless received.present?
