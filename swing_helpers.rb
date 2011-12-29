@@ -16,7 +16,7 @@ This file is part of Sensible Cinema.
     along with Sensible Cinema.  If not, see <http://www.gnu.org/licenses/>.
 =end
 require 'java'
-require 'sane' # gem
+require 'sane' # gem dependency
 module SwingHelpers 
   
  include_package 'javax.swing'
@@ -239,10 +239,12 @@ end
     alias close dispose # yipes
   end
   
-  def self.get_user_input(message, default = '', cancel_ok = false)
+  # prompts for user input, raises if they cancel the prompt or if they enter nothing
+  def self.get_user_input(message, default = '', cancel_or_blank_ok = false)
     received = javax.swing.JOptionPane.showInputDialog(message, default)
-    unless cancel_ok
+    unless cancel_or_blank_ok
       raise 'user cancelled' unless received
+  	  raise 'did not enter anything?' unless received.present?
     end
     received
   end
