@@ -20,8 +20,9 @@ require 'sane' # gem dependency
 module SwingHelpers 
   
  include_package 'javax.swing'
+ # will use  these constants (http://jira.codehaus.org/browse/JRUBY-5107)
  [JProgressBar, JButton, JFrame, JLabel, JPanel, JOptionPane,
-   JFileChooser, JComboBox, JDialog, SwingUtilities, JSlider] # grab these constants (http://jira.codehaus.org/browse/JRUBY-5107)
+   JFileChooser, JComboBox, JDialog, SwingUtilities, JSlider, JPasswordField] 
  include_package 'java.awt'
  [FlowLayout, Font, BorderFactory, BorderLayout]
  include_class java.awt.event.ActionListener
@@ -60,7 +61,7 @@ module SwingHelpers
       old.each{|name, old_setting| UIManager.put(name, old_setting)}
       out = JOptionReturnValuesTranslator[returned]
       if !out || !names_hash.key?(out)
-        raise 'canceled or exited:' + out.to_s
+        raise 'canceled or exited an option prompt:' + out.to_s + ' ' + message
       end
       out
     end
@@ -80,8 +81,9 @@ end
        begin
          block.call
        rescue Exception => e
-         puts "got fatal exception thrown in button [aborted] #{e} #{e.class} #{e.backtrace[0]}"
+         puts 'button cancelled somehow!' + e.to_s
          if $VERBOSE
+          puts "got fatal exception thrown in button [aborted] #{e} #{e.class} #{e.backtrace[0]}"
           puts e.backtrace, e
          end
        end        
@@ -100,6 +102,14 @@ end
      end
      self.set_tool_tip_text text   
    end
+  
+   def enable
+    set_enabled true
+   end
+  
+   def disable
+    set_enabled false
+  end
   
  end
 
@@ -171,18 +181,18 @@ end
   end
 
   def self.new_existing_dir_chooser_and_go title=nil, default_dir = nil
-       chooser = JFileChooser.new;
-       chooser.setCurrentDirectory(JFile.new default_dir) if default_dir
-       chooser.set_title title
-       chooser.setFileSelectionMode(JFileChooser::DIRECTORIES_ONLY)
-       chooser.setAcceptAllFileFilterUsed(false)
-       chooser.set_approve_button_text "Select Directory"
+    chooser = JFileChooser.new;
+    chooser.setCurrentDirectory(JFile.new default_dir) if default_dir
+    chooser.set_title title
+    chooser.setFileSelectionMode(JFileChooser::DIRECTORIES_ONLY)
+    chooser.setAcceptAllFileFilterUsed(false)
+    chooser.set_approve_button_text "Select Directory"
 
-       if (chooser.showOpenDialog(nil) == JFileChooser::APPROVE_OPTION)
-         return chooser.getSelectedFile().get_absolute_path
-       else
-         raise "No Selection "
-       end
+    if (chooser.showOpenDialog(nil) == JFileChooser::APPROVE_OPTION)
+     return chooser.getSelectedFile().get_absolute_path
+    else
+     raise "No Selection "
+    end
   end
 
   # awt...the native looking one...
@@ -196,28 +206,27 @@ end
         nil
       end
     end
-    
-    # this actually allows for non existing files [oopsy] LODO
-    def self.new_previously_existing_file_selector_and_go title, use_this_dir = nil
-      out = FileDialog.new(nil, title, FileDialog::LOAD) # LODO no self in here... ?
-      out.set_title title
-      if use_this_dir
-        # FileDialog only accepts paths a certain way...
-        dir = File.expand_path(use_this_dir)
-        dir = dir.gsub(File::Separator, File::ALT_SEPARATOR) if File::ALT_SEPARATOR
-        out.setDirectory(dir) 
-      end
-      got = out.go
-      raise 'cancelled choosing existing file' unless got # I think we always want to raise...
-      raise 'must exist' unless File.exist? got
-      got
-    end
-    
   end
   
+  # this actually allows for non existing files [oopsy] LODO
+  def self.new_previously_existing_file_selector_and_go title, use_this_dir = nil
+    out = FileDialog.new(nil, title, FileDialog::LOAD) # LODO no self in here... ?
+    out.set_title title
+    if use_this_dir
+      # FileDialog only accepts paths a certain way...
+      dir = File.expand_path(use_this_dir)
+      dir = dir.gsub(File::Separator, File::ALT_SEPARATOR) if File::ALT_SEPARATOR
+      out.setDirectory(dir) 
+    end
+    got = out.go
+    raise 'cancelled choosing existing file' unless got # I think we always want to raise...
+    raise 'must exist' unless File.exist? got
+    got
+  end
+    
   class NonBlockingDialog < JDialog
     def initialize title_and_display_text, close_button_text = 'Close'
-      super nil
+      super nil # so that set_title will work
       lines = title_and_display_text.split("\n")
       set_title lines[0]
       get_content_pane.set_layout nil
@@ -229,21 +238,26 @@ end
       close = JButton.new( close_button_text ).on_clicked {
         self.dispose
       }
-      close.set_bounds(125,30+15*lines.length,70,25)
+      number_of_lines = lines.length
+      close.set_bounds(125,30+15*number_of_lines, close_button_text.length * 15,25)
       get_content_pane.add close
-      set_size 550, 100+15*lines.length # XXX variable width? or use swing build in better?
+      set_size 550, 100+(15*number_of_lines) # XXX variable width? or use swing build in better?
       set_visible true
       setDefaultCloseOperation JFrame::DISPOSE_ON_CLOSE
       setLocationRelativeTo nil # center it on the screen
+      
     end
     alias close dispose # yipes
   end
   
   # prompts for user input, raises if they cancel the prompt or if they enter nothing
   def self.get_user_input(message, default = '', cancel_or_blank_ok = false)
+    p 'please enter the information in the prompt:' + message
     received = javax.swing.JOptionPane.showInputDialog(message, default)
     unless cancel_or_blank_ok
-      raise 'user cancelled' unless received
+    received = javax.swing.JOptionPane.showInputDialog(message, default)
+    if !cancel_or_blank_ok
+      raise 'user cancelled input prompt' unless received
   	  raise 'did not enter anything?' unless received.present?
     end
     received
@@ -254,7 +268,6 @@ end
     if OS.doze?
       begin
         c = "explorer /e,/select,#{filename_or_path.to_filename}" 
-        puts c
         system c # command returns immediately...so system is ok
       rescue => why_does_this_happen_ignore_this_exception_it_probably_actually_succeeded
       end
@@ -268,7 +281,7 @@ end
   end
   
   def self.show_blocking_message_dialog message, title = message.split("\n")[0], style= JOptionPane::INFORMATION_MESSAGE
-    puts "please use GUI window popup... #{message[0..20]} ..."
+    puts "please use GUI window popup... #{message} ..."
     JOptionPane.showMessageDialog(nil, message, title, style) # I think nil is ok here, it still blocks
     # the above has no return value <sigh>
     puts 'Done with popup'
@@ -278,11 +291,27 @@ end
   def self.show_non_blocking_message_dialog message, close_button_text = 'Close'
     NonBlockingDialog.new(message, close_button_text) # we don't care if they close this one via the x
   end
+  
+  def self.get_password_input text
+    p 'please enter password at prompt'
+    pwd = JPasswordField.new(10)
+    if JOptionPane.showConfirmDialog(nil, pwd, text, JOptionPane::OK_CANCEL_OPTION) < 0
+      raise 'cancelled'
+    else
+      # convert to ruby string [?]
+      out = ''
+      pwd.password.each{|b|
+        out << b
+      }
+      out
+    end
+  end
 
   class DropDownSelector < JDialog # JDialog is blocking...
     
     def initialize parent, options_array, prompt_for_top_entry
       super parent, true
+      set_title prompt_for_top_entry
       @drop_down_elements = options_array
       @selected_idx = nil
       box = JComboBox.new
