@@ -55,7 +55,7 @@ class DriveInfo
         loop {
   	      should_update = false
           @@drive_cache_mutex.synchronize { # in case the first update takes too long, basically, so they miss it LODO still a tiny race condition in here...might be useless...
-            looped_at_least_once = true # let the spawning thread continue quickly
+            looped_at_least_once = true # let the spawning waiting thread exit quickly
             cur_disks = Dir[old_drive_glob]
     		    if cur_disks != previously_known_about_discs
   	          p 'updating disk lists...'
@@ -76,8 +76,11 @@ class DriveInfo
     true
   end
 
+  @@updating_mutex = Mutex.new # theoretically 2 threads could call this at once...so synchronize it...
   def self.notify_all_drive_blocks_that_change_has_occured
-    @@drive_changed_notifies.each{|block| block.call}
+    @@updating_mutex.synchronize {
+      @@drive_changed_notifies.each{|block| block.call}
+    }
   end
 
  def self.add_notify_on_changed_disks &block
