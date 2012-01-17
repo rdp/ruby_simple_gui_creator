@@ -16,7 +16,7 @@ This file is part of Sensible Cinema.
     along with Sensible Cinema.  If not, see <http://www.gnu.org/licenses/>.
 =end
 require 'java'
-require 'sane' # gem
+require 'sane' # gem dependency
 module SwingHelpers 
   
  include_package 'javax.swing'
@@ -75,13 +75,13 @@ end
    end
   
    def on_clicked &block
-     raise unless block
+     raise unless block # sanity check
      @block = block
      add_action_listener do |e|
        begin
          block.call
        rescue Exception => e
-         puts 'button cancelled somehow!' + e.to_s
+         puts 'button cancelled somehow!' + e.to_s + ' ' + get_text[0..50]
          if $VERBOSE
           puts "got fatal exception thrown in button [aborted] #{e} #{e.class} #{e.backtrace[0]}"
           puts e.backtrace, e
@@ -132,7 +132,7 @@ end
   end
   
   def self.open_url_to_view_it_non_blocking url
-      raise unless url =~ /^http/i
+      raise 'non http url?' unless url =~ /^http/i
       if OS.windows?
         system("start #{url.gsub('&', '^&')}") # LODO would launchy help/work here with the full url?
       else
@@ -191,7 +191,7 @@ end
     if (chooser.showOpenDialog(nil) == JFileChooser::APPROVE_OPTION)
      return chooser.getSelectedFile().get_absolute_path
     else
-     raise "No Selection "
+     raise "No dir selected " + title.to_s
     end
   end
 
@@ -219,8 +219,8 @@ end
       out.setDirectory(dir) 
     end
     got = out.go
-    raise 'cancelled choosing existing file' unless got # I think we always want to raise...
-    raise 'must exist' unless File.exist? got
+    raise 'cancelled choosing existing file ' + title unless got # I think we always want to raise...
+    raise 'file must exist ' + got unless File.exist? got
     got
   end
     
@@ -250,11 +250,13 @@ end
     alias close dispose # yipes
   end
   
-  def self.get_user_input(message, default = '', cancel_ok = false)
-    p 'please enter the information in the prompt:' + message
+  # prompts for user input, raises if they cancel the prompt or if they enter nothing
+  def self.get_user_input(message, default = '', cancel_or_blank_ok = false)
+    p 'please enter the information in the prompt:' + message[0..50]
     received = javax.swing.JOptionPane.showInputDialog(message, default)
-    if !cancel_ok
-      raise 'user cancelled' unless received
+    if !cancel_or_blank_ok
+      raise 'user cancelled input prompt ' + message unless received
+  	  raise 'did not enter anything?' + message unless received.present?
     end
     received
   end
@@ -272,7 +274,7 @@ end
       puts c
       system c
     else
-      raise 'os unsupported?'
+      raise 'os reveal unsupported?'
     end
   end
   
@@ -292,7 +294,7 @@ end
     p 'please enter password at prompt'
     pwd = JPasswordField.new(10)
     if JOptionPane.showConfirmDialog(nil, pwd, text, JOptionPane::OK_CANCEL_OPTION) < 0
-      raise 'cancelled'
+      raise 'cancelled ' + text
     else
       # convert to ruby string [?]
       out = ''
