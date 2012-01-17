@@ -22,7 +22,7 @@ require 'thread'
 
 class DriveInfo
 
- def self.md5sum_disk(dir)
+  def self.md5sum_disk(dir)
    if OS.mac?
      exe = "#{__DIR__}/vendor/mac_dvdid/bin/dvdid"
    else
@@ -33,12 +33,12 @@ class DriveInfo
    output = `#{command}` # can take like 2.2s to spin up the disk...
    raise 'dvdid command failed?' + command unless $?.exitstatus == 0
    output.strip
- end
+  end
 
- @@drive_cache = nil
- @@drive_cache_mutex = Mutex.new
- @@drive_changed_notifies = []
- def self.create_looping_drive_cacher
+  @@drive_cache = nil
+  @@drive_cache_mutex = Mutex.new
+  @@drive_changed_notifies = []
+  def self.create_looping_drive_cacher
     # has to be in its own thread or wmi will choke...
     looped_at_least_once = false
     if @caching_thread
@@ -64,7 +64,7 @@ class DriveInfo
               previously_known_about_discs = cur_disks
   		      end
           }
-          @@drive_changed_notifies.each{|block| block.call} if should_update
+          notify_all_drive_blocks_that_change_has_occured if should_update
           sleep 0.5
         }
       }
@@ -74,7 +74,11 @@ class DriveInfo
       sleep 0.01
     end
     true
- end
+  end
+
+  def self.notify_all_drive_blocks_that_change_has_occured
+    @@drive_changed_notifies.each{|block| block.call}
+  end
 
  def self.add_notify_on_changed_disks &block
   raise unless block
