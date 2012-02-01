@@ -25,10 +25,10 @@ module SwingHelpers
    JFileChooser, JComboBox, JDialog, SwingUtilities, JSlider, JPasswordField] 
  include_package 'java.awt'
  [FlowLayout, Font, BorderFactory, BorderLayout]
- include_class java.awt.event.ActionListener
+ java_import java.awt.event.ActionListener
  JFile = java.io.File
- include_class java.awt.FileDialog
- include_class java.lang.System
+ java_import java.awt.FileDialog
+ java_import java.lang.System
  UIManager
 
  class JOptionPane
@@ -288,6 +288,10 @@ end
   
   def self.show_non_blocking_message_dialog message, close_button_text = 'Close'
     NonBlockingDialog.new(message, close_button_text) # we don't care if they close this one via the x
+  end
+
+  def self.show_select_buttons_prompt message, names_hash = {}
+    JOptionPane.show_select_buttons_prompt message, names_hash # TODO remove the other
   end
   
   def self.get_password_input text

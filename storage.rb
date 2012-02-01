@@ -17,7 +17,7 @@ This file is part of Sensible Cinema.
 =end
 
 # shamelessly stolen from the redcar project
-
+require 'yaml'
     class Storage
       class << self
         attr_writer :storage_dir
