@@ -258,6 +258,7 @@ end
       raise 'user cancelled input prompt ' + message unless received
   	  raise 'did not enter anything?' + message unless received.present?
     end
+    p 'received answer:' + received
     received
   end
 
