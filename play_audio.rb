@@ -31,18 +31,23 @@ class PlayAudio
     warmup
     @clip.start
   end
-  alias play start
+  
+  alias play_non_blocking start
   
   def loop
     warmup
     @clip.loop(Clip::LOOP_CONTINUOUSLY)
-  end
-    
+  end    
   
   def join_finish
     while !@done
       sleep 0.01
     end
+  end
+  
+  def play_till_end
+    start
+	join_finish
   end
   
   def shutdown
