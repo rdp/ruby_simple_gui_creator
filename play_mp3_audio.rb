@@ -14,7 +14,9 @@ class PlayMp3Audio
             fis     = java.io.FileInputStream.new(@filename)
             bstream = java.io.BufferedInputStream.new(fis)
             @player = Player.new(bstream)
-			@thread = Thread.new { @player.play }			
+			@thread = Thread.new { 
+			  @player.play 
+			}			
    end
    
    def join
@@ -29,7 +31,11 @@ class PlayMp3Audio
    alias play_non_blocking start
    
    def stop
-     @player.close # at least they give us this method yikes
+     if @player
+       @player.close # at least they give us this method yikes
+	   @player = nil
+	 end
+	 # raising here means you didn't call 
    end
    
 end
