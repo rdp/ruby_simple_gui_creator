@@ -1,5 +1,7 @@
 require 'java'
 
+# only plays wav/pcm and midi
+
 class PlayAudio
   include_package 'javax.sound.sampled'
   import java.io.File;
@@ -29,6 +31,7 @@ class PlayAudio
     warmup
     @clip.start
   end
+  alias play start
   
   def loop
     warmup

@@ -128,7 +128,11 @@ end
       repaint();
     }      
    end
-  
+   
+   def minimize
+     setState(java.awt.Frame::ICONIFIED)
+   end
+   
   end
   
   def self.open_url_to_view_it_non_blocking url
@@ -247,7 +251,7 @@ end
       setLocationRelativeTo nil # center it on the screen
       
     end
-    alias close dispose # yipes
+    alias close dispose # yikes
   end
   
   # prompts for user input, raises if they cancel the prompt or if they enter nothing
