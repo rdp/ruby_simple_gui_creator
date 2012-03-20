@@ -26,7 +26,7 @@ class PlayMp3Audio
 	 join
    end
    
-   alias play start
+   alias play_non_blocking start
    
    def stop
      @player.close # at least they give us this method yikes

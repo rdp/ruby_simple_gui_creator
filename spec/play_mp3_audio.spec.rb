@@ -5,7 +5,7 @@ describe PlayMp3Audio do
 
   it "can play mp3 files" do
     a = PlayMp3Audio.new 'diesel.mp3'
-	a.play
+	a.play_non_blocking
 	puts 'non silence'
 	sleep 1
 	a.stop
