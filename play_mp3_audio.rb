@@ -6,7 +6,7 @@ require File.dirname(__FILE__) + '/jl1.0.1.jar' # third party jlayer mp3 jar <si
 class PlayMp3Audio 
    java_import "javazoom.jl.player.Player"
    
-   def initialize filename
+   def initialize filename # does not work with .wav, unfortunately...
      @filename = filename
    end
    
