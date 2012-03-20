@@ -17,5 +17,16 @@ describe PlayMp3Audio do
     a = PlayMp3Audio.new 'diesel.mp3'
 	a.play_till_end 
   end
+  
+  it "can play wav" do
+    require_relative '../play_audio.rb'
+	a = PlayAudio.new 'static.wav'
+	a.start
+	puts 'static'
+	sleep 1
+	puts 'silence'
+	a.stop
+	sleep 1
+  end
 
 end
