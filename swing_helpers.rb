@@ -357,6 +357,7 @@ end
     
   end
 
+  def self.hard_exit; java::lang::System.exit 0; end
 
 end
 

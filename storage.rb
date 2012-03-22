@@ -16,7 +16,8 @@ This file is part of Sensible Cinema.
     along with Sensible Cinema.  If not, see <http://www.gnu.org/licenses/>.
 =end
 
-# shamelessly stolen from the redcar project
+# shamelessly stolen from redcar
+
 require 'yaml'
     class Storage
       class << self
