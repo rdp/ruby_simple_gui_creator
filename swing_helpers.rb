@@ -57,8 +57,8 @@ module SwingHelpers
         UIManager.put("OptionPane.noButtonText", names_hash[:cancel])
       end
       title = message.split(' ')[0..5].join(' ')
-      returned = JOptionPane.showConfirmDialog get_always_on_top_frame, message, title, JOptionPane::YES_NO_CANCEL_OPTION
-      close_always_on_top_frame
+      returned = JOptionPane.showConfirmDialog SwingHelpers.get_always_on_top_frame, message, title, JOptionPane::YES_NO_CANCEL_OPTION
+      SwingHelpers.close_always_on_top_frame
       old.each{|name, old_setting| UIManager.put(name, old_setting)}
       out = JOptionReturnValuesTranslator[returned]
       if !out || !names_hash.key?(out)
