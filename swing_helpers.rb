@@ -358,6 +358,10 @@ end
   end
 
   def self.hard_exit; java::lang::System.exit 0; end
+  
+  def self.invoke_in_gui_thread
+    SwingUtilities.invoke_later { yield }
+  end
 
 end
 
