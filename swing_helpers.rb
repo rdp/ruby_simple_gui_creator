@@ -122,11 +122,11 @@ end
      dispose # sigh
    end
   
-   def bring_to_front # kludgey...but said to work for swing apps
+   def bring_to_front # kludgey...but said to work for swing frames...
     java.awt.EventQueue.invokeLater{
-      setVisible(true); # unminimize
-      toFront();
-      repaint();
+      unminimize
+      toFront
+      repaint
     }      
    end
    
@@ -134,15 +134,23 @@ end
      setState(java.awt.Frame::ICONIFIED)
    end
   
+   def unminimize
+     myFrame.setState( java.awt.Frame::NORMAL ) # probably enough :)
+     setVisible(true)
+   end
+  
   # avoid jdk6 bug http://betterlogic.com/roger/2012/04/jframe-setalwaysontop-doesnt-work-after-using-joptionpane/
    alias always_on_top_original always_on_top=
+  
    def always_on_top=bool 
     always_on_top_original false
     always_on_top_original bool
    end
-   def set_always_on_top bool
+
+  def set_always_on_top bool
       always_on_top=bool
    end
+  
    def setAlwaysOnTop bool
       always_on_top=bool
    end
