@@ -57,7 +57,8 @@ module SwingHelpers
         UIManager.put("OptionPane.noButtonText", names_hash[:cancel])
       end
       title = message.split(' ')[0..5].join(' ')
-      returned = JOptionPane.showConfirmDialog nil, message, title, JOptionPane::YES_NO_CANCEL_OPTION
+      returned = JOptionPane.showConfirmDialog get_always_on_top_frame, message, title, JOptionPane::YES_NO_CANCEL_OPTION
+      close_always_on_top_frame
       old.each{|name, old_setting| UIManager.put(name, old_setting)}
       out = JOptionReturnValuesTranslator[returned]
       if !out || !names_hash.key?(out)
@@ -254,10 +255,25 @@ end
     alias close dispose # yikes
   end
   
+  def self.get_always_on_top_frame
+    fake_frame = JFrame.new
+    fake_frame.setUndecorated true # so we can have a teeny [invisible] window
+    fake_frame.set_size 1,1
+    fake_frame.set_location 300,300 # so that option pane's won't appear upper left
+    fake_frame.always_on_top = true
+    fake_frame.show
+    @fake_frame = fake_frame
+  end
+  
+  def self.close_always_on_top_frame
+    @fake_frame.close
+  end
+  
   # prompts for user input, raises if they cancel the prompt or if they enter nothing
   def self.get_user_input(message, default = '', cancel_or_blank_ok = false)
     p 'please enter the information in the prompt:' + message[0..50] + '...'
-    received = javax.swing.JOptionPane.showInputDialog(message, default)
+    received = javax.swing.JOptionPane.showInputDialog(get_always_on_top_frame, message, default)
+    close_always_on_top_frame
     if !cancel_or_blank_ok
       raise 'user cancelled input prompt ' + message unless received
   	  raise 'did not enter anything?' + message unless received.present?
@@ -285,10 +301,14 @@ end
   
   def self.show_blocking_message_dialog message, title = message.split("\n")[0], style= JOptionPane::INFORMATION_MESSAGE
     puts "please use GUI window popup... #{message} ..."
-    JOptionPane.showMessageDialog(nil, message, title, style) # I think nil is ok here, it still blocks
-    # the above has no return value <sigh>
-    puts 'Done with popup'
+    JOptionPane.showMessageDialog(get_always_on_top_frame, message, title, style)
+    # the above has no return value <sigh> so just return true
+    close_always_on_top_frame
     true
+  end
+  
+  class << self
+    alias :show_message :show_blocking_message_dialog
   end
   
   def self.show_non_blocking_message_dialog message, close_button_text = 'Close'
@@ -296,13 +316,15 @@ end
   end
 
   def self.show_select_buttons_prompt message, names_hash = {}
-    JOptionPane.show_select_buttons_prompt message, names_hash # TODO remove the other
+    JOptionPane.show_select_buttons_prompt message, names_hash
   end
   
   def self.get_password_input text
     p 'please enter password at prompt'
     pwd = JPasswordField.new(10)
-    if JOptionPane.showConfirmDialog(nil, pwd, text, JOptionPane::OK_CANCEL_OPTION) < 0
+    got = JOptionPane.showConfirmDialog(get_always_on_top_frame, pwd, text, JOptionPane::OK_CANCEL_OPTION) < 0
+    close_always_on_top_frame
+    if got
       raise 'cancelled ' + text
     else
       # convert to ruby string [?]
