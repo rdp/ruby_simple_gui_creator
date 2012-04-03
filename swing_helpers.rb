@@ -133,7 +133,20 @@ end
    def minimize
      setState(java.awt.Frame::ICONIFIED)
    end
-   
+  
+  # avoid jdk6 bug http://betterlogic.com/roger/2012/04/jframe-setalwaysontop-doesnt-work-after-using-joptionpane/
+   alias always_on_top_original always_on_top=
+   def always_on_top=bool 
+    always_on_top_original false
+    always_on_top_original bool
+   end
+   def set_always_on_top bool
+      always_on_top=bool
+   end
+   def setAlwaysOnTop bool
+      always_on_top=bool
+   end
+  
   end
   
   def self.open_url_to_view_it_non_blocking url
