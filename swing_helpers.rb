@@ -135,9 +135,11 @@ end
    end
   
    def unminimize
-     myFrame.setState( java.awt.Frame::NORMAL ) # probably enough :)
+     setState( java.awt.Frame::NORMAL ) # probably enough :)
      setVisible(true)
    end
+  
+   alias restore unminimize
   
   # avoid jdk6 bug http://betterlogic.com/roger/2012/04/jframe-setalwaysontop-doesnt-work-after-using-joptionpane/
    alias always_on_top_original always_on_top=
