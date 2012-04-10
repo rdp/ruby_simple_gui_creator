@@ -166,7 +166,7 @@ end
       always_on_top=bool
    end
   
-  end
+  end # class JFrame
   
   def self.open_url_to_view_it_non_blocking url
       raise 'non http url?' unless url =~ /^http/i
@@ -413,7 +413,7 @@ end
 
   def self.hard_exit; java::lang::System.exit 0; end
   
-  def self.invoke_in_gui_thread
+  def self.invoke_in_gui_thread # sometimes I think I need this, but it never seems to help
     SwingUtilities.invoke_later { yield }
   end
 

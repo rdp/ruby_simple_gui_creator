@@ -1,2 +1,41 @@
-Some helper classes abstracted from sensible cinema that ease in jruby swing app creation.
-Czech it out!
+This lib is meant to simplify some common GUI tasks, like:
+
+# select file or filename for a "new file" (not yet existing)
+SwingHelpers.new_nonexisting_filechooser_and_go 
+SwingHelpers.new_existing_dir_chooser_and_go # select pre-existing directory
+SwingHelpers.show_in_explorer(filename) # reveals file in Finder for windows, OS X
+SwingHelpers.show_blocking_message_dialog "a message to display"
+from_user = SwingHelpers.get_user_input "tell me your name"
+
+A select-button prompt:
+
+if(SwingHelpers.show_select_buttons_prompt("message title", :yes => 'text for the yes button', :no => 'text for the no button', :cancel => 'text for the cancel button') == :yes)
+  # they chose the "yes" equivalent button
+end
+
+etc.
+
+It adds a few methods to the JFrame class, like:
+
+JFrame#bring_to_front
+JFrame#minimize
+
+It has helpers to control/playback audio, like mp3's or wave's, starting/stopping asynchronously.
+
+It has helpers to set/get the system clipboard contents.
+
+It has helpers to control/query the mouse (I use this, but don't know why anybody else ever would want to LOL).
+
+It has helpers to query the current system for its DVD drives, be notified when disks are inserted/changed, etc.
+
+Enjoy! 
+
+Feedback invited: http://groups.google.com/group/roger-projects
+
+To use:
+
+$ cd to_you_project
+$ git submodule add git@github.com:rdp/jruby-swing-helpers.git lib/jruby-swing-helpers
+
+Then in your ruby code
+require 'jruby-swing-helpers/swing_helpers'
