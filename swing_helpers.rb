@@ -122,6 +122,15 @@ end
      dispose # sigh
    end
   
+   def on_minimized &block
+    addWindowStateListener {|e|
+      if e == java.awt.event.WindowEvent::WINDOW_ICONIFIED 
+        p 'on minimized'
+        block.call
+      end
+    }
+   end
+  
    def bring_to_front # kludgey...but said to work for swing frames...
     java.awt.EventQueue.invokeLater{
       unminimize
@@ -135,13 +144,13 @@ end
    end
   
    def unminimize
-     setState( java.awt.Frame::NORMAL ) # probably enough :)
+     setState(java.awt.Frame::NORMAL) # this line is probably enough, but do more just in case
      setVisible(true)
    end
   
    alias restore unminimize
   
-  # avoid jdk6 bug http://betterlogic.com/roger/2012/04/jframe-setalwaysontop-doesnt-work-after-using-joptionpane/
+  # avoid jdk6 always on top bug http://betterlogic.com/roger/2012/04/jframe-setalwaysontop-doesnt-work-after-using-joptionpane/
    alias always_on_top_original always_on_top=
   
    def always_on_top=bool 

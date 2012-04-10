@@ -48,7 +48,13 @@ require 'yaml'
       
       def clear!
          @storage = {}
-         File.delete path
+         begin
+          File.delete path
+         rescue => e
+           if File.exist? path
+            raise
+           end
+         end
       end
 
       # Rollback the storage to the latest revision saved to disk or empty it if
