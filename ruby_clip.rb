@@ -16,10 +16,10 @@ class RubyClip
      # ignore...
   end
   
-  def self.get_clipboard
-        clipboard = Toolkit.getDefaultToolkit().getSystemClipboard()
-        data = clipboard.get_contents self
-        data.getTransferData java.awt.datatransfer.DataFlavor::stringFlavor
+  def self.get_clipboard_contents
+     clipboard = Toolkit.getDefaultToolkit().getSystemClipboard()
+     data = clipboard.get_contents self
+     data.getTransferData java.awt.datatransfer.DataFlavor::stringFlavor
   end
   
 end
