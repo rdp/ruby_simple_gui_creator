@@ -11,9 +11,10 @@ class PlayMp3Audio
    end
    
    def start
-            fis     = java.io.FileInputStream.new(@filename)
-            bstream = java.io.BufferedInputStream.new(fis)
-            @player = Player.new(bstream)
+      raise 'file not found?' unless File.exist? @filename
+      fis     = java.io.FileInputStream.new(@filename)
+      bstream = java.io.BufferedInputStream.new(fis)
+      @player = Player.new(bstream)
 			@thread = Thread.new { 
 			  @player.play 
 			}			

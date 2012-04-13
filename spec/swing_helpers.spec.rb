@@ -57,7 +57,15 @@ describe 'functionality' do
     p c
   end
   
+  it "should show onminimize" do
+    p 'please minimize this!'
+    a = JFrame.new 'hello'
+    a.on_minimized {
+      puts 'yes'
+    }
+  
   end
 
 end
+
 puts 'close the windows...'

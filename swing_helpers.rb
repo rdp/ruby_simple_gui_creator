@@ -122,19 +122,51 @@ end
      dispose # sigh
    end
   
-   def bring_to_front # kludgey...but said to work for swing apps
+   def on_minimized &block
+    addWindowStateListener {|e|
+      if e == java.awt.event.WindowEvent::WINDOW_ICONIFIED 
+        p 'on minimized'
+        block.call
+      end
+    }
+   end
+  
+   def bring_to_front # kludgey...but said to work for swing frames...
     java.awt.EventQueue.invokeLater{
-      setVisible(true); # unminimize
-      toFront();
-      repaint();
+      unminimize
+      toFront
+      repaint
     }      
    end
    
    def minimize
      setState(java.awt.Frame::ICONIFIED)
    end
-   
-  end
+  
+   def unminimize
+     setState(java.awt.Frame::NORMAL) # this line is probably enough, but do more just in case
+     setVisible(true)
+   end
+  
+   alias restore unminimize
+  
+  # avoid jdk6 always on top bug http://betterlogic.com/roger/2012/04/jframe-setalwaysontop-doesnt-work-after-using-joptionpane/
+   alias always_on_top_original always_on_top=
+  
+   def always_on_top=bool 
+    always_on_top_original false
+    always_on_top_original bool
+   end
+
+  def set_always_on_top bool
+      always_on_top=bool
+   end
+  
+   def setAlwaysOnTop bool
+      always_on_top=bool
+   end
+  
+  end # class JFrame
   
   def self.open_url_to_view_it_non_blocking url
       raise 'non http url?' unless url =~ /^http/i
@@ -381,7 +413,7 @@ end
 
   def self.hard_exit; java::lang::System.exit 0; end
   
-  def self.invoke_in_gui_thread
+  def self.invoke_in_gui_thread # sometimes I think I need this, but it never seems to help
     SwingUtilities.invoke_later { yield }
   end
 

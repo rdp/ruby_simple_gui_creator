@@ -45,6 +45,17 @@ require 'yaml'
         update_timestamp
         self
       end
+      
+      def clear!
+         @storage = {}
+         begin
+          File.delete path
+         rescue => e
+           if File.exist? path
+            raise
+           end
+         end
+      end
 
       # Rollback the storage to the latest revision saved to disk or empty it if
       # it hasn't been saved.
@@ -53,9 +64,9 @@ require 'yaml'
           @storage = YAML.load_file(path)
           unless @storage.is_a? Hash
             
-            $stderr.puts 'storage file is corrupted--deleting ' + path 
-            @storage = {}
-            File.delete path
+            $stderr.puts 'storage file is corrupted--deleting ' + path
+            clear!
+         
           end
           update_timestamp
         else
