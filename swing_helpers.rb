@@ -260,7 +260,7 @@ end
     fake_frame.setUndecorated true # so we can have a teeny [invisible] window
     fake_frame.set_size 1,1
     fake_frame.set_location 300,300 # so that option pane's won't appear upper left
-    fake_frame.always_on_top = true
+    #fake_frame.always_on_top = true
     fake_frame.show
     @fake_frame = fake_frame
   end
