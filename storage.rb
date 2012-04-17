@@ -100,6 +100,12 @@ require 'yaml'
         end
         value
       end
+	  
+	  def set_once key
+	    unless @storage.has_key?(key)
+		  self[key] = yield
+		end
+	  end
       
       def keys
         @storage.keys
