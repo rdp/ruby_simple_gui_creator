@@ -82,7 +82,9 @@ end
        begin
          block.call
        rescue Exception => e
-         puts 'button cancelled somehow!' + e.to_s + ' ' + get_text[0..50]
+	     filename = e.backtrace[0].split(':')[1].split('/')[-1]
+		 line_number =  e.backtrace[0].split(':')[2]
+         puts 'button cancelled somehow!' + e.to_s + ' ' + get_text[0..50] + " #{filename}:#{line_number}"
          if $VERBOSE
           puts "got fatal exception thrown in button [aborted] #{e} #{e.class} #{e.backtrace[0]}"
           puts e.backtrace, e
