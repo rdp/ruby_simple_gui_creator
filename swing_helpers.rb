@@ -17,6 +17,7 @@ This file is part of Sensible Cinema.
 =end
 require 'java'
 require 'sane' # gem dependency
+
 module SwingHelpers 
   
  include_package 'javax.swing'
@@ -82,9 +83,16 @@ end
        begin
          block.call
        rescue Exception => e
-	     filename = e.backtrace[0].split(':')[1].split('/')[-1]
-		 line_number =  e.backtrace[0].split(':')[2]
-         puts 'button cancelled somehow!' + e.to_s + ' ' + get_text[0..50] + " #{filename}:#{line_number}"
+             # e.backtrace[0] == "/Users/rogerdpack/sensible-cinema/lib/gui/create.rb:149:in `setup_create_buttons'"
+             bt_out = ""
+             for line in e.backtrace[0..1]
+               backtrace_pieces = line.split(':')
+               backtrace_pieces.shift if OS.doze? # ignore drive letter
+	       filename = backtrace_pieces[0].split('/')[-1]
+	       line_number =  backtrace_pieces[1]
+               bt_out += " #{filename}:#{line_number}" 
+             end
+         puts 'button cancelled somehow!' + e.to_s + ' ' + get_text[0..50] + bt_out
          if $VERBOSE
           puts "got fatal exception thrown in button [aborted] #{e} #{e.class} #{e.backtrace[0]}"
           puts e.backtrace, e
