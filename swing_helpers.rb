@@ -213,7 +213,7 @@ end
     alias setFile set_file
 
     # choose a file that may or may not exist yet...
-    def self.new_nonexisting_filechooser_and_go title = nil, default_dir = nil, default_file = nil
+    def self.new_nonexisting_filechooser_and_go title = nil, default_dir = nil, default_file = nil # within JFileChooser class for now...
       out = JFileChooser.new
       out.set_title title
       if default_dir
