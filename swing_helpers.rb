@@ -246,6 +246,7 @@ end
   class FileDialog
     def go
       show
+	  dispose # allow app to exit :P
       if get_file 
         # they picked something...
         File.expand_path(get_directory + '/' + get_file)
@@ -255,19 +256,31 @@ end
     end
   end
   
-  # this actually allows for non existing files [oopsy] LODO
+  # this doesn't have an "awesome" way to force existence, just loops
   def self.new_previously_existing_file_selector_and_go title, use_this_dir = nil
+  
     out = FileDialog.new(nil, title, FileDialog::LOAD) # LODO no self in here... ?
     out.set_title title
+	out.set_filename_filter {|file, name|
+	  puts 'hello'
+	  puts file, name
+	}
+	
     if use_this_dir
       # FileDialog only accepts paths a certain way...
       dir = File.expand_path(use_this_dir)
       dir = dir.gsub(File::Separator, File::ALT_SEPARATOR) if File::ALT_SEPARATOR
       out.setDirectory(dir) 
     end
-    got = out.go
-    raise 'cancelled choosing existing file ' + title unless got # I think we always want to raise...
-    raise 'file must exist ' + got unless File.exist? got
+	got = nil
+    while(!got)
+	  got = out.go
+      raise 'cancelled choosing existing file ' + title unless got # I think we always want to raise...
+	  unless File.exist? got
+	    show_blocking_message_dialog "please select a file that already exists, or cancel" 
+		got = nil
+	  end
+	end
     got
   end
     
