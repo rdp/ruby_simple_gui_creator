@@ -154,7 +154,8 @@ module SwingHelpers
 	 # because we do this, you should *not* have to call the unsafe:
 	 # setDefaultCloseOperation(EXIT_ON_CLOSE)
 	 # which basically does a System.exit(0) when the last jframe closes. Yikes jdk, yikes.	 
-	 addWindowListener(CloseListener.new(self))
+	 #addWindowListener(CloseListener.new(self))
+     setDefaultCloseOperation JFrame::DISPOSE_ON_CLOSE # don't keep running after being closed, and prevent the app from exiting! whoa!
    end   
    
    def close
