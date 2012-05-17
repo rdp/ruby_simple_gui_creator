@@ -68,11 +68,11 @@ module SwingHelpers
       out
     end
     
-end
+ end
 
  class JButton
-   def initialize *args
-    super *args
+   def initialize(*args)
+    super(*args)
     set_font Font.new("Tahoma", Font::PLAIN, 11)
    end
   
@@ -107,7 +107,7 @@ end
    end
   
    def tool_tip= text
-      if text
+     if text
        text = "<html>" + text + "</html>"
        text = text.gsub("\n", "<br/>")
      end
@@ -120,7 +120,7 @@ end
   
    def disable
     set_enabled false
-  end
+   end
   
  end
 
@@ -128,15 +128,57 @@ end
 
  class JFrame
   
+   class CloseListener < java.awt.event.WindowAdapter
+     def initialize parent, &block
+	   super()
+	   @parent = parent
+	   @block = block
+	 end
+	 
+     def windowClosed event # sometimes this, sometimes the other...
+	   if @block
+	    b = @block # force avoid calling it twice, since swing does seem to call this method twice, bizarrely
+		@block = nil
+		b.call
+	   end
+	 end
+	 
+	 def windowClosing event
+	    #p 'windowClosing' # hitting the X goes *only* here, and twice? ok this is messed up
+		@parent.dispose
+	 end
+   end
+   
+   def initialize *args
+     super *args # we do get here...
+	 # because we do this, you should *not* have to call the unsafe:
+	 # setDefaultCloseOperation(EXIT_ON_CLOSE)
+	 # which basically does a System.exit(0) when the last jframe closes. Yikes jdk, yikes.	 
+	 addWindowListener(CloseListener.new(self))
+   end   
+   
    def close
-     dispose # sigh
+     dispose # <sigh>
+   end
+   
+   def dispose_on_close
+     # the default
+   end
+   
+   def after_closed &block
+	 addWindowListener(CloseListener.new(self) {
+	   block.call 
+	 })
    end
   
    def on_minimized &block
     addWindowStateListener {|e|
-      if e == java.awt.event.WindowEvent::WINDOW_ICONIFIED 
-        p 'on minimized'
-        block.call
+	  if getState ==  java.awt.Frame::ICONIFIED
+        block.call	  
+	  elsif e == java.awt.event.WindowEvent::WINDOW_ICONIFIED 
+	    # we never get here...
+        p 'on minimized2'
+        block.call 
       end
     }
    end
@@ -160,7 +202,7 @@ end
   
    alias restore unminimize
   
-  # avoid jdk6 always on top bug http://betterlogic.com/roger/2012/04/jframe-setalwaysontop-doesnt-work-after-using-joptionpane/
+   # avoid jdk6 always on top bug http://betterlogic.com/roger/2012/04/jframe-setalwaysontop-doesnt-work-after-using-joptionpane/
    alias always_on_top_original always_on_top=
   
    def always_on_top=bool 
@@ -168,7 +210,7 @@ end
     always_on_top_original bool
    end
 
-  def set_always_on_top bool
+   def set_always_on_top bool
       always_on_top=bool
    end
   

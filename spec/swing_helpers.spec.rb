@@ -19,7 +19,7 @@ require File.expand_path(File.dirname(__FILE__) + '/common')
 require_relative '../swing_helpers'
 
 module SwingHelpers
-describe 'functionality' do
+ describe 'functionality' do
 
   it "should close its modeless dialog" do
    
@@ -33,7 +33,7 @@ describe 'functionality' do
   
   it "should be able to convert filenames well" do
     if OS.windows?
-      "a/b/c".to_filename.should == File.expand_path("a\\b\\c")
+      "a/b/c".to_filename.should == File.expand_path("a\\b\\c").gsub('/', "\\")
     else
       "a/b/c".to_filename.should == File.expand_path("a/b/c")
     end
@@ -58,14 +58,24 @@ describe 'functionality' do
   end
   
   it "should show onminimize" do
-    p 'please minimize this!'
-    a = JFrame.new 'hello'
+    a = JFrame.new 'minimize me'
     a.on_minimized {
-      puts 'yes'
+      puts 'minimized'
+	  a.close
+	  a.dispose
     }
+	a.show
+  end
   
+  it "should have an after_close method" do
+    a = JFrame.new 'close me'
+	a.after_closed {
+	  puts 'after closed'
+	}
+    a.show	
   end
 
+ end
 end
 
 puts 'close the windows...'
