@@ -476,7 +476,7 @@ module SwingHelpers
     
   end
 
-  def self.hard_exit; java::lang::System.exit 0; end
+  def self.hard_exit!; java::lang::System.exit 0; end
   
   def self.invoke_in_gui_thread # sometimes I think I need this, but it never seems to help
     SwingUtilities.invoke_later { yield }
