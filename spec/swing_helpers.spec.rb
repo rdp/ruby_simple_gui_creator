@@ -62,6 +62,8 @@ module SwingHelpers
     raise if File.exist? name
     #name = SwingHelpers.SwingHelpers.new_existing_dir_chooser_and_go 'should force select existing dir, try to select nonexist'
     #raise unless File.exist? name
+    name = SwingHelpers.new_previously_existing_file_selector_and_go 'shoudl forc select existing file, try to select nonexist'
+    raise unless File.exist? name # it forced them to retry 
   end
   
   it "should show onminimize" do

@@ -309,8 +309,7 @@ module SwingHelpers
     out = FileDialog.new(nil, title, FileDialog::LOAD) # LODO no self in here... ?
     out.set_title title
 	out.set_filename_filter {|file, name|
-	  puts 'hello'
-	  puts file, name
+          true # works os x, not doze?
 	}
 	
     if use_this_dir
