@@ -236,8 +236,12 @@ module SwingHelpers
     # also set_current_directory et al...
     
     # raises on failure...
-    def go
-      success = show_open_dialog nil
+    def go show_save_dialog_instead = false
+      if show_save_dialog_instead
+        success = show_save_dialog nil
+      else
+        success = show_open_dialog nil
+      end
       unless success == Java::javax::swing::JFileChooser::APPROVE_OPTION
         java.lang.System.exit 1 # kills background proc...but we shouldn't let them do stuff while a background proc is running, anyway
       end
@@ -265,7 +269,7 @@ module SwingHelpers
       if default_file
         out.set_file default_file
       end
-      out.go
+      out.go true
     end
 	
   end

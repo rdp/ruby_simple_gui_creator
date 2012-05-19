@@ -56,9 +56,17 @@ module SwingHelpers
     raise unless File.directory?(c = SwingHelpers.new_existing_dir_chooser_and_go)
     p c
   end
+
+  it "should select nonexisting" do
+    name = JFileChooser.new_nonexisting_filechooser_and_go 'should allow selecting nonexisting filename, try to select nonexist'
+    raise if File.exist? name
+    #name = SwingHelpers.SwingHelpers.new_existing_dir_chooser_and_go 'should force select existing dir, try to select nonexist'
+    #raise unless File.exist? name
+  end
   
   it "should show onminimize" do
     a = JFrame.new 'minimize me'
+    a.set_size 200,200
     a.on_minimized {
       puts 'minimized'
 	  a.close
@@ -66,9 +74,10 @@ module SwingHelpers
     }
 	a.show
   end
-  
+
   it "should have an after_close method" do
     a = JFrame.new 'close me'
+    a.set_size 200,200
 	a.after_closed {
 	  puts 'after closed'
 	}
