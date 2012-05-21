@@ -23,6 +23,13 @@ module ParseTemplate
     parse_string File.read(filename)
   end
   
+  def self.get_text_width text
+	font = UIManager.getFont("Label.font")
+    frc = java.awt.font.FontRenderContext.new(font.transform, true, true)
+    textLayout = java.awt.font.TextLayout.new(text, font, frc)
+    textLayout.bounds.width
+  end
+  
   def self.setup_element element, name, width=200
   		  # name is now like ["Setup Preferences:preferences"]
 		  name = name[0]
@@ -32,6 +39,7 @@ module ParseTemplate
 		  else
 		    text = name
 		  end
+         p 'text width', name, get_text_width(text)
 		  element.text=text
           #button.set_location(current_x, current_y)
 		  element.set_bounds(@current_x, @current_y, width, 20)
