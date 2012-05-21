@@ -51,5 +51,9 @@ describe ParseTemplate do
   }
   frame.show
   end
-
+  
+  it "should split escaped colons" do
+    frame = parse_string "| <<some stuff ::my_name>>"
+	frame.elements['my_name'].text.should == 'some stuff :'
+  end
 end

@@ -27,8 +27,8 @@ module ParseTemplate
   		  # name is now like ["Setup Preferences:preferences"]
 		  name = name[0]
 		  if name.include? ':' # like "Start:start_button" ... disallows using colon at all, but hey...
-		    text = name.split(':')[0]
-			name = name.split(':')[1]
+		    text = name.split(':')[0..-2].join(':') # only accept last colon, so they can have text with colons in it
+			name = name.split(':')[-1]
 		  else
 		    text = name
 		  end
