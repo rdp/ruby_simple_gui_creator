@@ -23,7 +23,7 @@ module ParseTemplate
     parse_string File.read(filename)
   end
   
-  def self.setup_element element, name, width=100
+  def self.setup_element element, name, width=200
   		  # name is now like ["Setup Preferences:preferences"]
 		  name = name[0]
 		  if name.include? ':' # like "Start:start_button" ... disallows using colon at all, but hey...
