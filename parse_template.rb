@@ -30,7 +30,7 @@ module ParseTemplate
     textLayout.bounds.width
   end
   
-  def self.setup_element element, name, width=200
+  def self.setup_element element, name, width=nil
   		  # name is now like ["Setup Preferences:preferences"]
 		  name = name[0]
 		  if name.include? ':' # like "Start:start_button" ... disallows using colon at all, but hey...
@@ -39,9 +39,9 @@ module ParseTemplate
 		  else
 		    text = name
 		  end
-         p 'text width', name, get_text_width(text)
 		  element.text=text
-          #button.set_location(current_x, current_y)
+		  p 'width of ' + text, get_text_width(text)
+          width ||= get_text_width(text) + 50
 		  element.set_bounds(@current_x, @current_y, width, 20)
 		  @current_x += width + 5 # doesn't have a 'real' size yet...I guess...yikes
           @frame.panel.add element
