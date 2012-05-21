@@ -24,7 +24,30 @@ describe ParseTemplate do
    frame.buttons['preferences'].location.y.should == frame.buttons['start'].location.y
    frame.get_size.height.should be > 0
    frame.get_size.width.should be > 0
-   frame.show
+  end
+  
+#  it "should parse drop down lines"
+#    frame = parse_string "| [some dropdown lines:dropdowns \/] |"
+# end
+
+  it "should parse text strings" do
+    frame = parse_string "|  <<Temp Dir location:temp_dir>> |"
+	assert frame.buttons.length == 1
+	frame.buttons['temp_dir'].should_not be nil
+  end
+  
+  it "should genuinely work" do
+  frame = parse_string <<-EOL
+----------A title------------
+| [a button:button] [a button2:button2] |
+| <<some text2:text1>>                  |
+-----------------------
+  EOL
+  assert frame.buttons.length == 3
+  frame.buttons['button'].on_clicked {
+    p 'button clicked'
+  }
+  frame.show
   end
 
 end
