@@ -15,13 +15,15 @@ describe ParseTemplate do
   
   it "should parse button only lines" do
    frame = parse_string "|  [Setup Preferences:preferences] [Start:start] [Stop:stop] |"
-   assert frame.buttons.length == 3
-   frame.buttons['preferences'].text.should == "Setup Preferences"
-   assert frame.buttons['start'].text == "Start"
-   frame.buttons['preferences'].text = "new text" 
-   assert frame.buttons['preferences'].text == "new text"
-   frame.buttons['preferences'].location.x.should_not == frame.buttons['start'].location.x
-   frame.buttons['preferences'].location.y.should == frame.buttons['start'].location.y
+   assert frame.elements.length == 3
+   prefs_button = frame.elements['preferences']
+   start_button = frame.elements['start']
+   prefs_button.text.should == "Setup Preferences"
+   assert start_button.text == "Start"
+   prefs_button.text = "new text" 
+   assert prefs_button.text == "new text"
+   prefs_button.location.x.should_not == start_button.location.x
+   prefs_button.location.y.should == start_button.location.y
    frame.get_size.height.should be > 0
    frame.get_size.width.should be > 0
   end
@@ -32,8 +34,8 @@ describe ParseTemplate do
 
   it "should parse text strings" do
     frame = parse_string "|  <<Temp Dir location:temp_dir>> |"
-	assert frame.buttons.length == 1
-	frame.buttons['temp_dir'].should_not be nil
+	assert frame.elements.length == 1
+	frame.elements['temp_dir'].should_not be nil
   end
   
   it "should genuinely work" do
@@ -43,8 +45,8 @@ describe ParseTemplate do
 | <<some text2:text1>>                  |
 -----------------------
   EOL
-  assert frame.buttons.length == 3
-  frame.buttons['button'].on_clicked {
+  assert frame.elements.length == 3
+  frame.elements['button'].on_clicked {
     p 'button clicked'
   }
   frame.show
