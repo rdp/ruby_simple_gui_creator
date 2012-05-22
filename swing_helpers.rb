@@ -150,7 +150,7 @@ module SwingHelpers
    end
    
    def initialize *args
-     super *args # we do get here...
+     super(*args) # we do get here...
 	 # because we do this, you should *not* have to call the unsafe:
 	 # setDefaultCloseOperation(EXIT_ON_CLOSE)
 	 # which basically does a System.exit(0) when the last jframe closes. Yikes jdk, yikes.	 
