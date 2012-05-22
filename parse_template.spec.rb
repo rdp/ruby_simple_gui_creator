@@ -56,4 +56,10 @@ describe ParseTemplate do
     frame = parse_string "| <<some stuff ::my_name>>"
 	frame.elements['my_name'].text.should == 'some stuff :'
   end
+  
+  it "should not accept zero length strings" do  
+    proc {frame = parse_string "| <<:my_name>>"}.should raise_exception
+    frame = parse_string "| <<:my_name,250>>"
+	frame.elements['my_name'].text.should == ''
+  end
 end
