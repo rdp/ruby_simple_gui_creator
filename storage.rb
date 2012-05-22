@@ -34,6 +34,7 @@ require 'yaml'
       def initialize(name)
         @name    = name
         unless File.exists?(Storage.storage_dir)
+		  require 'fileutils'
           FileUtils.mkdir_p(Storage.storage_dir)
         end
         rollback
