@@ -1,7 +1,7 @@
 # translation from http://introcs.cs.princeton.edu/java/faq/mp3/MP3.java.html
 
 require 'java'
-require File.dirname(__FILE__) + '/jl1.0.1.jar' # third party jlayer mp3 jar <sigh>
+require File.dirname(__FILE__) + '/../ext/jl1.0.1.jar' # third party jlayer mp3 jar <sigh>
 
 class PlayMp3Audio 
    java_import "javazoom.jl.player.Player"
