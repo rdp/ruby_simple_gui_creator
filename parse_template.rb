@@ -99,7 +99,7 @@ module ParseTemplate
 	    @current_y += 25
 	  end
 	}
-	@frame.set_size @max_x+25, @current_y+45
+	@frame.set_size @max_x+25, @current_y+40
 	@frame
   end
 
