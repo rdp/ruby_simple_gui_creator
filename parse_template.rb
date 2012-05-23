@@ -55,10 +55,10 @@ module ParseTemplate
 		  element.text=text
 		  if !width
 		    if text.blank?
-			  raise 'cannot have blank text without a size specifier' + name
+			  raise 'cannot have blank original text without some size specifier' + name
 			end
-            width = get_text_width(text) + 50
-		  end
+            width = get_text_width(text) + 35
+ 		  end
 		  element.set_bounds(@current_x, @current_y, width, 20)
 		  @current_x += width + 5 # doesn't have a 'real' size yet...I guess...yikes
           @frame.panel.add element
