@@ -280,7 +280,7 @@ module SwingHelpers
     chooser.set_title title
     chooser.setFileSelectionMode(JFileChooser::DIRECTORIES_ONLY)
     chooser.setAcceptAllFileFilterUsed(false)
-    chooser.set_approve_button_text "Select Directory"
+    chooser.set_approve_button_text "Select This Directory"
 
     if (chooser.showOpenDialog(nil) == JFileChooser::APPROVE_OPTION)
      return chooser.getSelectedFile().get_absolute_path
@@ -472,7 +472,7 @@ module SwingHelpers
     end
     
     def go_selected_value
-      puts 'select from dropdown window'
+      puts 'select from dropdown window ' + @drop_down_elements[-1] + ' ...'
       show # blocks...
       raise 'did not select, exited early ' + @prompt unless @selected_idx
       @drop_down_elements[@selected_idx]
