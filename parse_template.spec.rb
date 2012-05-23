@@ -11,6 +11,10 @@ describe ParseTemplate do
   it "should parse titles" do
     frame = parse_string " ------------A Title-------------------------------------------"
 	frame.get_title.should == "A Title"
+	frame.original_title.should == "A Title"
+	frame.title= 'new title'
+	frame.get_title.should == "new title"
+	frame.original_title.should == "A Title"
   end
   
   it "should parse button only lines" do
@@ -38,7 +42,7 @@ describe ParseTemplate do
 	frame.elements['temp_dir'].should_not be nil
   end
   
-  it "should genuinely work" do
+  it "should work with real instance" do
   frame = parse_string <<-EOL
 ----------A title------------
 | [a button:button] [a button2:button2] |

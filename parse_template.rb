@@ -1,5 +1,6 @@
 require 'java'
 require File.dirname(__FILE__) + '/swing_helpers.rb'
+
 def _dgb
 		  require 'rubygems'
 		  require 'ruby-debug'
@@ -21,8 +22,9 @@ module ParseTemplate
       add @panel # why can't I just slap these down? panel? huh?
 	  #show
 	end 
-	attr_accessor :elements
-	attr_accessor :panel
+	attr_reader :elements
+	attr_reader :panel
+	attr_accessor :original_title
   end
   
   def self.parse_file filename
@@ -82,6 +84,7 @@ module ParseTemplate
 	  title_regex = /\s*[-]+([\w ]+)[-]+\s*$/  # ----(a Title)---
 	  if l =~ title_regex
 	    @frame.set_title $1 # done :)
+		@frame.original_title = $1.dup.freeze # freeze...LOL		
 	  elsif l =~ button_line_regex
         l.scan(button_line_regex).each{|name|
 		  button = JButton.new
