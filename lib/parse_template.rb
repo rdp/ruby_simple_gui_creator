@@ -1,12 +1,12 @@
 require 'java'
-require File.dirname(__FILE__) + '/swing_helpers.rb'
+
+#require File.dirname(__FILE__) + '/swing_helpers.rb'
 
 def _dgb
 		  require 'rubygems'
 		  require 'ruby-debug'
 		  debugger
-
-		  end
+end
 
 module ParseTemplate
 
@@ -25,6 +25,9 @@ module ParseTemplate
 	attr_reader :elements
 	attr_reader :panel
 	attr_accessor :original_title
+	def parse_setup_file filename
+	  
+	end
   end
   
   def self.parse_file filename

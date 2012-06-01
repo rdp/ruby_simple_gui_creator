@@ -1,6 +1,7 @@
 require File.dirname(__FILE__)+ '/common'
 
 require 'parse_template.rb'
+require 'swing_helpers.rb'
 
 describe ParseTemplate do
 
