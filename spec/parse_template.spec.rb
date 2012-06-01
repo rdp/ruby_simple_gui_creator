@@ -1,13 +1,13 @@
-require 'rubygems'
-require 'rspec/autorun'
-require 'sane' # gem
+require File.dirname(__FILE__)+ '/common'
 
 require 'parse_template.rb'
+
 describe ParseTemplate do
 
   def parse_string string
     ParseTemplate.parse_string string
   end
+  
   it "should parse titles" do
     frame = parse_string " ------------A Title-------------------------------------------"
 	frame.get_title.should == "A Title"
