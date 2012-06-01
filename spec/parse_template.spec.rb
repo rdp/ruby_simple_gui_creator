@@ -6,7 +6,13 @@ require 'swing_helpers.rb'
 describe ParseTemplate do
 
   def parse_string string
-    ParseTemplate::JFramer.new.parse_setup_string(string).frame
+    @frame = ParseTemplate::JFramer.new
+	@frame.parse_setup_string(string)
+	@frame
+  end
+  
+  after do
+    @frame.close if @frame
   end
   
   it "should parse titles" do
@@ -44,17 +50,17 @@ describe ParseTemplate do
   end
   
   it "should work with real instance" do
-  frame = parse_string <<-EOL
+    frame = parse_string <<-EOL
 ----------A title------------
 | [a button:button] [a button2:button2] |
 | "some text2:text1"                  |
 -----------------------
   EOL
-  assert frame.elements.length == 3
-  frame.elements['button'].on_clicked {
-    p 'button clicked'
-  }
-  frame.show
+    assert frame.elements.length == 3
+    frame.elements['button'].on_clicked {
+      p 'button clicked'
+    }
+    frame.show
   end
   
   it "should split escaped colons" do
@@ -62,8 +68,11 @@ describe ParseTemplate do
 	frame.elements['my_name'].text.should == 'some stuff :'
   end
   
-  it "should not accept zero length strings" do  
+  it "should not accept zero length strings without width spec" do  
     proc {frame = parse_string "| \":my_name\""}.should raise_exception
+  end
+  
+  it "should accept zero length strings with width spec" do
     frame = parse_string "| \":my_name,250\""
 	frame.elements['my_name'].text.should == ''
   end

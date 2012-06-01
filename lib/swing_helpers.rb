@@ -71,6 +71,7 @@ module SwingHelpers
  end
 
  class JButton
+ 
    def initialize(*args)
     super(*args)
     set_font Font.new("Tahoma", Font::PLAIN, 11)
@@ -150,7 +151,7 @@ module SwingHelpers
    end
    
    def initialize *args
-     super(*args) # we do get here...
+     super(*args) # we do always get here...
 	 # because we do this, you should *not* have to call the unsafe:
 	 # setDefaultCloseOperation(EXIT_ON_CLOSE)
 	 # which basically does a System.exit(0) when the last jframe closes. Yikes jdk, yikes.	 
@@ -196,13 +197,17 @@ module SwingHelpers
      setState(java.awt.Frame::ICONIFIED)
    end
   
-   def unminimize
-     setState(java.awt.Frame::NORMAL) # this line is probably enough, but do more just in case
+   def restore
+     setState(java.awt.Frame::NORMAL) # this line is probably enough, but do more just in case...
      setVisible(true)
    end
   
-   alias restore unminimize
-  
+   alias unminimize restore
+   
+   def maximize
+     setExtendedState(JFrame::MAXIMIZED_BOTH)
+   end
+   
    # avoid jdk6 always on top bug http://betterlogic.com/roger/2012/04/jframe-setalwaysontop-doesnt-work-after-using-joptionpane/
    alias always_on_top_original always_on_top=
   

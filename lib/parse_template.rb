@@ -20,7 +20,7 @@ module ParseTemplate
       @elements = {}
       @panel.set_layout nil
       add @panel # why can't I just slap these down? panel? huh?
-	  #show
+ 	  show # this always bites me...I new it up an it just doesn't appear...
 	end
 	
 	attr_reader :panel
@@ -33,6 +33,45 @@ module ParseTemplate
 	self
   end
   
+  # "matches" whatever the template says
+  def parse_setup_string string
+  
+    @frame = self # LODO refactor
+	@current_y = 10
+	@max_x = 100
+    string.each_line{|l|
+	  @current_x = 10
+	  button_line_regex = /\[(.*?)\]/
+	  # >> "|  [Setup Preferences:preferences] [Start:start] [Stop:stop] |" .scan  /\[(.*?)\]/
+	  # => [["Setup Preferences:preferences"], ["Start:start"], ["Stop:stop"]]
+	  
+	  text_regex = /"([^"]+)"/ # "some text:name"
+	  title_regex = /\s*[-]+([\w ]+)[-]+\s*$/  # ----(a Title)---
+	  if l =~ title_regex
+	    @frame.set_title $1 # done :)
+		@frame.original_title = $1.dup.freeze # freeze...LOL		
+	  elsif l =~ button_line_regex
+        l.scan(button_line_regex).each{|name|
+		  button = JButton.new
+		  setup_element(button, name)
+		}
+ 		@current_y += 25
+	  elsif l =~ text_regex
+	    for name in l.scan(text_regex)
+	      label = JLabel.new
+		  setup_element(label, name)
+        end
+	    @current_y += 25
+	  end
+	  # TODO allow blank lines as spaces
+	  # TODO allow internal boxes LOL
+	  # TODO mixeds on the same line
+	}
+	@frame.set_size @max_x+25, @current_y+40
+    self
+  end
+  
+  private
   def get_text_width text
 	font = UIManager.getFont("Label.font")
     frc = java.awt.font.FontRenderContext.new(font.transform, true, true)
@@ -68,42 +107,6 @@ module ParseTemplate
 	      @max_x = [@max_x, @current_x].max
   end
   
-  # returns a jframe that "matches" whatever the template says
-  def parse_setup_string string
-    got = string
-    # >>"[ a ] [ b ]".split(/(\[.*?\])/)
-    # => ["", "[ a ]", " ", "[ b ]"]	
-    @frame = JFramer.new
-	@current_y = 10
-	@max_x = 100
-    got.each_line{|l|
-	  @current_x = 10
-	  button_line_regex = /\[(.*?)\]/
-	  # >> "|  [Setup Preferences:preferences] [Start:start] [Stop:stop] |" .scan  /\[(.*?)\]/
-	  # => [["Setup Preferences:preferences"], ["Start:start"], ["Stop:stop"]]
-	  
-	  text_regex = /"([^"]+)"/ # "some text:name"
-	  title_regex = /\s*[-]+([\w ]+)[-]+\s*$/  # ----(a Title)---
-	  if l =~ title_regex
-	    @frame.set_title $1 # done :)
-		@frame.original_title = $1.dup.freeze # freeze...LOL		
-	  elsif l =~ button_line_regex
-        l.scan(button_line_regex).each{|name|
-		  button = JButton.new
-		  setup_element(button, name)
-		}
- 		@current_y += 25
-	  elsif l =~ text_regex
-	    for name in l.scan(text_regex)
-	      label = JLabel.new
-		  setup_element(label, name)
-        end
-	    @current_y += 25
-	  end
-	}
-	@frame.set_size @max_x+25, @current_y+40
-    self
-  end
   end
 
 end
