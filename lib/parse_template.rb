@@ -10,7 +10,7 @@ end
 
 module ParseTemplate
 
-  include_package 'javax.swing'; [JFrame, JPanel, JButton, JLabel]
+  include_package 'javax.swing'; [JFrame, JPanel, JButton, JLabel, UIManager]
   
   class JFramer < JFrame
     
@@ -21,27 +21,26 @@ module ParseTemplate
       @panel.set_layout nil
       add @panel # why can't I just slap these down? panel? huh?
 	  #show
-	end 
-	attr_reader :elements
-	attr_reader :panel
-	attr_accessor :original_title
-	def parse_setup_file filename
-	  
 	end
-  end
-  
-  def self.parse_file filename
+	
+	attr_reader :panel
+	attr_reader :elements
+	attr_accessor :original_title
+	attr_accessor :frame
+	
+  def parse_setup_filename filename
     parse_string File.read(filename)
+	self
   end
   
-  def self.get_text_width text
+  def get_text_width text
 	font = UIManager.getFont("Label.font")
     frc = java.awt.font.FontRenderContext.new(font.transform, true, true)
     textLayout = java.awt.font.TextLayout.new(text, font, frc)
     textLayout.bounds.width
   end
   
-  def self.setup_element element, name, width=nil
+  def setup_element element, name, width=nil
   		  # name is now like ["Setup Preferences:preferences"]
 		  name = name[0]
 		  if name.include? ':' # like "Start:start_button" ... disallows using colon at all, but hey...
@@ -70,7 +69,7 @@ module ParseTemplate
   end
   
   # returns a jframe that "matches" whatever the template says
-  def self.parse_string string
+  def parse_setup_string string
     got = string
     # >>"[ a ] [ b ]".split(/(\[.*?\])/)
     # => ["", "[ a ]", " ", "[ b ]"]	
@@ -83,7 +82,7 @@ module ParseTemplate
 	  # >> "|  [Setup Preferences:preferences] [Start:start] [Stop:stop] |" .scan  /\[(.*?)\]/
 	  # => [["Setup Preferences:preferences"], ["Start:start"], ["Stop:stop"]]
 	  
-	  text_regex = /<<(.*?)>>/ # 
+	  text_regex = /"([^"]+)"/ # "some text:name"
 	  title_regex = /\s*[-]+([\w ]+)[-]+\s*$/  # ----(a Title)---
 	  if l =~ title_regex
 	    @frame.set_title $1 # done :)
@@ -103,7 +102,8 @@ module ParseTemplate
 	  end
 	}
 	@frame.set_size @max_x+25, @current_y+40
-	@frame
+    self
+  end
   end
 
 end

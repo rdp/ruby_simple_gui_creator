@@ -6,7 +6,7 @@ require 'swing_helpers.rb'
 describe ParseTemplate do
 
   def parse_string string
-    ParseTemplate.parse_string string
+    ParseTemplate::JFramer.new.parse_setup_string(string).frame
   end
   
   it "should parse titles" do
@@ -38,7 +38,7 @@ describe ParseTemplate do
 # end
 
   it "should parse text strings" do
-    frame = parse_string "|  <<Temp Dir location:temp_dir>> |"
+    frame = parse_string "|  \"Temp Dir location:temp_dir\" |"
 	assert frame.elements.length == 1
 	frame.elements['temp_dir'].should_not be nil
   end
@@ -47,7 +47,7 @@ describe ParseTemplate do
   frame = parse_string <<-EOL
 ----------A title------------
 | [a button:button] [a button2:button2] |
-| <<some text2:text1>>                  |
+| "some text2:text1"                  |
 -----------------------
   EOL
   assert frame.elements.length == 3
@@ -58,13 +58,13 @@ describe ParseTemplate do
   end
   
   it "should split escaped colons" do
-    frame = parse_string "| <<some stuff ::my_name>>"
+    frame = parse_string "| \"some stuff ::my_name\""
 	frame.elements['my_name'].text.should == 'some stuff :'
   end
   
   it "should not accept zero length strings" do  
-    proc {frame = parse_string "| <<:my_name>>"}.should raise_exception
-    frame = parse_string "| <<:my_name,250>>"
+    proc {frame = parse_string "| \":my_name\""}.should raise_exception
+    frame = parse_string "| \":my_name,250\""
 	frame.elements['my_name'].text.should == ''
   end
 end
