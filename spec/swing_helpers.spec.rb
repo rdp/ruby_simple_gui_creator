@@ -59,11 +59,9 @@ module SwingHelpers
   end
 
   it "should select nonexisting" do
-    name = JFileChooser.new_nonexisting_filechooser_and_go 'should allow selecting nonexisting filename, try to select nonexist'
+    name = JFileChooser.new_nonexisting_filechooser_and_go 'should force you to select nonexisting..'
     raise if File.exist? name
-    #name = SwingHelpers.SwingHelpers.new_existing_dir_chooser_and_go 'should force select existing dir, try to select nonexist'
-    #raise unless File.exist? name
-    name = SwingHelpers.new_previously_existing_file_selector_and_go 'shoudl forc select existing file, try to select nonexist'
+    name = SwingHelpers.new_previously_existing_file_selector_and_go 'should forc select existing file, try to select nonexist'
     raise unless File.exist? name # it forced them to retry 
   end
   
@@ -71,15 +69,27 @@ module SwingHelpers
     a = JFrame.new 'minimize me'
     a.set_size 200,200
 	minimized = false
+	count = 0
     a.after_minimized {
       puts 'minimized'
-	  a.close
-	  a.dispose
-	  minimized = true
+	  count += 1
     }
 	a.show
-	sleep 10
-	assert minimized
+	sleep 1
+	a.minimize
+	sleep 0.2
+	assert count == 1
+	a.show
+	sleep 0.2
+	a.minimize
+	sleep 0.2
+	assert count == 1
+	a.restore
+	sleep 0.2
+	a.minimize
+	sleep 0.2
+	assert count == 2	
+	a.close
   end
 
   def loop_with_timeout(seconds)
@@ -107,15 +117,19 @@ module SwingHelpers
 	assert closed == 1
   end
   
-  it "should have an on_restored method" do
-    a = JFrame.new 'should auto-close--try to restore it'
+  it "should have an after_restored method" do
+    a = JFrame.new ''
 	success = 0
-	a.after_restored {
+	a.after_restored_either_way {
 	  success += 1
 	  a.close
 	}
 	a.show
 	a.minimize
+	a.restore
+	sleep 0.2
+	assert success == 1
+	a.maximize
 	a.restore
 	sleep 0.2
 	assert success == 1

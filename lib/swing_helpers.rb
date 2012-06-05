@@ -177,7 +177,7 @@ module SwingHelpers
 	 })
    end
    
-   def after_restored &block
+   def after_minimized &block
     addWindowStateListener {|e|
 	  if e.new_state == java::awt::Frame::ICONIFIED
         block.call	  
@@ -187,18 +187,16 @@ module SwingHelpers
 	}
    end
       
-  
-   def after_minimized &block
+   def after_restored_either_way &block
     addWindowStateListener {|e|
-	  if getState ==  java.awt.Frame::ICONIFIED
+	  if e.new_state == java::awt::Frame::NORMAL
         block.call	  
-	  elsif e == java.awt.event.WindowEvent::WINDOW_ICONIFIED 
-	    # we never take this path, because it's returningget here...
-        #p 'on minimized2'
-        #block.call 
-      end
-    }
+	  else
+	    #puts 'non restore'
+	  end
+	}
    end
+  
   
    def bring_to_front # kludgey...but said to work for swing frames...
     java.awt.EventQueue.invokeLater{
@@ -290,7 +288,16 @@ module SwingHelpers
       if default_file
         out.set_file default_file
       end
-      out.go true
+	  found_non_exist = false
+	  while(!found_non_exist) 
+        got = out.go true
+		if(File.exist? got) 
+		  SwingHelpers.show_blocking_message_dialog 'this file already exists, choose a new filename ' + got		  
+		else
+		 found_non_exist = true
+		end
+	  end
+	  got
     end
 	
   end
