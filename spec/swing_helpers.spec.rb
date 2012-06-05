@@ -71,7 +71,7 @@ module SwingHelpers
     a = JFrame.new 'minimize me'
     a.set_size 200,200
 	minimized = false
-    a.on_minimized {
+    a.after_minimized {
       puts 'minimized'
 	  a.close
 	  a.dispose
@@ -97,26 +97,28 @@ module SwingHelpers
   it "should have an after_close method" do
     a = JFrame.new 'close me!'
     a.set_size 200,200
-	closed = false
+	closed = 0
 	a.after_closed {
-	  puts 'after closed'
-	  closed = true
+	  closed += 1
 	}
     a.show
 	a.close
 	sleep 0.2
-	assert closed
+	assert closed == 1
   end
   
   it "should have an on_restored method" do
-    a = JFrame.new 'should auto-close'
-	success = false;
-	a.after_restore {
-	  success = true;
+    a = JFrame.new 'should auto-close--try to restore it'
+	success = 0
+	a.after_restored {
+	  success += 1
+	  a.close
 	}
+	a.show
+	a.minimize
 	a.restore
 	sleep 0.2
-	assert success  
+	assert success == 1
   end
 
  end

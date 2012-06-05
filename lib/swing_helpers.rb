@@ -129,6 +129,10 @@ module SwingHelpers
 
  class JFrame
   
+   #class StateListener
+   #  include java.awt.event.WindowListener	
+   #end
+  
    class CloseListener < java.awt.event.WindowAdapter
      def initialize parent, &block
 	   super()
@@ -156,7 +160,7 @@ module SwingHelpers
 	 # setDefaultCloseOperation(EXIT_ON_CLOSE)
 	 # which basically does a System.exit(0) when the last jframe closes. Yikes jdk, yikes.	 
 	 #addWindowListener(CloseListener.new(self))
-     setDefaultCloseOperation JFrame::DISPOSE_ON_CLOSE # don't keep running after being closed, and prevent the app from exiting! whoa!
+     dispose_on_close # don't keep running after being closed, and prevent the app from exiting! whoa!
    end   
    
    def close
@@ -164,7 +168,7 @@ module SwingHelpers
    end
    
    def dispose_on_close
-     # the default
+     setDefaultCloseOperation JFrame::DISPOSE_ON_CLOSE
    end
    
    def after_closed &block
@@ -172,15 +176,26 @@ module SwingHelpers
 	   block.call 
 	 })
    end
+   
+   def after_restored &block
+    addWindowStateListener {|e|
+	  if e.new_state == java::awt::Frame::ICONIFIED
+        block.call	  
+	  else
+	    #puts 'non restore'
+	  end
+	}
+   end
+      
   
-   def on_minimized &block
+   def after_minimized &block
     addWindowStateListener {|e|
 	  if getState ==  java.awt.Frame::ICONIFIED
         block.call	  
 	  elsif e == java.awt.event.WindowEvent::WINDOW_ICONIFIED 
-	    # we never get here...
-        p 'on minimized2'
-        block.call 
+	    # we never take this path, because it's returningget here...
+        #p 'on minimized2'
+        #block.call 
       end
     }
    end
@@ -198,8 +213,9 @@ module SwingHelpers
    end
   
    def restore
+   p 'restoring'
      setState(java.awt.Frame::NORMAL) # this line is probably enough, but do more just in case...
-     setVisible(true)
+     #setVisible(true)
    end
   
    alias unminimize restore
