@@ -16,10 +16,11 @@ This file is part of Sensible Cinema.
     along with Sensible Cinema.  If not, see <http://www.gnu.org/licenses/>.
 =end
 require File.expand_path(File.dirname(__FILE__) + '/common')
-require_relative '../swing_helpers'
+require_relative '../lib/swing_helpers'
 
 module SwingHelpers
  describe 'functionality' do
+   puts "most of these require user interaction, sadly"
 
   it "should close its modeless dialog" do
    
@@ -27,8 +28,8 @@ module SwingHelpers
    dialog = NonBlockingDialog.new("Is this modeless?\nSecond lineLL")
    dialog = NonBlockingDialog.new("Is this modeless?\nSecond lineLL\nThird line too!")
    dialog = NonBlockingDialog.new("Can this take very long lines of input, like super long?")
-   #dialog.dispose # should get here :P
-   # let user close it :P
+   dialog.dispose # should get here :P
+   # comment out to let user see+close it :P
   end
   
   it "should be able to convert filenames well" do
@@ -69,21 +70,53 @@ module SwingHelpers
   it "should show onminimize" do
     a = JFrame.new 'minimize me'
     a.set_size 200,200
+	minimized = false
     a.on_minimized {
       puts 'minimized'
 	  a.close
 	  a.dispose
+	  minimized = true
     }
 	a.show
+	sleep 10
+	assert minimized
   end
 
+  def loop_with_timeout(seconds)
+  start = Time.now
+    while(Time.now - start < seconds)
+      if !yield
+	    sleep 0.5
+	  else
+	    return
+	  end
+	end
+	 
+  end
+  
   it "should have an after_close method" do
-    a = JFrame.new 'close me'
+    a = JFrame.new 'close me!'
     a.set_size 200,200
+	closed = false
 	a.after_closed {
 	  puts 'after closed'
+	  closed = true
 	}
-    a.show	
+    a.show
+	a.close
+	sleep 0.2
+	assert closed
+  end
+  
+  it "should have an on_restored method" do
+    a = JFrame.new 'should auto-close'
+	success = false;
+	a.after_restore {
+	  success = true;
+	}
+	a.restore
+	sleep 0.2
+	assert success  
   end
 
  end
