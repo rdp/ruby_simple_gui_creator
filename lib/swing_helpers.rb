@@ -378,6 +378,7 @@ module SwingHelpers
     if !cancel_or_blank_ok
       raise 'user cancelled input prompt ' + message unless received
   	  raise 'did not enter anything?' + message unless received.present?
+	  received = nil # always return nil
     end
     p 'received answer:' + received
     received
