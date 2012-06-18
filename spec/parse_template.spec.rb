@@ -79,6 +79,10 @@ describe ParseTemplate do
     frame.elements.size.should == 0
   end
   
+  it "should not allow unknown settings" do
+    proc { parse_string " \" text:name,fake=fake \" "}.should raise_exception
+  end
+  
  # TODO allow blank lines as spaces
  # TODO allow internal boxes LOL
  # TODO mixeds on the same line
