@@ -86,16 +86,16 @@ module MouseControl
     end
     
     def move_mouse_relative dx, dy 
-      myinput = Mouse::Input.new
-      myinput[:type] = Mouse::INPUT_MOUSE
+      myinput = MouseControl::Input.new
+      myinput[:type] = MouseControl::INPUT_MOUSE
       in_evt = myinput[:evt][:mi]
       in_evt[:mouse_data] = 0 # null it out
-      in_evt[:flags] = Mouse::MOUSEEVENTF_MOVE
+      in_evt[:flags] = MouseControl::MOUSEEVENTF_MOVE
       in_evt[:time] = 0
       in_evt[:extra] = 0
       in_evt[:dx] = dx
       in_evt[:dy] = dy
-      SendInput(1, myinput, Mouse::Input.size)
+      SendInput(1, myinput, MouseControl::Input.size)
     end
     
     def single_click_left_mouse_button
@@ -134,15 +134,16 @@ module MouseControl
     private
     
     def send_left_mouse_button action_type
-      myinput = Mouse::Input.new
-      myinput[:type] = Mouse::INPUT_MOUSE
+      myinput = MouseControl::Input.new
+      myinput[:type] = MouseControl::INPUT_MOUSE
       in_evt = myinput[:evt][:mi]
       in_evt[:flags] = action_type
-      SendInput(1, myinput, Mouse::Input.size)
+      SendInput(1, myinput, MouseControl::Input.size)
     end
 
     
   end
     
 end
-Mouse.total_movements=0 # ruby is a bit freaky with these...
+
+MouseControl.total_movements=0 # ruby is a bit freaky with these...
