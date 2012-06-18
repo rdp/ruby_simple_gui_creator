@@ -62,8 +62,3 @@ $ gem install simple-ruby-gui-creator
 
 >> require 'simple-ruby-gui-creator'
 >> ... [see above]
-
-Attribution:
-
-Loosely inspired by profligacy, a GUI wrapper for Swing. 
-Also shout out to the jruby team for making this possible. Thanks guys!
