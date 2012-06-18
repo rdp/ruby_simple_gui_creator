@@ -1,14 +1,13 @@
 require 'java'
 
-#require File.dirname(__FILE__) + '/swing_helpers.rb'
+require File.dirname(__FILE__) + '/swing_helpers.rb' # for #close, etc., basically required as of today..
 
-def _dgb
+module ParseTemplate
+  def _dgb
 		  require 'rubygems'
 		  require 'ruby-debug'
 		  debugger
-end
-
-module ParseTemplate
+  end
 
   include_package 'javax.swing'; [JFrame, JPanel, JButton, JLabel, UIManager]
   
@@ -81,13 +80,22 @@ module ParseTemplate
 		  name = name[0]
 		  if name.include? ':' # like "Start:start_button" ... disallows using colon at all, but hey...
 		    text = name.split(':')[0..-2].join(':') # only accept last colon, so they can have text with colons in it
-			name = name.split(':')[-1]
-			if name.include? ','
-			  width = name.split(',')[1].to_i
-			  raise if width == 0
-			  name = name.split(',')[0]
+			code_name = name.split(':')[-1]
+			# might be code_name,width=250,x=y
+			if code_name.include? ','
+			  code_name, attributes = code_name.split(',')
+			  attributes_hashed = {}
+			  attributes.split(',').each{|attr| 
+			    key, value = attr.split('=')
+			    attributes_hashed[key] = value
+			  }
+			  p attributes_hashed, code_name
+			  width = attributes_hashed.delete('width').to_i
+			  raise "#{name} has no width?" if width == 0
+			  raise "unknown attributes #{attributes_hashed} #{name}" if attributes_hashed.length > 0
 			end
 		  else
+		    # no code name
 		    text = name
 		  end
 		  element.text=text
@@ -100,7 +108,9 @@ module ParseTemplate
 		  element.set_bounds(@current_x, @current_y, width, 20)
 		  @current_x += width + 5 # doesn't have a 'real' size yet...I guess...yikes
           @frame.panel.add element
-          @frame.elements[name] = element
+		  if code_name
+            @frame.elements[code_name] = element
+		  end
 	      @max_x = [@max_x, @current_x].max
   end
   

@@ -19,7 +19,7 @@ require 'rubygems'
 require 'ffi'
 require 'java'
 
-module Mouse
+module MouseControl
   extend FFI::Library
   MouseInfo =  java.awt.MouseInfo
 

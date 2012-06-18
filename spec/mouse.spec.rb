@@ -16,11 +16,10 @@ This file is part of Sensible Cinema.
     along with Sensible Cinema.  If not, see <http://www.gnu.org/licenses/>.
 =end
 require File.expand_path(File.dirname(__FILE__) + '/common')
-require_relative '../lib/mouse'
 
 p 'dont move the mouse!'
 
-describe Mouse do
+describe MouseControl do
 
   it "should move it a couple times" do
     old = Mouse.total_movements

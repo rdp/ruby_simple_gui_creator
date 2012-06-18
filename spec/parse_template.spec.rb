@@ -1,8 +1,5 @@
 require File.dirname(__FILE__)+ '/common'
 
-require 'parse_template.rb'
-require 'swing_helpers.rb'
-
 describe ParseTemplate do
 
   def parse_string string
@@ -72,9 +69,14 @@ describe ParseTemplate do
     proc {frame = parse_string "| \":my_name\""}.should raise_exception
   end
   
-  it "should accept zero length strings with width spec" do
+  it "should accept zero length strings if they have a width spec" do
     frame = parse_string "| \":my_name,width=250\""
 	frame.elements['my_name'].text.should == ''
+  end
+  
+  it "should not add codeless items to elements" do
+    frame = parse_string " \"some stuff without a code name\" "
+    frame.elements.size.should == 0
   end
   
  # TODO allow blank lines as spaces
