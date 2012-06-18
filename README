@@ -1,13 +1,13 @@
 This gem is meant to make GUI development in Ruby easy, and even fun.
 
-You can specify "easy window layout" in ASCII text, example, if you have a file that contains this:
+You can specify "easy window layout" in ASCII text, example, if you have a layout like this:
 
 ---------- A Title ---------------------------
 | [a button:button1]   [button text:button2] |
 | "some text2:text1"                         |
 ----------------------------------------------
 
-It will create a window that has buttons and text like that, with reasonable spacing.
+It will create a window that has buttons and text "like that," with reasonable spacing.
 
 Here's how:
 >> frame = ParseTemplate::JFramer.new # or optionally subclass this instead
@@ -62,3 +62,8 @@ $ gem install simple-ruby-gui-creator
 
 >> require 'simple-ruby-gui-creator'
 >> ... [see above]
+
+== Known problems ==
+
+Only allows single element types per line currently, like "all text" or "all buttons", but I'm working on it :)
+Only Jruby today, which can make loading time painful (hint: use splash screen).
