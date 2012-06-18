@@ -15,8 +15,8 @@ This file is part of Sensible Cinema.
     You should have received a copy of the GNU General Public License
     along with Sensible Cinema.  If not, see <http://www.gnu.org/licenses/>.
 =end
+
 require File.expand_path(File.dirname(__FILE__) + '/common')
-require_relative '../lib/swing_helpers'
 
 module SwingHelpers
  describe 'functionality' do
@@ -71,7 +71,6 @@ module SwingHelpers
 	minimized = false
 	count = 0
     a.after_minimized {
-      puts 'minimized'
 	  count += 1
     }
 	a.show

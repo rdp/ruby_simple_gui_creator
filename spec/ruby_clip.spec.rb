@@ -1,5 +1,4 @@
 require 'common.rb'
-require '../ruby_clip'
 
 describe RubyClip do
   

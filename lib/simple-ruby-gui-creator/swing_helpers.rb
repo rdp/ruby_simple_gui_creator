@@ -211,7 +211,6 @@ module SwingHelpers
    end
   
    def restore
-   p 'restoring'
      setState(java.awt.Frame::NORMAL) # this line is probably enough, but do more just in case...
      #setVisible(true)
    end
