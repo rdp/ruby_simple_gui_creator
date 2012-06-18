@@ -1,85 +1,54 @@
 This gem is meant to make GUI development in Ruby easy, and even fun.
 
-You can specify "easy window layout" in ASCII text, like this:
+You can specify "easy window layout" in ASCII text, like, if you have a file that contains this:
 
-----------A Title-------------------------
-| [a button:button1] [a button2:button2] |
-| "some text2:text1"                     |
-------------------------------------------
+---------- A Title -------------------------
+| [a button:button1]   [a button2:button2] |
+| "some text2:text1"                       |
+--------------------------------------------
 
-then 
->> frame.elements['button1'].on_clicked { show_blocking_message_dialog "you clicked me!" }  
-
-
-Details below.
-
->> require 'swing_helpers'
 >> frame = ParseTemplate::JFramer.new # or optionally subclass this instead
 >> frame.parse_setup_filename 'some_filename'
-or
->> frame.parse_setup_string 'some_filename'
+creates a window that "looks like the picture"
 
-then
+then you can programs elements, like
 
->> frame.elements['button1'].on_clicked { puts 'you clicked it'}
->> frame.elements['button1'].text= "hello there" # change the display text
+>> frame.elements['button1'].on_clicked { SwingHelpers.show_blocking_message_dialog "you clicked button1!" }  
+
+So it basically provides the "easy setup" ability
+
+This has the convenient effect of separating your models from your controllers, in this case.
+"Normal humans" can edit the design layout, for instance.
 
 
-
-
-
-
-# select file or filename for a "new file" (not yet existing)
-SwingHelpers.new_nonexisting_filechooser_and_go 
+It also has helper methods for common GUI tasks, like (the above show_blocking_message_dialog), and 
+SwingHelpers.new_nonexisting_filechooser_and_go # select file or filename for a "new file" (not yet existing)
 SwingHelpers.new_existing_dir_chooser_and_go # select pre-existing directory
-SwingHelpers.show_in_explorer(filename) # reveals file in Finder for windows, OS X
-SwingHelpers.show_blocking_message_dialog "a message to display"
-from_user = SwingHelpers.get_user_input "tell me your name"
+SwingHelpers.show_in_explorer(filename) # reveals file in Explorer for windows, Finder for OS X
+text_from_user = SwingHelpers.get_user_input "Input your name:" # these raise an exception if the user cancels the dialog.
 
-A select-button prompt:
+A select-button prompt dialog:
 
 if(SwingHelpers.show_select_buttons_prompt("message title", :yes => 'text for the yes button', :no => 'text for the no button', :cancel => 'text for the cancel button') == :yes)
-  # they chose the "yes" equivalent button
+  # they chose the "yes" equivalent button...
 end
 
 etc.
 
-It adds a few methods to the JFrame class, like:
+It also adds a few methods to the ParseTemplate::JFramer (and JFrame) class, like:
 
-JFrame#bring_to_front
-JFrame#minimize
+#bring_to_front
+#minimize
+#restore
+#after_closed { ... }
+#after_minimized { ... }
 
-It has helpers to control/playback audio, like mp3's or wave's, starting/stopping asynchronously.
-
+It has helpers to control/playback audio, like mp3's or wave's, starting/stopping asynchronously (see the files in the 'lib/ruby-easy-gui-creator' directory.
 It has helpers to set/get system clipboard contents.
-
 It has helpers to control/query the mouse (I use this, but don't know why anybody else ever would want to LOL).
-
 It has helpers to query the current system for its DVD drives, be notified when disks are inserted/changed, etc.
-
-You can specify "easy window layout" in ASCII text, like this:
-
-----------A Title------------------------
-| [a button:button1] [a button2:button2] |
-| "some text2:text1"                     |
------------------------------------------
-
-like
-
->> require 'swing_helpers'
->> frame = ParseTemplate::JFramer.new # or optionally subclass this instead
->> frame.parse_setup_filename 'some_filename'
-or
->> frame.parse_setup_string 'some_filename'
-
-then
-
->> frame.elements['button1'].on_clicked { puts 'you clicked it'}
->> frame.elements['button1'].text= "hello there" # change the display text
-
-This has the convenient effect of separating your models from your controllers, in this case.
-"Normal humans" can edit the design layout, for instance.
 Feedback/feature requests welcome.
+I'd even be happy to wrap other gui frameworks (currently jruby/swing only) with the same helper functions, if anybody wanted it.
 
 Enjoy!
 
@@ -87,12 +56,9 @@ Feedback invited: http://groups.google.com/group/roger-projects
 
 To use:
 
-$ cd to_you_project
-$ git submodule add git@github.com:rdp/jruby-swing-helpers.git lib/jruby-swing-helpers
-
-Then in your ruby code
-require 'jruby-swing-helpers/swing_helpers'
+$ gem install ruby-easy-gui-creator
+>> require 'ruby-easy-gui-creator'
 
 Attribution:
 
-Loosely inspired by profligacy. Also shout out to the jruby team for making this possible.
+Loosely inspired by profligacy. Also shout out to the jruby team for making this possible. Thanks guys!

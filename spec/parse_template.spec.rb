@@ -86,5 +86,7 @@ describe ParseTemplate do
  # TODO allow blank lines as spaces
  # TODO allow internal boxes LOL
  # TODO mixeds on the same line
+ # should pass the button through to on_clicked
+ # should be able to clear everything a button does
 
 end
