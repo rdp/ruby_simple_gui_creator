@@ -1,31 +1,30 @@
 This gem is meant to make GUI development in Ruby easy, and even fun.
 
-You can specify "easy window layout" in ASCII text, like, if you have a file that contains this:
+You can specify "easy window layout" in ASCII text, example, if you have a file that contains this:
 
----------- A Title -------------------------
-| [a button:button1]   [a button2:button2] |
-| "some text2:text1"                       |
---------------------------------------------
+---------- A Title ---------------------------
+| [a button:button1]   [button text:button2] |
+| "some text2:text1"                         |
+----------------------------------------------
+
+It will create a window that has buttons and text like that, with reasonable spacing.
 
 >> frame = ParseTemplate::JFramer.new # or optionally subclass this instead
 >> frame.parse_setup_filename 'some_filename'
 creates a window that "looks like the picture"
 
-then you can programs elements, like
+then you can program element behavior, like
 
 >> frame.elements['button1'].on_clicked { SwingHelpers.show_blocking_message_dialog "you clicked button1!" }  
 
-So it basically provides the "easy setup" ability
-
-This has the convenient effect of separating your models from your controllers, in this case.
+This has the convenient effect of separating your models from your controllers, in this case, which feels sooo right.
 "Normal humans" can edit the design layout, for instance.
 
-
-It also has helper methods for common GUI tasks, like (the above show_blocking_message_dialog), and 
+It also has helper methods for common GUI tasks, like (the above show_blocking_message_dialog),
 SwingHelpers.new_nonexisting_filechooser_and_go # select file or filename for a "new file" (not yet existing)
 SwingHelpers.new_existing_dir_chooser_and_go # select pre-existing directory
 SwingHelpers.show_in_explorer(filename) # reveals file in Explorer for windows, Finder for OS X
-text_from_user = SwingHelpers.get_user_input "Input your name:" # these raise an exception if the user cancels the dialog.
+text_from_user = SwingHelpers.get_user_input "Input your name:" # these raise an exception if the user cancels the dialog,
 
 A select-button prompt dialog:
 
@@ -52,11 +51,12 @@ I'd even be happy to wrap other gui frameworks (currently jruby/swing only) with
 
 Enjoy!
 
-Feedback invited: http://groups.google.com/group/roger-projects
+http://groups.google.com/group/roger-projects,  roger-projects@googlegroups.com
 
 To use:
 
 $ gem install ruby-easy-gui-creator
+
 >> require 'ruby-easy-gui-creator'
 
 Attribution:
