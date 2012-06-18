@@ -89,7 +89,6 @@ module ParseTemplate
 			    key, value = attr.split('=')
 			    attributes_hashed[key] = value
 			  }
-			  p attributes_hashed, code_name
 			  width = attributes_hashed.delete('width').to_i
 			  raise "#{name} has no width?" if width == 0
 			  raise "unknown attributes #{attributes_hashed} #{name}" if attributes_hashed.length > 0

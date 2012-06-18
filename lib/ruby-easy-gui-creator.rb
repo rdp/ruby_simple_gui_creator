@@ -14,6 +14,5 @@ end
 
 for clazz in [:DriveInfo, :MouseControl, :ParseTemplate, :PlayAudio, :PlayMp3Audio, :RubyClip, :SwingHelpers]
   new_path = File.dirname(__FILE__) + '/ruby-easy-gui-creator/' + RubyEasyGuiCreator.snake_case(clazz) + '.rb'
-  p new_path
   autoload clazz, new_path
 end
