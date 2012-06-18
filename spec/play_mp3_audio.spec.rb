@@ -1,6 +1,6 @@
 require 'common.rb'
-require_relative '../play_mp3_audio.rb'
 
+# also test PlayAudio
 describe PlayMp3Audio do
 
   it "can play mp3 files" do
@@ -19,7 +19,6 @@ describe PlayMp3Audio do
   end
   
   it "can play wav" do
-    require_relative '../play_audio.rb'
 	a = PlayAudio.new 'static.wav'
 	a.start
 	puts 'static'
