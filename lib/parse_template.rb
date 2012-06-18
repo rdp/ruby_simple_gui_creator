@@ -42,8 +42,8 @@ module ParseTemplate
     string.each_line{|l|
 	  @current_x = 10
 	  button_line_regex = /\[(.*?)\]/
-	  # >> "|  [Setup Preferences:preferences] [Start:start] [Stop:stop] |" .scan  /\[(.*?)\]/
-	  # => [["Setup Preferences:preferences"], ["Start:start"], ["Stop:stop"]]
+	  #>> "|  [Setup Preferences:preferences] [Start:start] [Stop:stop] |" .scan button_line_regex
+	  #=> [["Setup Preferences:preferences"], ["Start:start"], ["Stop:stop"]]
 	  
 	  text_regex = /"([^"]+)"/ # "some text:name"
 	  title_regex = /\s*[-]+([\w ]+)[-]+\s*$/  # ----(a Title)---
@@ -63,9 +63,6 @@ module ParseTemplate
         end
 	    @current_y += 25
 	  end
-	  # TODO allow blank lines as spaces
-	  # TODO allow internal boxes LOL
-	  # TODO mixeds on the same line
 	}
 	@frame.set_size @max_x+25, @current_y+40
     self

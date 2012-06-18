@@ -53,8 +53,8 @@ describe ParseTemplate do
     frame = parse_string <<-EOL
 ----------A title------------
 | [a button:button] [a button2:button2] |
-| "some text2:text1"                  |
------------------------
+| "some text2:text1"                    |
+---------------------------------------
   EOL
     assert frame.elements.length == 3
     frame.elements['button'].on_clicked {
@@ -73,7 +73,12 @@ describe ParseTemplate do
   end
   
   it "should accept zero length strings with width spec" do
-    frame = parse_string "| \":my_name,250\""
+    frame = parse_string "| \":my_name,width=250\""
 	frame.elements['my_name'].text.should == ''
   end
+  
+ # TODO allow blank lines as spaces
+ # TODO allow internal boxes LOL
+ # TODO mixeds on the same line
+
 end

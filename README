@@ -1,4 +1,33 @@
-This lib is meant to simplify some common GUI tasks, like:
+This gem is meant to make GUI development in Ruby easy, and even fun.
+
+You can specify "easy window layout" in ASCII text, like this:
+
+----------A Title-------------------------
+| [a button:button1] [a button2:button2] |
+| "some text2:text1"                     |
+------------------------------------------
+
+then 
+>> frame.elements['button1'].on_clicked { show_blocking_message_dialog "you clicked me!" }  
+
+
+Details below.
+
+>> require 'swing_helpers'
+>> frame = ParseTemplate::JFramer.new # or optionally subclass this instead
+>> frame.parse_setup_filename 'some_filename'
+or
+>> frame.parse_setup_string 'some_filename'
+
+then
+
+>> frame.elements['button1'].on_clicked { puts 'you clicked it'}
+>> frame.elements['button1'].text= "hello there" # change the display text
+
+
+
+
+
 
 # select file or filename for a "new file" (not yet existing)
 SwingHelpers.new_nonexisting_filechooser_and_go 
@@ -22,13 +51,37 @@ JFrame#minimize
 
 It has helpers to control/playback audio, like mp3's or wave's, starting/stopping asynchronously.
 
-It has helpers to set/get the system clipboard contents.
+It has helpers to set/get system clipboard contents.
 
 It has helpers to control/query the mouse (I use this, but don't know why anybody else ever would want to LOL).
 
 It has helpers to query the current system for its DVD drives, be notified when disks are inserted/changed, etc.
 
-Enjoy! 
+You can specify "easy window layout" in ASCII text, like this:
+
+----------A Title------------------------
+| [a button:button1] [a button2:button2] |
+| "some text2:text1"                     |
+-----------------------------------------
+
+like
+
+>> require 'swing_helpers'
+>> frame = ParseTemplate::JFramer.new # or optionally subclass this instead
+>> frame.parse_setup_filename 'some_filename'
+or
+>> frame.parse_setup_string 'some_filename'
+
+then
+
+>> frame.elements['button1'].on_clicked { puts 'you clicked it'}
+>> frame.elements['button1'].text= "hello there" # change the display text
+
+This has the convenient effect of separating your models from your controllers, in this case.
+"Normal humans" can edit the design layout, for instance.
+Feedback/feature requests welcome.
+
+Enjoy!
 
 Feedback invited: http://groups.google.com/group/roger-projects
 
@@ -39,3 +92,7 @@ $ git submodule add git@github.com:rdp/jruby-swing-helpers.git lib/jruby-swing-h
 
 Then in your ruby code
 require 'jruby-swing-helpers/swing_helpers'
+
+Attribution:
+
+Loosely inspired by profligacy. Also shout out to the jruby team for making this possible.

@@ -18,19 +18,21 @@ This file is part of Sensible Cinema.
 require 'java'
 require 'sane' # gem dependency
 
+autoload :ParseTemplate, __DIR__ + '/parse_template'
+
 module SwingHelpers 
   
  include_package 'javax.swing'
  # will use  these constants (http://jira.codehaus.org/browse/JRUBY-5107)
  [JProgressBar, JButton, JFrame, JLabel, JPanel, JOptionPane,
-   JFileChooser, JComboBox, JDialog, SwingUtilities, JSlider, JPasswordField] 
+   JFileChooser, JComboBox, JDialog, SwingUtilities, JSlider, JPasswordField, UIManager] 
+   
  include_package 'java.awt'
- [FlowLayout, Font, BorderFactory, BorderLayout]
+ [FlowLayout, Font, BorderFactory, BorderLayout, FileDialog]
+ 
  java_import java.awt.event.ActionListener
- JFile = java.io.File
- java_import java.awt.FileDialog
- java_import java.lang.System
- UIManager
+ 
+ JFile = java.io.File # no import for this one...
 
  class JOptionPane
     JOptionReturnValuesTranslator = {0 => :yes, 1 => :no, 2 => :cancel, -1 => :exited}
