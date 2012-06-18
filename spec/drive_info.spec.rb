@@ -16,10 +16,11 @@ This file is part of Sensible Cinema.
     along with Sensible Cinema.  If not, see <http://www.gnu.org/licenses/>.
 =end
 require File.expand_path(File.dirname(__FILE__) + '/common')
-require_relative '../drive_info'
-require 'socket'
+
+require 'socket' # gethostname
 
 describe 'dvd_drive_info' do
+
   it 'should be able to get an md5sum from a dvd' do
     FileUtils.mkdir_p 'VIDEO_TS'
     Dir.chdir 'VIDEO_TS' do
@@ -28,21 +29,24 @@ describe 'dvd_drive_info' do
     end
     # different because of different volume names I think
     expected= 
-      if Socket.gethostname == "PACKR-B1C04F564" # work is different? huh? maybe I need to clean first...
-        "adb07018|a9e38706"
-      # elsif OS.windows? # blacky
-      #   "ff83793c|dfaedb42"
+      if Socket.gethostname == "PACKR-B1C04F564"
+        "212780b8|dbf8e73e"
       elsif OS.mac?
        "e293328f|519cd647"
      else
         p 'unknown drive label maybe expected?...' + DriveInfo.md5sum_disk("./") # unfortunately varies depending on drive label...
         nil
      end
+	 p 'comparing', DriveInfo.md5sum_disk("./"), expected
     DriveInfo.md5sum_disk("./").should == expected if expected
   end
-  
+
+  def assert_has_mounted_disk
+    raise "test requires locally mounted DVD!" if DriveInfo.get_dvd_drives_as_openstruct.length == 0
+  end
+	
   it "should be able to do it for real disc in the drive" do
-    DriveInfo.get_dvd_drives_as_openstruct.length.should be > 0
+    assert_has_mounted_disk
     found_one = false
     DriveInfo.get_dvd_drives_as_openstruct.each{|d|
       if d.VolumeName # mounted ...
@@ -64,6 +68,7 @@ describe 'dvd_drive_info' do
   end
   
   it "should be able to run it twice cached etc" do
+    assert_has_mounted_disk
     assert system(OS.ruby_bin + "  -rubygems -I.. run_drive_info.rb")
   end
 

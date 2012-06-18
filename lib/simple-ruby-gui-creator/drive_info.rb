@@ -24,11 +24,11 @@ class DriveInfo
 
   def self.md5sum_disk(dir)
    if OS.mac?
-     exe = "#{__DIR__}/vendor/mac_dvdid/bin/dvdid"
+     exe = "#{__DIR__}/../../vendor/mac_dvdid/bin/dvdid"
    else
-     exe = "#{__DIR__}/vendor/dvdid.exe"
+     exe = "#{__DIR__}/../../vendor/dvdid.exe"
    end
-   raise exe + 'non exist?' unless File.exist? exe
+   raise exe + '--exe doesnt exist?' unless File.exist? exe
    command = "#{exe} \"#{dir}\""
    output = `#{command}` # can take like 2.2s to spin up the disk...
    raise 'dvdid command failed?' + command unless $?.exitstatus == 0
