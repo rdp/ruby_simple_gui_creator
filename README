@@ -55,9 +55,9 @@ http://groups.google.com/group/roger-projects,  roger-projects@googlegroups.com
 
 To use:
 
-$ gem install ruby-easy-gui-creator
+$ gem install simple-ruby-gui-creator
 
->> require 'ruby-easy-gui-creator'
+>> require 'simple-ruby-gui-creator'
 
 Attribution:
 
