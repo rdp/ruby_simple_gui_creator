@@ -18,8 +18,6 @@ This file is part of Sensible Cinema.
 require 'java'
 require 'sane' # gem dependency
 
-autoload :ParseTemplate, __DIR__ + '/parse_template'
-
 module SwingHelpers 
   
  include_package 'javax.swing'
