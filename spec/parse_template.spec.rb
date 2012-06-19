@@ -92,11 +92,16 @@ describe ParseTemplate do
  # TODO a 'title managing' object LOL
  
  it "should accept height, width, x, y" do
-   frame = parse_string ' "a:my_name,abs_x=1,abs_y=1,width=100,height=100" '
+   frame = parse_string ' [a:my_name,abs_x=1,abs_y=2,width=100,height=101] '
+   frame.elements[:my_name].get_location.x.should == 1
+   frame.elements[:my_name].get_location.y.should == 2
+   frame.elements[:my_name].size.height.should == 101
+   frame.elements[:my_name].size.width.should == 100
  end
  
  it "should accept params, without a name" do
    frame = parse_string ' "a:abs_x=1,abs_y=1,width=100,height=100" '
+   frame.elements.should be_empty
  end
  
  it "should allow for symbol access" do

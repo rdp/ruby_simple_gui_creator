@@ -98,11 +98,11 @@ module ParseTemplate
 			    var = attributes_hashed.delete(name)
 				if var
 				  var = var.to_i
-				  raise "#{var} has zero?" if var == 0
+				  raise "#{var} has value of zero?" if var == 0
 				  eval("#{name} = #{var}") # ugh
 				end
 			  end
-			  raise "unknown attributes #{attributes_hashed.inspect} #{code_name}" if attributes_hashed.length > 0
+			  raise "unknown attributes found: #{attributes_hashed.keys.inspect} #{attributes_hashed.inspect} #{code_name}" if attributes_hashed.length > 0
 			end
 		  else
 		    # no code name
