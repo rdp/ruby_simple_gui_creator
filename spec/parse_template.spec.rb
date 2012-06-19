@@ -133,7 +133,13 @@ describe ParseTemplate do
     EOL
 	get_dimentia(frame.elements[:button_name]).should == [50,50,100,100]
 	#assert_matches_dimentia(frame.elements[:third], 
+	# TODO
 	
+ end
+ 
+ it "should parse blanks right" do
+   frame = parse_string " | [                           :text_to_use]                  |"
+   frame.elements[:text_to_use].should_not be_nil
  end
 	
 

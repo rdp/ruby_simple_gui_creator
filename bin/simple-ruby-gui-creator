@@ -1,0 +1,35 @@
+
+# assumes has rubygems...
+
+require File.dirname(__FILE__) + "/../lib/simple-ruby-gui-creator.rb"
+
+class TestWindow < ParseTemplate::JFramer
+
+  def initialize
+    super
+    string = <<-EOL
+          ---------- Simple Ruby Gui Creator Test Window ---------------
+          | [Create Window:create_button]                              |
+		  | [Create Snippet:create_code]                               |
+          | [                           :text_to_use]                  |
+		  | [                                       ]                  |
+		  | [                                       ]                  |
+		  | [                                       ]                  |
+		  | [                                       ]                  |
+		  | [                                       ]                  |
+		  | [                                       ]                  |
+		  |                                                            |
+          --------------------------------------------------------------
+    EOL
+	parse_setup_string string
+	
+	elements[:text_to_use].text= string
+    elements[:create_button].on_clicked {
+	  puts 'clicked'
+	
+	}
+  end
+
+end
+
+TestWindow.new

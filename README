@@ -19,8 +19,9 @@ You can program behavior, like this:
   SwingHelpers.show_blocking_message_dialog "you clicked button1!" 
 }  
 
-This has the effect of separating your view from your controller, in this case, which feels sooo right.
-"Normal humans" can edit the design layout, for instance, now.
+This has the effect of separating your view from your controller, in this case, because you can store the layouts in
+an entirely separate file, or embedded in the code.  "Normal humans" can edit the design layout files, for instance,
+and the separation allows for easy peace of mind.
 
 It also has helper methods for common GUI tasks, like the above show_blocking_message_dialog:
 
