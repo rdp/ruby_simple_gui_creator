@@ -151,10 +151,12 @@ describe ParseTemplate do
  end
  
  it "should parse text fields" do
-    frame = parse_string <<-EOL
-          | [                           :text_area]                  |
-		  | [                                       ]                  |
+    string = <<-EOL
+| [                             :text_area]                  |
+| [                                       ]                  |
     EOL
+	print string
+	frame = parse_string string
 	frame.elements[:text_area].class.should == Java::JavaxSwing::JTextArea
  end
 
