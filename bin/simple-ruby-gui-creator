@@ -1,7 +1,6 @@
-
 # assumes has rubygems...
 
-require File.dirname(__FILE__) + "/../lib/simple_gui.rb"
+require File.dirname(__FILE__) + "/../lib/simple_gui_creator.rb"
 
 class TestWindow < ParseTemplate::JFramer
 
