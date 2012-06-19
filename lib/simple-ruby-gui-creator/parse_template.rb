@@ -10,7 +10,7 @@ module ParseTemplate
 		  debugger
   end
 
-  include_package 'javax.swing'; [JFrame, JPanel, JButton, JTextArea, JLabel, UIManager]
+  include_package 'javax.swing'; [JFrame, JPanel, JButton, JTextArea, JLabel, UIManager, JScrollPane]
   
   class JFramer < JFrame
     
@@ -55,7 +55,7 @@ module ParseTemplate
 	    @frame.set_title $1 # done :)
 		@frame.original_title = $1.dup.freeze # freeze...LOL		
 	  elsif line =~ button_line_regex	   
-	    # button, or TextArea, which takes an x, y        
+	    # button, or TextArea
 		cur_x = 0		
 		while cur_spot = (line[cur_x..-1] =~ button_line_regex)
 		  cur_spot += cur_x# we had only acted on a partial line, above, so add in the part we didn't do
@@ -73,11 +73,12 @@ module ParseTemplate
 			end
 		  end
 		  if count_lines_below > 0
-		    height =  count_lines_below + 1
-		    text_area = JTextArea.new(name.split(':')[0].length, height)
-			text_area.text="\n"*height
+		    rows = count_lines_below + 1
+		    text_area = JTextArea.new(rows, name.split(':')[0].length)
+			text_area.text="\n"*rows
 			# width?
-			setup_element(text_area, name, text_area.getPreferredSize.height)
+			scrollPane = JScrollPane.new(text_area)
+            setup_element(text_area, name, scrollPane.getPreferredSize.height)
 		  else
 			button = JButton.new
 			setup_element(button, name)
@@ -133,7 +134,15 @@ module ParseTemplate
 			  for name in ['abs_x', 'abs_y', 'width', 'height']
 			    var = attributes_hashed.delete(name)
 				if var
-				  var = var.to_i
+				  if var =~ /chars$/
+				    count = var[0..-5].to_i
+					var = get_text_width('m'*count) # TODO fails for height 30chars
+				  elsif var =~ /px$/
+				    var = var[0..-3].to_i
+				  else
+				    #raise "need to specify like 10px #{var} #{name}"					
+					var = var.to_i # allow it to be clean :P
+				  end
 				  raise "#{var} has value of zero?" if var == 0
 				  eval("#{name} = #{var}") # ugh
 				end
@@ -149,6 +158,7 @@ module ParseTemplate
 			end
 			if text.strip != text
 			  # let blank space count as "space" for now, but don't actually set it LOL
+			  # is this good for variable spaced fonts, though?
 			  width = get_text_width("|" + text + "|") + 35
 			  text.strip!
 			else

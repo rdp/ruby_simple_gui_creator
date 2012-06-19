@@ -90,7 +90,10 @@ describe ParseTemplate do
  # LODO a 'title managing' object LOL
  # LODO rel_width=+100 or some odd
  # buttons should require a code name :P
- 
+ # allow prepropagation of textareas, for easier width detection...
+ # TODO parse_setup_string string, :text_area_to_use_text => string
+	
+	
  it "should accept height, width, x, y" do
    frame = parse_string ' [a:my_name,abs_x=1,abs_y=2,width=100,height=101] '
    get_dimentia(frame.elements[:my_name]).should == [1,2,101,100]
@@ -150,9 +153,10 @@ describe ParseTemplate do
 	print string
 	frame = parse_string string
 	frame.elements[:text_area].class.should == Java::JavaxSwing::JTextArea
-	frame.elements.length.should == 1 # not create empty buttons underneath :)
-	sleep 1000
+	frame.elements.length.should == 1 # not create fake empty buttons underneath :)
+	get_dimentia(frame.elements[:text_area]).should == [10, 10, 35, 136]
  end
+ 
  
  it "should allow for spaced out attributes" do
    frame = parse_string "| [      :text, width = 200          ] "
