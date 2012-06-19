@@ -102,7 +102,7 @@ module ParseTemplate
 				  eval("#{name} = #{var}") # ugh
 				end
 			  end
-			  raise "unknown attributes #{attributes_hashed.inspect} #{name}" if attributes_hashed.length > 0
+			  raise "unknown attributes #{attributes_hashed.inspect} #{code_name}" if attributes_hashed.length > 0
 			end
 		  else
 		    # no code name
