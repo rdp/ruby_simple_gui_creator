@@ -11,6 +11,7 @@ module ParseTemplate
   end
 
   include_package 'javax.swing'; [JFrame, JPanel, JButton, JTextArea, JLabel, UIManager, JScrollPane]
+  java_import java.awt.Font
   
   class JFramer < JFrame
     
@@ -49,11 +50,15 @@ module ParseTemplate
 	  #=> [["Setup Preferences:preferences"], ["Start:start"], ["Stop:stop"]]
 	  
 	  text_regex = /"([^"]+)"/ # "some text:name"
+	  blank_line_regex = /^\s*(|\|)\s+(|\|)\s*$/ # " | | " or just empty...
 	  title_regex = /\s*[-]+([\w ]+)[-]+\s*$/  # ----(a Title)---
 	  @current_line_height = 25
+	  
 	  if line =~ title_regex
 	    @frame.set_title $1 # done :)
 		@frame.original_title = $1.dup.freeze # freeze...LOL		
+	  elsif line =~ blank_line_regex
+   	    @current_y += @current_line_height
 	  elsif line =~ button_line_regex	   
 	    # button, or TextArea
 		cur_x = 0		
@@ -131,6 +136,14 @@ module ParseTemplate
 			    key, value = attr.split('=')
 			    attributes_hashed[key.strip] = value.strip
 			  }
+			  if type = attributes_hashed.delete('font')
+			    if type == "fixed_width"
+			      element.font=Font.new("Monospaced", Font::PLAIN, 14)
+				else
+				   raise "all we support is fixed_width font as of yet #{type} #{name}"
+				end				
+			  end
+			  
 			  for name in ['abs_x', 'abs_y', 'width', 'height']
 			    var = attributes_hashed.delete(name)
 				if var

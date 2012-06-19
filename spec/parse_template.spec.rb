@@ -82,7 +82,6 @@ describe ParseTemplate do
     proc { parse_string " \" text:name,fake=fake \" "}.should raise_exception
   end
   
- # LODO allow blank lines as extra spacing
  # LODO allow internal sub-boxes LOL
  # TODO mixeds on the same line
  # LODO should pass the button through to on_clicked [?] or button with frame, too?
@@ -90,11 +89,10 @@ describe ParseTemplate do
  # LODO a 'title managing' object LOL
  # LODO rel_width=+100 or some odd
  # buttons should require a code name :P
- # allow prepropagation of textareas, for easier width detection...
- # TODO parse_setup_string string, :text_area_to_use_text => string
+ # allow prepropagation of textareas, for easier width detection...and/or separating out concerns...hmm...
+ #    parse_setup_string string, :text_area_to_use_text => string
 	
-	
- it "should accept height, width, x, y" do
+ it "should accept height, width, abs_x, abs_y" do
    frame = parse_string ' [a:my_name,abs_x=1,abs_y=2,width=100,height=101] '
    get_dimentia(frame.elements[:my_name]).should == [1,2,101,100]
  end
@@ -150,7 +148,6 @@ describe ParseTemplate do
 | [                             :text_area]                  |
 | [                                       ]                  |
     EOL
-	print string
 	frame = parse_string string
 	frame.elements[:text_area].class.should == Java::JavaxSwing::JTextArea
 	frame.elements.length.should == 1 # not create fake empty buttons underneath :)
@@ -164,5 +161,13 @@ describe ParseTemplate do
  end
  
  it "should parse text areas that aren't first, also one right next to it both sides"
+ 
+ it "should allow for blank lines to mean spacing" do
+   frame = parse_string "| [ a button] |\n [ a button] \n[ a button]"
+   frame.size.height.should == 125
+   frame.close
+   frame = parse_string "| [ a button] |\n [ a button] \n[ a button]\n| |"
+   frame.size.height.should == 150
+ end
 
 end

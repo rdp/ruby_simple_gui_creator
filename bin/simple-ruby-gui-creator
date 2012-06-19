@@ -8,18 +8,19 @@ class TestWindow < ParseTemplate::JFramer
   def initialize
     super
     string = <<-EOL
-          ---------- Simple Ruby Gui Creator Test Window ---------------
-          | [Create New Window :create_button]                         |
-          | [      :text_area_to_use, width=70chars, height=500     ]  |
-          | [                                                       ]  |
-          | [                                                       ]  |
-          | [                                                       ]  |
-          | [                                                       ]  |
-          | [                                                       ]  |
-          | [                                                       ]  |
-          | [                                                       ]  |
-          |                                                            |
-          --------------------------------------------------------------
+          ---------- Simple Ruby Gui Creator Test Window ---------------------------
+          | "Edit this, then..."                                                    |
+          | [Test it out! :create_button]                                           |
+          | [      :text_area_to_use, width=70chars, height=500, font=fixed_width]  |
+          | [                                                                    ]  |
+          | [                                                                    ]  |
+          | [                                                                    ]  |
+          | [                                                                    ]  |
+          | [                                                                    ]  |
+          | [                                                                    ]  |
+          | [                                                                    ]  |
+          |                                                                         |
+          --------------------------------------------------------------------------
     EOL
 	Kernel.print string
 	parse_setup_string string
