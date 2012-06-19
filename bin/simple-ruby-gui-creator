@@ -1,7 +1,7 @@
 
 # assumes has rubygems...
 
-require File.dirname(__FILE__) + "/../lib/simple-ruby-gui-creator.rb"
+require File.dirname(__FILE__) + "/../lib/simple_gui.rb"
 
 class TestWindow < ParseTemplate::JFramer
 
@@ -59,22 +59,24 @@ MyWindow.new
         "Here's your snippet!"
         [:code,width=500,height=400]
         [                          ]
-        [                          ]		
-		[Save:save1]
+        [                          ]
+        [Save Code Snippet:snippet_save]
         "Here's your template:"
         [:template_text,width=500,height=400,font=fixed_width]
         [                                                    ]
-		[Save:save2]
+        [Save Template:template_save]
 	  EOL
 	  frame2.elements[:code].text = code
-	  frame2.elements[:save1].on_clicked { }
-	  frame2.elements[:save2].on_clicked { }
-	  frame2.elements[:template_text].text = elements[:text_area_to_use].text
+	  frame2.elements[:snippet_save].on_clicked { save_file 'simple-gui-demo.rb', code}
+	  template = elements[:text_area_to_use].text
+	  frame2.elements[:template_text].text = template
+      frame2.elements[:template_save].on_clicked { save_file 'template.simple-gui-demo', template}
 	}
   end
   
-  def save_file default_filename
-    SimpleGui.new_nonexisting_or_existing_filechooser_and_go "Choose where to save:", nil, default_filename
+  def save_file default_filename, text
+    location = SimpleGui.new_nonexisting_or_existing_filechooser_and_go "Choose where to save:", nil, default_filename
+	File.write(location, text)
   end
 
 end

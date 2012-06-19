@@ -44,7 +44,7 @@ module ParseTemplate
 	  begin
 	  @current_x = 10
 	  if line =~ /\t/
-	    raise "sorry, tabs arent allowed, but you can request it #{line.inspect} line #{idx}"
+	    raise "sorry, tabs arent allowed, but you can request it"
 	  end
 	  button_line_regex = /\[(.*?)\]/
 	  #>> "|  [Setup Preferences:preferences] [Start:start] [Stop:stop] |" .scan button_line_regex
@@ -102,7 +102,7 @@ module ParseTemplate
 	  # build in realtime LOL
 	  @frame.set_size @window_max_x + 25, @current_y + 40	  
 	  rescue
-	    puts "failed on line #{line.strip} number: #{idx}"
+	    puts "Parsing failed on line #{line.inspect} number: #{idx+1}!"
 		raise
 	  end
 	}

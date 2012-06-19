@@ -277,6 +277,9 @@ module SimpleGui
     
     alias setFile set_file
 
+  end
+
+
     # choose a file that may or may not exist yet...
     def self.new_nonexisting_or_existing_filechooser_and_go title = nil, default_dir = nil, default_filename = nil # within JFileChooser class for now...
       out = JFileChooser.new
@@ -312,10 +315,8 @@ module SimpleGui
 	  end
 	  got
     end
-	
-  end
 
-  def self.new_existing_dir_chooser_and_go title=nil, default_dir = nil
+	def self.new_existing_dir_chooser_and_go title=nil, default_dir = nil
     chooser = JFileChooser.new;
     chooser.setCurrentDirectory(JFile.new default_dir) if default_dir
     chooser.set_title title
