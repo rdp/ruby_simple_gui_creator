@@ -14,7 +14,8 @@ describe ParseTemplate do
   
   it "should parse titles" do
     frame = parse_string " ------------A Title-------------------------------------------"
-	frame.get_title.should == "A Title"
+	frame.title.should == "A Title"
+	frame.get_title.should == "A Title" # java method mapping :)
 	frame.original_title.should == "A Title"
 	frame.title= 'new title'
 	frame.get_title.should == "new title"
@@ -88,13 +89,14 @@ describe ParseTemplate do
  # TODO mixeds on the same line
  # should pass the button through to on_clicked
  # should be able to clear everything a button does or used to do...
+ # TODO a 'title managing' object LOL
  
  it "should accept height, width, x, y" do
-   frame = parse_string ' "a:my_name,x=1,y=1,width=100,height=100" '
+   frame = parse_string ' "a:my_name,abs_x=1,abs_y=1,width=100,height=100" '
  end
  
  it "should accept params, without a name" do
-   frame = parse_string ' "a:x=1,y=1,width=100,height=100" '
+   frame = parse_string ' "a:abs_x=1,abs_y=1,width=100,height=100" '
  end
  
  it "should allow for symbol access" do
