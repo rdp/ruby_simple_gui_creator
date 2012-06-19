@@ -1,5 +1,10 @@
-# assumes has rubygems...
-
+#!/usr/bin/env ruby
+# assumes has rubygems loaded...since we need the sane gem
+require 'os'
+if !OS.jruby?
+  $stderr.puts 'jruby only for now, you can request a change to this, exiting...'
+  exit 1
+end
 require File.dirname(__FILE__) + "/../lib/simple_gui_creator.rb"
 
 class TestWindow < ParseTemplate::JFramer
