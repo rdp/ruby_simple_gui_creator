@@ -10,15 +10,15 @@ class TestWindow < ParseTemplate::JFramer
     string = <<-EOL
           ---------- Simple Ruby Gui Creator Test Window ---------------
           | [                           :text_to_use]                  |
-		  | [                                       ]                  |
-		  | [                                       ]                  |
-		  | [                                       ]                  |
-		  | [                                       ]                  |
-		  | [                                       ]                  |
-		  | [                                       ]                  |
+          | [                                       ]                  |
+          | [                                       ]                  |
+          | [                                       ]                  |
+          | [                                       ]                  |
+          | [                                       ]                  |
+          | [                                       ]                  |
           | [Create Window :create_button]                             |
-		  | [Create Snippet :create_code]                              |
-		  |                                                            |
+          | [Create Snippet :create_code]                              |
+          |                                                            |
           --------------------------------------------------------------
     EOL
 	Kernel.print string

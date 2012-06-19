@@ -61,20 +61,21 @@ module ParseTemplate
 		  cur_spot += cur_x# we had only acted on a partial line, above, so add in the part we didn't do
 		  name = $1
 		  end_spot = cur_spot + name.length
+		  count_lines_below = 0
 		  matching_blank_text_area_string = '[' + ' '*(end_spot-cur_spot) + ']'
 		  empty_it_out = matching_blank_text_area_string.gsub(/./, ' ')
-		  count_lines_below = 0
 		  for line2 in all_lines[idx+1..-1]
-		    if line2[cur_spot, end_spot] == matching_blank_text_area_string
-			  line2[cur_spot, end_spot] = empty_it_out # :)
+		    if line2[cur_spot..(end_spot+1)] == matching_blank_text_area_string
+			  line2[cur_spot, end_spot-cur_spot+2] = empty_it_out # :)
 			  count_lines_below += 1
 			else
 			  break
 			end
 		  end
 		  if count_lines_below > 0
-		    text_area = JTextArea.new(name.split(':')[0].length, count_lines_below + 1)
-			setup_element(text_area, name, text_area.preferred_size.height)
+		    height =  count_lines_below + 1
+		    text_area = JTextArea.new(name.split(':')[0].length, height)
+			setup_element(text_area, name, get_text_dimentia("|jk").height*height)
 		  else
 			button = JButton.new
 			setup_element(button, name)
@@ -97,20 +98,20 @@ module ParseTemplate
   private
   
   def get_text_width text
-    get_text_dimentia(text)[1]
+    get_text_dimentia(text).width
   end
   
   def get_text_dimentia text
 	font = UIManager.getFont("Label.font")
     frc = java.awt.font.FontRenderContext.new(font.transform, true, true)
     textLayout = java.awt.font.TextLayout.new(text, font, frc)
-    [textLayout.bounds.height, textLayout.bounds.width]
+    textLayout.bounds # has #height and #width
   end
   
   def setup_element element, name, height=nil
 		  abs_x = nil
 		  abs_y = nil
-		  height = nil
+		  #height = nil
 		  width = nil
 		  if name.include? ':' # like "Start:start_button" ... disallows using colon at all, but hey...
 		    text = name.split(':')[0..-2].join(':') # only accept last colon, so they can have text with colons in it
