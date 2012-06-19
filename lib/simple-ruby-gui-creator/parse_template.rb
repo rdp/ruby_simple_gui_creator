@@ -77,6 +77,7 @@ module ParseTemplate
   end
   
   def setup_element element, name, width=nil
+  
   		  # name is now like ["Setup Preferences:preferences"]
 		  name = name[0]
 		  abs_x = nil
@@ -128,8 +129,8 @@ module ParseTemplate
 		    raise "double name not allowed #{name} #{code_name}" if @frame.elements[code_name.to_sym]
             @frame.elements[code_name.to_sym] = element # just symbol access for now...
 		  end
-		  @current_x = [@current_x, width].max + 5 # doesn't have a 'real' size yet...I guess...yikes		  
-		  @current_line_max_height = [@current_line_max_height, height + 5].max # LODO + 5 magic number? 25 - 20 hard coded? hmm...
+		  @current_x = [@current_x, abs_x + width + 5].max
+		  @current_line_max_height = [@current_line_max_height, height + abs_y + 5].max # LODO + 5 magic number? 25 - 20 hard coded? hmm...
 		  
 	      @window_max_x = [@window_max_x, @current_x].max		  
   end

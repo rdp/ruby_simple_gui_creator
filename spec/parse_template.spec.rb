@@ -84,12 +84,13 @@ describe ParseTemplate do
     proc { parse_string " \" text:name,fake=fake \" "}.should raise_exception
   end
   
- # TODO allow blank lines as extra spacing
- # TODO allow internal sub-boxes LOL
+ # LODO allow blank lines as extra spacing
+ # LODO allow internal sub-boxes LOL
  # TODO mixeds on the same line
- # should pass the button through to on_clicked
- # should be able to clear everything a button does or used to do...
- # TODO a 'title managing' object LOL
+ # LODO should pass the button through to on_clicked [?] or button with frame, too?
+ # LODO should be able to clear everything a button does or used to do...
+ # LODO a 'title managing' object LOL
+ # LODO rel_width=+100 or some odd
  
  it "should accept height, width, x, y" do
    frame = parse_string ' [a:my_name,abs_x=1,abs_y=2,width=100,height=101] '
@@ -117,5 +118,10 @@ describe ParseTemplate do
  it "should disallow double names...I think so anyway..." do
     proc { frame = parse_string('| "a:my_name" |\n'*2) }.should raise_exception
  end
+ 
+ it "should go down right" # and with two right, same height, goes down correctly
+ 
+ it "should go right right" with abs
+ 
 
 end
