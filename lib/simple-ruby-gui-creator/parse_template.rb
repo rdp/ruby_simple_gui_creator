@@ -51,18 +51,32 @@ module ParseTemplate
 	  if line =~ title_regex
 	    @frame.set_title $1 # done :)
 		@frame.original_title = $1.dup.freeze # freeze...LOL		
-	  elsif line =~ button_line_regex
+	  elsif line =~ button_line_regex	   
 	    # button, or TextArea, which takes an x, y        
-		cur_x = 0
-		while spot = (line[cur_x..-1] =~ button_line_regex)
+		cur_x = 0		
+		while cur_spot = (line[cur_x..-1] =~ button_line_regex)
+		  cur_spot += cur_x# we had only acted on a partial line, above, so add in the part we didn't do
 		  name = $1
-		  end_spot = spot + name.length + 1
-		  button = JButton.new
-		  setup_element(button, name)
-		  matching_string = '[' + ' '*(end_spot-spot-1) + ']'
-		  for line in all_lines[idx+1..-1]
-		    p "next line would be", line[spot, end_spot-1], 'matching is', matching_string
+		  #_dbg
+		  end_spot = cur_spot + name.length
+		  matching_blank_text_area_string = '[' + ' '*(end_spot-cur_spot) + ']'
+		  empty_it_out = matching_blank_text_area_string.gsub(/./, ' ')
+		  count_lines_below = 0
+		  for line2 in all_lines[idx+1..-1]
+		    if line2[cur_spot, end_spot] == matching_blank_text_area_string
+			  puts 'got one'
+			  line2[cur_spot, end_spot] = empty_it_out
+			  count_lines_below += 1
+			else
+			  break
+			end
 		  end
+		  if count_lines_below > 0
+		    button = JTextArea.new(45, count_lines_below + 1)
+		  else		    
+			button = JButton.new
+		  end
+		  setup_element(button, name)
 		  cur_x = end_spot # creep forward within this line...
 		end		
  		@current_y += @current_line_height

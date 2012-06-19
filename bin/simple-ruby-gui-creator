@@ -9,8 +9,6 @@ class TestWindow < ParseTemplate::JFramer
     super
     string = <<-EOL
           ---------- Simple Ruby Gui Creator Test Window ---------------
-          | [Create Window :create_button]                             |
-		  | [Create Snippet :create_code]                              |
           | [                           :text_to_use]                  |
 		  | [                                       ]                  |
 		  | [                                       ]                  |
@@ -18,6 +16,8 @@ class TestWindow < ParseTemplate::JFramer
 		  | [                                       ]                  |
 		  | [                                       ]                  |
 		  | [                                       ]                  |
+          | [Create Window :create_button]                             |
+		  | [Create Snippet :create_code]                              |
 		  |                                                            |
           --------------------------------------------------------------
     EOL

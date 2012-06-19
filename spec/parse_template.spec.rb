@@ -22,12 +22,14 @@ describe ParseTemplate do
 	frame.original_title.should == "A Title"
   end
   
-  it "should parse button only lines" do
-   frame = parse_string "|  [Setup Preferences:preferences] [Start:start] [Stop:stop] |"
+  it "should parse button only lines, with several buttons same line" do
+   frame = parse_string "|  [Setup Preferences:preferences][Start:start] [Stop:stop] |"
+   get_dimentia(frame.elements[:stop]).should == [221, 10, 20, 60]
    assert frame.elements.length == 3
    prefs_button = frame.elements[:preferences]
    start_button = frame.elements[:start]
    prefs_button.text.should == "Setup Preferences"
+   get_dimentia(prefs_button).should == [10, 10, 20, 139]
    assert start_button.text == "Start"
    prefs_button.text = "new text" 
    assert prefs_button.text == "new text"
@@ -47,7 +49,7 @@ describe ParseTemplate do
 	frame.elements[:temp_dir].should_not be nil
   end
   
-  it "should work with real instance" do
+  it "should handle a string below buttons" do
     frame = parse_string <<-EOL
 ----------A title------------
 | [a button:button] [a button2:button2] |
@@ -55,10 +57,6 @@ describe ParseTemplate do
 ---------------------------------------
   EOL
     assert frame.elements.length == 3
-    frame.elements[:button].on_clicked {
-      p 'button clicked'
-    }
-    frame.show
   end
   
   it "should split escaped colons" do
@@ -144,13 +142,7 @@ describe ParseTemplate do
    button.size.width.should==129 # bigger than 35, basically
  end
  
- it "should allow two buttons, same row" do
-   frame = parse_string " | [button1:button1] [button2:button2]"
-   get_dimentia(frame.elements[:button1]).should == [10, 10, 20, 76]
-   get_dimentia(frame.elements[:button2]).should == [91, 10, 20, 77]
- end
- 
- it "should parse text fields" do
+ it "should parse text areas" do
     string = <<-EOL
 | [                             :text_area]                  |
 | [                                       ]                  |
@@ -158,6 +150,10 @@ describe ParseTemplate do
 	print string
 	frame = parse_string string
 	frame.elements[:text_area].class.should == Java::JavaxSwing::JTextArea
+	frame.elements.length.should == 1 # not create buttons underneath :)
+	sleep 1000
  end
+ 
+ it "should parse text areas that aren't first"
 
 end
