@@ -1,6 +1,6 @@
 # just autoload everything always :)
 
-module SimpleRubyGuiCreator
+module SimpleGui
   def self.snake_case string
     string = string.to_s.dup
     string.gsub!(/::/, '/')
@@ -12,7 +12,7 @@ module SimpleRubyGuiCreator
   end
 end
 
-for clazz in [:DriveInfo, :MouseControl, :ParseTemplate, :PlayAudio, :PlayMp3Audio, :RubyClip, :SwingHelpers]
-  new_path = File.dirname(__FILE__) + '/simple-ruby-gui-creator/' + SimpleRubyGuiCreator.snake_case(clazz) + '.rb'
+for clazz in [:DriveInfo, :MouseControl, :ParseTemplate, :PlayAudio, :PlayMp3Audio, :RubyClip, :SimpleGui]
+  new_path = File.dirname(__FILE__) + '/simple-ruby-gui-creator/' + SimpleGui.snake_case(clazz) + '.rb'
   autoload clazz, new_path
 end

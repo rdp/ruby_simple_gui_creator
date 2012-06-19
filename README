@@ -16,7 +16,7 @@ Here's how:
 You can program behavior, like this:
 
 >> frame.elements['button1'].on_clicked { 
-  SwingHelpers.show_blocking_message_dialog "you clicked button1!" 
+  SimpleGui.show_blocking_message_dialog "you clicked button1!" 
 }  
 
 This has the effect of separating your view from your controller, in this case, because you can store the layouts in
@@ -25,14 +25,14 @@ and the separation allows for easy peace of mind.
 
 It also has helper methods for common GUI tasks, like the above show_blocking_message_dialog:
 
-SwingHelpers.new_nonexisting_filechooser_and_go # select file or filename for a "new file" (not yet existing)
-SwingHelpers.new_existing_dir_chooser_and_go # select pre-existing directory
-SwingHelpers.show_in_explorer(filename) # reveals file in Explorer for windows, Finder for OS X
-text_from_user = SwingHelpers.get_user_input "Input your name:" # these raise an exception if the user cancels the dialog,
+SimpleGui.new_nonexisting_filechooser_and_go # select file or filename for a "new file" (not yet existing)
+SimpleGui.new_existing_dir_chooser_and_go # select pre-existing directory
+SimpleGui.show_in_explorer(filename) # reveals file in Explorer for windows, Finder for OS X
+text_from_user = SimpleGui.get_user_input "Input your name:" # these raise an exception if the user cancels the dialog,
 
 A select-button prompt dialog:
 
-if(SwingHelpers.show_select_buttons_prompt("message title", :yes => 'text for the yes button', :no => 'text for the no button', :cancel => 'text for the cancel button') == :yes)
+if(SimpleGui.show_select_buttons_prompt("message title", :yes => 'text for the yes button', :no => 'text for the no button', :cancel => 'text for the cancel button') == :yes)
   # they chose the "yes" equivalent button...
 end
 
@@ -61,7 +61,7 @@ To install/use:
 
 $ gem install simple-ruby-gui-creator
 
->> require 'simple-ruby-gui-creator'
+>> require 'simple_gui'
 >> ... [see above]
 
 == Known problems ==

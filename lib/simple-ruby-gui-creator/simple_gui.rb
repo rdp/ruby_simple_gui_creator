@@ -18,7 +18,7 @@ This file is part of Sensible Cinema.
 require 'java'
 require 'sane' # gem dependency
 
-module SwingHelpers 
+module SimpleGui
   
  include_package 'javax.swing'
  # will use  these constants (http://jira.codehaus.org/browse/JRUBY-5107)
@@ -125,7 +125,7 @@ module SwingHelpers
   
  end
 
- ToolTipManager.sharedInstance().setDismissDelay(10000)
+ ToolTipManager.sharedInstance().setDismissDelay(10000) # these are way too fast normally
 
  class JFrame
   
@@ -278,14 +278,28 @@ module SwingHelpers
     alias setFile set_file
 
     # choose a file that may or may not exist yet...
-    def self.new_nonexisting_filechooser_and_go title = nil, default_dir = nil, default_file = nil # within JFileChooser class for now...
+    def self.new_nonexisting_or_existing_filechooser_and_go title = nil, default_dir = nil, default_filename = nil # within JFileChooser class for now...
       out = JFileChooser.new
       out.set_title title
       if default_dir
         out.set_current_directory JFile.new(default_dir)
       end
-      if default_file
-        out.set_file default_file
+      if default_filename
+        out.set_file default_filename
+      end
+      got = out.go true
+	  got
+    end
+	
+    # choose a file that may or may not exist yet...
+    def self.new_nonexisting_filechooser_and_go title = nil, default_dir = nil, default_filename = nil # within JFileChooser class for now...
+      out = JFileChooser.new
+      out.set_title title
+      if default_dir
+        out.set_current_directory JFile.new(default_dir)
+      end
+      if default_filename
+        out.set_file default_filename
       end
 	  found_non_exist = false
 	  while(!found_non_exist) 

@@ -91,7 +91,8 @@ describe ParseTemplate do
  # buttons should require a code name :P
  # allow prepropagation of textareas, for easier width detection...and/or separating out concerns...hmm...
  #    parse_setup_string string, :text_area_to_use_text => string
-	
+ # parse_setup_string :default_font =>
+ 
  it "should accept height, width, abs_x, abs_y" do
    frame = parse_string ' [a:my_name,abs_x=1,abs_y=2,width=100,height=101] '
    get_dimentia(frame.elements[:my_name]).should == [1,2,101,100]
@@ -152,6 +153,11 @@ describe ParseTemplate do
 	frame.elements[:text_area].class.should == Java::JavaxSwing::JTextArea
 	frame.elements.length.should == 1 # not create fake empty buttons underneath :)
 	get_dimentia(frame.elements[:text_area]).should == [0, 0, 32, 319]# it's "sub-contained"  in a jscrollpane <sigh>
+ end
+ 
+ it "should let you use ending colons" do
+   frame = parse_string "\"Here's your template:\""
+   frame.elements.length.should == 0 # and hope it includes the colon in there :)
  end
  
  

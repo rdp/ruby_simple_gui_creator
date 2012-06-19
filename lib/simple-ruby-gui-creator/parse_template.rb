@@ -1,6 +1,6 @@
 require 'java'
 
-require File.dirname(__FILE__) + '/swing_helpers.rb' # for #close, etc., basically required as of today..
+require File.dirname(__FILE__) + '/simple_gui.rb' # for JFrame#close, etc., basically required as of today..
 
 # for docs, see the README
 module ParseTemplate
@@ -30,7 +30,7 @@ module ParseTemplate
 	attr_accessor :frame
 	
   def parse_setup_filename filename
-    parse_string File.read(filename)
+    parse_setup_string File.read(filename)
 	self
   end
   
@@ -41,6 +41,7 @@ module ParseTemplate
 	@window_max_x = 100
 	all_lines = string.lines.to_a
     all_lines.each_with_index{|line, idx|
+	  begin
 	  @current_x = 10
 	  if line =~ /\t/
 	    raise "sorry, tabs arent allowed, but you can request it #{line.inspect} line #{idx}"
@@ -68,7 +69,7 @@ module ParseTemplate
 		  end_spot = cur_spot + name.length
 		  count_lines_below = 0
 		  matching_blank_text_area_string = '[' + ' '*(end_spot-cur_spot) + ']'
-		  empty_it_out = matching_blank_text_area_string.gsub(/./, ' ')
+		  empty_it_out = matching_blank_text_area_string.gsub(/[\[\]]/, '_') # can't actually blank it out...
 		  for line2 in all_lines[idx+1..-1]
 		    if line2[cur_spot..(end_spot+1)] == matching_blank_text_area_string
 			  line2[cur_spot, end_spot-cur_spot+2] = empty_it_out # :)
@@ -99,7 +100,11 @@ module ParseTemplate
 	    @current_y += @current_line_height
 	  end
 	  # build in realtime LOL
-	  @frame.set_size @window_max_x + 25, @current_y + 40
+	  @frame.set_size @window_max_x + 25, @current_y + 40	  
+	  rescue
+	    puts "failed on line #{line.strip} number: #{idx}"
+		raise
+	  end
 	}
     self
   end
@@ -122,7 +127,7 @@ module ParseTemplate
 		  abs_y = nil
 		  #height = nil
 		  width = nil
-		  if name.include? ':' # like "Start:start_button" ... disallows using colon at all, but hey...
+		  if name.include?(':') && !name.end_with?(':') # like "Start:start_button"  or "start:button:code_name,attribs" but not "Hello:" let that through
 		    text = name.split(':')[0..-2].join(':') # only accept last colon, so they can have text with colons in it
 			code_name_with_attrs = name.split(':')[-1]
 			if code_name_with_attrs.split(',')[0] !~ /=/
@@ -168,7 +173,7 @@ module ParseTemplate
 		  end
 		  if !width
 		    if text.blank?
-			  raise 'cannot have blank original text without some size specifier' + name
+			  raise 'cannot have blank original text without some size specifier:' + name
 			end
 			if text.strip != text
 			  # let blank space count as "space" for now, but don't actually set it LOL

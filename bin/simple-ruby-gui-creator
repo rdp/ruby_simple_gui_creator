@@ -20,6 +20,7 @@ class TestWindow < ParseTemplate::JFramer
           | [                                                                    ]  |
           | [                                                                    ]  |
           |                                                                         |
+          | [Show code snippet :create_snippet]                                    |
           --------------------------------------------------------------------------
     EOL
 	Kernel.print string
@@ -28,6 +29,52 @@ class TestWindow < ParseTemplate::JFramer
     elements[:create_button].on_clicked {
 	  ParseTemplate::JFramer.new.parse_setup_string elements[:text_area_to_use].text
 	}
+	elements[:create_snippet].on_clicked {
+	  frame = ParseTemplate::JFramer.new.parse_setup_string elements[:text_area_to_use].text
+	  frame.close
+	  
+	  element_code = ""
+      frame.elements.each{|e| 
+        if e[1].is_a? Java::JavaxSwing::JButton
+	      element_code += "    elements[:#{e[0]}].on_clicked { puts 'clicked #{e[0]}' }\n"
+	    end
+      }	  
+	  
+      code=<<-EOL
+	  
+require 'simple-ruby-gui-creator.rb'
+
+class MyWindow < ParseTemplate::JFramer
+  def initialize
+    super
+    parse_setup_filename 'my_window.template' # create this file first
+	
+#{element_code}
+  end
+  
+end
+MyWindow.new
+	  EOL
+	  frame2 = ParseTemplate::JFramer.new.parse_setup_string <<-EOL
+        "Here's your snippet!"
+        [:code,width=500,height=400]
+        [                          ]
+        [                          ]		
+		[Save:save1]
+        "Here's your template:"
+        [:template_text,width=500,height=400,font=fixed_width]
+        [                                                    ]
+		[Save:save2]
+	  EOL
+	  frame2.elements[:code].text = code
+	  frame2.elements[:save1].on_clicked { }
+	  frame2.elements[:save2].on_clicked { }
+	  frame2.elements[:template_text].text = elements[:text_area_to_use].text
+	}
+  end
+  
+  def save_file default_filename
+    SimpleGui.new_nonexisting_or_existing_filechooser_and_go "Choose where to save:", nil, default_filename
   end
 
 end
