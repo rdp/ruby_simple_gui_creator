@@ -143,5 +143,13 @@ describe ParseTemplate do
    button.text.should ==  "" # torn on this one...
    button.size.width.should==129 # bigger than 35, basically
  end
+ 
+ it "should parse text fields" do
+    frame = parse_string <<-EOL
+          | [                           :text_area]                  |
+		  | [                                       ]                  |
+    EOL
+	frame.elements[:text_area].class.should == Java::JavaxSwing::JTextArea
+ end
 
 end

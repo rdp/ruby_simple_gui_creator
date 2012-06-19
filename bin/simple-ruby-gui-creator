@@ -9,10 +9,10 @@ class TestWindow < ParseTemplate::JFramer
     super
     string = <<-EOL
           ---------- Simple Ruby Gui Creator Test Window ---------------
-          | [Create Window:create_button]                              |
-		  | [Create Snippet:create_code]                               |
-          | [                           :text_to_use,width=200]        |
-		  | [                                      :name3 ]                  |
+          | [Create Window :create_button]                             |
+		  | [Create Snippet :create_code]                              |
+          | [                           :text_to_use]                  |
+		  | [                                       ]                  |
 		  | [                                       ]                  |
 		  | [                                       ]                  |
 		  | [                                       ]                  |
@@ -22,8 +22,6 @@ class TestWindow < ParseTemplate::JFramer
           --------------------------------------------------------------
     EOL
 	parse_setup_string string
-	n = elements[:name3]
-	p n, n.text
 	elements[:text_to_use].text= string
     elements[:create_button].on_clicked {
 	  puts 'clicked'
