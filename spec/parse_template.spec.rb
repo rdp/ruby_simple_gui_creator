@@ -89,11 +89,17 @@ describe ParseTemplate do
  # should pass the button through to on_clicked
  # should be able to clear everything a button does or used to do...
  
- # TODO TODO allow absolute height, width, x, y
+ it "should accept height, width, x, y" do
+   frame = parse_string ' "a:my_name,x=1,y=1,width=100,height=100" '
+ end
+ 
+ it "should accept params, without a name" do
+   frame = parse_string ' "a:x=1,y=1,width=100,height=100" '
+ end
  
  it "should allow for symbol access" do
-    frame = parse_string '| "a:my_name" |'
-	frame.elements[:my_name].text.should == 'a'
+   frame = parse_string '| "a:my_name" |'
+   frame.elements[:my_name].text.should == 'a'
  end
  
  it "should do rstrip on symbol names" do
