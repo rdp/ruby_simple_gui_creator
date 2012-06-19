@@ -75,7 +75,9 @@ module ParseTemplate
 		  if count_lines_below > 0
 		    height =  count_lines_below + 1
 		    text_area = JTextArea.new(name.split(':')[0].length, height)
-			setup_element(text_area, name, get_text_dimentia("|jk").height*height)
+			text_area.text="\n"*height
+			# width?
+			setup_element(text_area, name, text_area.getPreferredSize.height)
 		  else
 			button = JButton.new
 			setup_element(button, name)
