@@ -91,13 +91,11 @@ describe ParseTemplate do
  # LODO should be able to clear everything a button does or used to do...
  # LODO a 'title managing' object LOL
  # LODO rel_width=+100 or some odd
+ # buttons should require a name :P
  
  it "should accept height, width, x, y" do
    frame = parse_string ' [a:my_name,abs_x=1,abs_y=2,width=100,height=101] '
-   frame.elements[:my_name].get_location.x.should == 1
-   frame.elements[:my_name].get_location.y.should == 2
-   frame.elements[:my_name].size.height.should == 101
-   frame.elements[:my_name].size.width.should == 100
+   get_dimentia(frame.elements[:my_name]).should == [1,2,101,100]
  end
  
  it "should accept params, without a name" do
@@ -119,9 +117,24 @@ describe ParseTemplate do
     proc { frame = parse_string('| "a:my_name" |\n'*2) }.should raise_exception
  end
  
- it "should go down right" # and with two right, same height, goes down correctly
+ def get_dimentia(element)
+   x = element.get_location.x
+   y = element.get_location.y
+   h = element.size.height
+   w = element.size.width
+   [x,y,h,w]
+ end
  
- it "should go right right" with abs
- 
+ it "should line up elements right when given some abs" do
+    frame = parse_string <<-EOL 
+| [a button:button_name,width=100,height=100,abs_x=50,abs_y=50] [a third button:third]
+| [another button:button_name2] [another button:button_name4]|
+| [another button:button_name3] |
+    EOL
+	get_dimentia(frame.elements[:button_name]).should == [50,50,100,100]
+	#assert_matches_dimentia(frame.elements[:third], 
+	
+ end
+	
 
 end

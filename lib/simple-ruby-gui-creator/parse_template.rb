@@ -46,7 +46,7 @@ module ParseTemplate
 	  
 	  text_regex = /"([^"]+)"/ # "some text:name"
 	  title_regex = /\s*[-]+([\w ]+)[-]+\s*$/  # ----(a Title)---
-	  @current_line_max_height = 25
+	  @current_line_height = 25
 	  if l =~ title_regex
 	    @frame.set_title $1 # done :)
 		@frame.original_title = $1.dup.freeze # freeze...LOL		
@@ -55,16 +55,16 @@ module ParseTemplate
 		  button = JButton.new
 		  setup_element(button, name)
 		}
- 		@current_y += @current_line_max_height
+ 		@current_y += @current_line_height
 	  elsif l =~ text_regex
 	    for name in l.scan(text_regex)
 	      label = JLabel.new
 		  setup_element(label, name)
         end
-	    @current_y += @current_line_max_height
+	    @current_y += @current_line_height
 	  end
 	}
-	@frame.set_size @window_max_x+25, @current_y+40
+	@frame.set_size @window_max_x + 25, @current_y + 40
     self
   end
   
@@ -130,9 +130,9 @@ module ParseTemplate
             @frame.elements[code_name.to_sym] = element # just symbol access for now...
 		  end
 		  @current_x = [@current_x, abs_x + width + 5].max
-		  @current_line_max_height = [@current_line_max_height, height + abs_y + 5].max # LODO + 5 magic number? 25 - 20 hard coded? hmm...
+		  @current_line_height = [@current_line_height, (abs_y + height + 5)-@current_y].max # LODO + 5 magic number? 25 - 20 hard coded? hmm...
 		  
-	      @window_max_x = [@window_max_x, @current_x].max		  
+	      @window_max_x = [@window_max_x, @current_x].max # have to track x, but not y
   end
   
   end
