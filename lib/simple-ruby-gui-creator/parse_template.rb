@@ -10,7 +10,7 @@ module ParseTemplate
 		  debugger
   end
 
-  include_package 'javax.swing'; [JFrame, JPanel, JButton, JLabel, UIManager]
+  include_package 'javax.swing'; [JFrame, JPanel, JButton, JTextArea, JLabel, UIManager]
   
   class JFramer < JFrame
     
@@ -51,15 +51,19 @@ module ParseTemplate
 	    @frame.set_title $1 # done :)
 		@frame.original_title = $1.dup.freeze # freeze...LOL		
 	  elsif l =~ button_line_regex
-        l.scan(button_line_regex).each{|name|
+	    # button, or TextArea, which takes an x, y        
+		cur_x = 0
+		while spot = (l[cur_x..-1] =~ button_line_regex)
+		  cur_x += spot + 1
 		  button = JButton.new
+		  name = $1
 		  setup_element(button, name)
-		}
+		end		
  		@current_y += @current_line_height
 	  elsif l =~ text_regex
 	    for name in l.scan(text_regex)
 	      label = JLabel.new
-		  setup_element(label, name)
+		  setup_element(label, name[0])
         end
 	    @current_y += @current_line_height
 	  end
@@ -77,9 +81,6 @@ module ParseTemplate
   end
   
   def setup_element element, name, width=nil
-  
-  		  # name is now like ["Setup Preferences:preferences"]
-		  name = name[0]
 		  abs_x = nil
 		  abs_y = nil
 		  height = nil

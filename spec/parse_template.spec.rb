@@ -144,6 +144,12 @@ describe ParseTemplate do
    button.size.width.should==129 # bigger than 35, basically
  end
  
+ it "should allow two buttons, same row" do
+   frame = parse_string " | [button1:button1] [button2:button2]"
+   get_dimentia(frame.elements[:button1]).should == [10, 10, 20, 76]
+   get_dimentia(frame.elements[:button2]).should == [91, 10, 20, 77]
+ end
+ 
  it "should parse text fields" do
     frame = parse_string <<-EOL
           | [                           :text_area]                  |
