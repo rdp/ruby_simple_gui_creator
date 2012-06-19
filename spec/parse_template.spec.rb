@@ -91,7 +91,7 @@ describe ParseTemplate do
  # LODO should be able to clear everything a button does or used to do...
  # LODO a 'title managing' object LOL
  # LODO rel_width=+100 or some odd
- # buttons should require a name :P
+ # buttons should require a code name :P
  
  it "should accept height, width, x, y" do
    frame = parse_string ' [a:my_name,abs_x=1,abs_y=2,width=100,height=101] '
@@ -137,10 +137,11 @@ describe ParseTemplate do
 	
  end
  
- it "should parse blanks right" do
+ it "should parse blank buttons with the extra space counting for size" do
    frame = parse_string " | [                           :text_to_use]                  |"
-   frame.elements[:text_to_use].should_not be_nil
+   button = frame.elements[:text_to_use]
+   button.text.should ==  "" # torn on this one...
+   button.size.width.should==129 # bigger than 35, basically
  end
-	
 
 end

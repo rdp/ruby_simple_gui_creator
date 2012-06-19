@@ -112,13 +112,19 @@ module ParseTemplate
 		    # no code name
 		    text = name
 		  end
-		  element.text=text
 		  if !width
 		    if text.blank?
 			  raise 'cannot have blank original text without some size specifier' + name
 			end
-            width = get_text_width(text) + 35
+			if text.strip != text
+			  # let blank space count as "space" for now, but don't actually set it LOL
+			  width = get_text_width("|" + text + "|") + 35
+			  text.strip!
+			else
+              width = get_text_width(text) + 35
+			end
  		  end
+		  element.text=text
 		  abs_x ||= @current_x
 		  abs_y ||= @current_y
 		  height ||= 20
