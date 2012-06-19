@@ -151,7 +151,7 @@ describe ParseTemplate do
 	frame = parse_string string
 	frame.elements[:text_area].class.should == Java::JavaxSwing::JTextArea
 	frame.elements.length.should == 1 # not create fake empty buttons underneath :)
-	get_dimentia(frame.elements[:text_area]).should == [10, 10, 35, 136]
+	get_dimentia(frame.elements[:text_area]).should == [0, 0, 32, 319]# it's "sub-contained"  in a jscrollpane <sigh>
  end
  
  

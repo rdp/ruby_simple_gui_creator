@@ -83,7 +83,7 @@ module ParseTemplate
 			text_area.text="\n"*rows
 			# width?
 			scrollPane = JScrollPane.new(text_area)
-            setup_element(text_area, name, scrollPane.getPreferredSize.height)
+            setup_element(scrollPane, name, scrollPane.getPreferredSize.height, text_area)
 		  else
 			button = JButton.new
 			setup_element(button, name)
@@ -98,8 +98,9 @@ module ParseTemplate
         end
 	    @current_y += @current_line_height
 	  end
+	  # build in realtime LOL
+	  @frame.set_size @window_max_x + 25, @current_y + 40
 	}
-	@frame.set_size @window_max_x + 25, @current_y + 40
     self
   end
   
@@ -116,7 +117,7 @@ module ParseTemplate
     textLayout.bounds # has #height and #width
   end
   
-  def setup_element element, name, height=nil
+  def setup_element element, name, height=nil, set_text_on_this = element
 		  abs_x = nil
 		  abs_y = nil
 		  #height = nil
@@ -138,7 +139,7 @@ module ParseTemplate
 			  }
 			  if type = attributes_hashed.delete('font')
 			    if type == "fixed_width"
-			      element.font=Font.new("Monospaced", Font::PLAIN, 14)
+			      set_text_on_this.font=Font.new("Monospaced", Font::PLAIN, 14)
 				else
 				   raise "all we support is fixed_width font as of yet #{type} #{name}"
 				end				
@@ -178,7 +179,7 @@ module ParseTemplate
               width = get_text_width(text) + 35
 			end
  		  end
-		  element.text=text
+		  set_text_on_this.text=text
 		  abs_x ||= @current_x
 		  abs_y ||= @current_y
 		  height ||= 20
@@ -187,7 +188,7 @@ module ParseTemplate
 		  if code_name
 		    code_name.rstrip!
 		    raise "double name not allowed #{name} #{code_name}" if @frame.elements[code_name.to_sym]
-            @frame.elements[code_name.to_sym] = element # just symbol access for now...
+            @frame.elements[code_name.to_sym] = set_text_on_this # just symbol access for now...
 		  end
 		  @current_x = [@current_x, abs_x + width + 5].max
 		  @current_line_height = [@current_line_height, (abs_y + height + 5)-@current_y].max # LODO + 5 magic number? 25 - 20 hard coded? hmm...
