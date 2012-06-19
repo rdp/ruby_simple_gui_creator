@@ -41,6 +41,9 @@ module ParseTemplate
 	all_lines = string.lines.to_a
     all_lines.each_with_index{|line, idx|
 	  @current_x = 10
+	  if line =~ /\t/
+	    raise "sorry, tabs arent allowed, but you can request it #{line.inspect} line #{idx}"
+	  end
 	  button_line_regex = /\[(.*?)\]/
 	  #>> "|  [Setup Preferences:preferences] [Start:start] [Stop:stop] |" .scan button_line_regex
 	  #=> [["Setup Preferences:preferences"], ["Start:start"], ["Stop:stop"]]
@@ -57,26 +60,25 @@ module ParseTemplate
 		while cur_spot = (line[cur_x..-1] =~ button_line_regex)
 		  cur_spot += cur_x# we had only acted on a partial line, above, so add in the part we didn't do
 		  name = $1
-		  #_dbg
 		  end_spot = cur_spot + name.length
 		  matching_blank_text_area_string = '[' + ' '*(end_spot-cur_spot) + ']'
 		  empty_it_out = matching_blank_text_area_string.gsub(/./, ' ')
 		  count_lines_below = 0
 		  for line2 in all_lines[idx+1..-1]
 		    if line2[cur_spot, end_spot] == matching_blank_text_area_string
-			  puts 'got one'
-			  line2[cur_spot, end_spot] = empty_it_out
+			  line2[cur_spot, end_spot] = empty_it_out # :)
 			  count_lines_below += 1
 			else
 			  break
 			end
 		  end
 		  if count_lines_below > 0
-		    button = JTextArea.new(45, count_lines_below + 1)
-		  else		    
+		    text_area = JTextArea.new(name.split(':')[0].length, count_lines_below + 1)
+			setup_element(text_area, name, text_area.preferred_size.height)
+		  else
 			button = JButton.new
-		  end
-		  setup_element(button, name)
+			setup_element(button, name)
+		  end		  
 		  cur_x = end_spot # creep forward within this line...
 		end		
  		@current_y += @current_line_height
@@ -93,14 +95,19 @@ module ParseTemplate
   end
   
   private
+  
   def get_text_width text
+    get_text_dimentia(text)[1]
+  end
+  
+  def get_text_dimentia text
 	font = UIManager.getFont("Label.font")
     frc = java.awt.font.FontRenderContext.new(font.transform, true, true)
     textLayout = java.awt.font.TextLayout.new(text, font, frc)
-    textLayout.bounds.width
+    [textLayout.bounds.height, textLayout.bounds.width]
   end
   
-  def setup_element element, name, width=nil
+  def setup_element element, name, height=nil
 		  abs_x = nil
 		  abs_y = nil
 		  height = nil

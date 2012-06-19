@@ -150,10 +150,10 @@ describe ParseTemplate do
 	print string
 	frame = parse_string string
 	frame.elements[:text_area].class.should == Java::JavaxSwing::JTextArea
-	frame.elements.length.should == 1 # not create buttons underneath :)
+	frame.elements.length.should == 1 # not create empty buttons underneath :)
 	sleep 1000
  end
  
- it "should parse text areas that aren't first"
+ it "should parse text areas that aren't first, also one right next to it both sides"
 
 end

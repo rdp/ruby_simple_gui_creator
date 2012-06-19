@@ -21,6 +21,7 @@ class TestWindow < ParseTemplate::JFramer
 		  |                                                            |
           --------------------------------------------------------------
     EOL
+	Kernel.print string
 	parse_setup_string string
 	elements[:text_to_use].text= string
     elements[:create_button].on_clicked {
