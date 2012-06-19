@@ -2,6 +2,7 @@ require 'java'
 
 require File.dirname(__FILE__) + '/swing_helpers.rb' # for #close, etc., basically required as of today..
 
+# for docs, see the README
 module ParseTemplate
   def _dgb
 		  require 'rubygems'
@@ -108,7 +109,9 @@ module ParseTemplate
 		  @current_x += width + 5 # doesn't have a 'real' size yet...I guess...yikes
           @frame.panel.add element
 		  if code_name
-            @frame.elements[code_name] = element
+		    code_name.rstrip!
+		    raise "double name not allowed #{name} #{code_name}" if @frame.elements[code_name.to_sym]
+            @frame.elements[code_name.to_sym] = element # just symbol access for now...
 		  end
 	      @max_x = [@max_x, @current_x].max
   end

@@ -24,8 +24,8 @@ describe ParseTemplate do
   it "should parse button only lines" do
    frame = parse_string "|  [Setup Preferences:preferences] [Start:start] [Stop:stop] |"
    assert frame.elements.length == 3
-   prefs_button = frame.elements['preferences']
-   start_button = frame.elements['start']
+   prefs_button = frame.elements[:preferences]
+   start_button = frame.elements[:start]
    prefs_button.text.should == "Setup Preferences"
    assert start_button.text == "Start"
    prefs_button.text = "new text" 
@@ -41,9 +41,9 @@ describe ParseTemplate do
 # end
 
   it "should parse text strings" do
-    frame = parse_string "|  \"Temp Dir location:temp_dir\" |"
+    frame = parse_string '|  "Temp Dir location:temp_dir" |'
 	assert frame.elements.length == 1
-	frame.elements['temp_dir'].should_not be nil
+	frame.elements[:temp_dir].should_not be nil
   end
   
   it "should work with real instance" do
@@ -54,7 +54,7 @@ describe ParseTemplate do
 ---------------------------------------
   EOL
     assert frame.elements.length == 3
-    frame.elements['button'].on_clicked {
+    frame.elements[:button].on_clicked {
       p 'button clicked'
     }
     frame.show
@@ -62,7 +62,7 @@ describe ParseTemplate do
   
   it "should split escaped colons" do
     frame = parse_string "| \"some stuff ::my_name\""
-	frame.elements['my_name'].text.should == 'some stuff :'
+	frame.elements[:my_name].text.should == 'some stuff :'
   end
   
   it "should not accept zero length strings without width spec" do  
@@ -71,7 +71,7 @@ describe ParseTemplate do
   
   it "should accept zero length strings if they have a width spec" do
     frame = parse_string "| \":my_name,width=250\""
-	frame.elements['my_name'].text.should == ''
+	frame.elements[:my_name].text.should == ''
   end
   
   it "should not add codeless items to elements" do
@@ -79,14 +79,30 @@ describe ParseTemplate do
     frame.elements.size.should == 0
   end
   
-  it "should not allow unknown settings" do
+  it "should not allow unknown param settings" do
     proc { parse_string " \" text:name,fake=fake \" "}.should raise_exception
   end
   
- # TODO allow blank lines as spaces
- # TODO allow internal boxes LOL
+ # TODO allow blank lines as extra spacing
+ # TODO allow internal sub-boxes LOL
  # TODO mixeds on the same line
  # should pass the button through to on_clicked
- # should be able to clear everything a button does
+ # should be able to clear everything a button does or used to do...
+ 
+ # TODO TODO allow absolute height, width, x, y
+ 
+ it "should allow for symbol access" do
+    frame = parse_string '| "a:my_name" |'
+	frame.elements[:my_name].text.should == 'a'
+ end
+ 
+ it "should do rstrip on symbol names" do
+   frame = parse_string '| "a:my_name " |'
+   frame.elements[:my_name].text.should == 'a'
+ end
+ 
+ it "should disallow double names...I think so anyway..." do
+    proc { frame = parse_string('| "a:my_name" |\n'*2) }.should raise_exception
+ end
 
 end
