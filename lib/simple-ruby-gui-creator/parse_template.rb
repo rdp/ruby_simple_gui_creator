@@ -85,10 +85,14 @@ module ParseTemplate
 		  width = nil
 		  if name.include? ':' # like "Start:start_button" ... disallows using colon at all, but hey...
 		    text = name.split(':')[0..-2].join(':') # only accept last colon, so they can have text with colons in it
-			code_name = name.split(':')[-1]
-			# might be code_name,width=250,x=y
-			if code_name.include? ','
-			  code_name, *attributes = code_name.split(',')
+			code_name_with_attrs = name.split(':')[-1]
+			if code_name_with_attrs.split(',')[0] !~ /=/
+			  # like code_name,width=250,x=y
+			  code_name, *attributes = code_name_with_attrs.split(',')
+			else
+			  code_name = nil
+			  attributes = code_name_with_attrs.split(',')
+			end
 			  attributes_hashed = {}
 			  attributes.each{|attr| 
 			    key, value = attr.split('=')
@@ -103,7 +107,6 @@ module ParseTemplate
 				end
 			  end
 			  raise "unknown attributes found: #{attributes_hashed.keys.inspect} #{attributes_hashed.inspect} #{code_name}" if attributes_hashed.length > 0
-			end
 		  else
 		    # no code name
 		    text = name
