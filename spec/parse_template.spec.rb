@@ -154,6 +154,11 @@ describe ParseTemplate do
 	sleep 1000
  end
  
+ it "should allow for spaced out attributes" do
+   frame = parse_string "| [      :text, width = 200          ] "
+   get_dimentia(frame.elements[:text])[3].should == 200
+ end
+ 
  it "should parse text areas that aren't first, also one right next to it both sides"
 
 end

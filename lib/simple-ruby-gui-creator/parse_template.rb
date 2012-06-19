@@ -128,7 +128,7 @@ module ParseTemplate
 			  attributes_hashed = {}
 			  attributes.each{|attr| 
 			    key, value = attr.split('=')
-			    attributes_hashed[key] = value
+			    attributes_hashed[key.strip] = value.strip
 			  }
 			  for name in ['abs_x', 'abs_y', 'width', 'height']
 			    var = attributes_hashed.delete(name)
