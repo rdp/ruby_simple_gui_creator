@@ -18,7 +18,7 @@ This file is part of Sensible Cinema.
 require 'java'
 require 'sane' # gem dependency
 
-module SimpleGui
+module SimpleGuiCreator
   
  include_package 'javax.swing'
  # will use  these constants (http://jira.codehaus.org/browse/JRUBY-5107)

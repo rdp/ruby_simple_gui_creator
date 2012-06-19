@@ -1,9 +1,10 @@
 require 'java'
 
-require File.dirname(__FILE__) + '/simple_gui.rb' # for JFrame#close, etc., basically required as of today..
+require File.dirname(__FILE__) + '/simple_gui_creator.rb' # for JFrame#close, etc., basically required as of today..
 
-# for docs, see the README
+# for docs, see the README/specs
 module ParseTemplate
+
   def _dgb
 		  require 'rubygems'
 		  require 'ruby-debug'

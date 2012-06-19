@@ -74,7 +74,7 @@ MyWindow.new
   end
   
   def save_file default_filename, text
-    location = SimpleGui.new_nonexisting_or_existing_filechooser_and_go "Choose where to save:", nil, default_filename
+    location = SimpleGuiCreator.new_nonexisting_or_existing_filechooser_and_go "Choose where to save:", nil, default_filename
 	File.write(location, text)
   end
 
