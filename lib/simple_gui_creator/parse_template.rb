@@ -1,15 +1,9 @@
 require 'java'
 
-require File.dirname(__FILE__) + '/simple_gui_creator.rb' # for JFrame#close, etc., basically required as of today..
+require File.dirname(__FILE__) + '/swing_helpers.rb' # for JButton#on_clicked, etc.,
 
 # for docs, see the README/specs
 module ParseTemplate
-
-  def _dgb
-		  require 'rubygems'
-		  require 'ruby-debug'
-		  debugger
-  end
 
   include_package 'javax.swing'; [JFrame, JPanel, JButton, JTextArea, JLabel, UIManager, JScrollPane]
   java_import java.awt.Font
@@ -203,5 +197,13 @@ module ParseTemplate
   end
   
   end
+
+  private  
+  def _dgb
+		  require 'rubygems'
+		  require 'ruby-debug'
+		  debugger
+  end
+
 
 end

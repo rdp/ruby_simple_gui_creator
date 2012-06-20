@@ -2,10 +2,12 @@ require 'java'
 
 # helper/english friendlier methods for JFrame
 
-class javax.swing.JFrame
+class javax::swing::JFrame
+
+   java_import javax::swing::JFrame # so we can refer to it as JFrame, without polluting the global namespace
 
    java_import java.awt.event.ActionListener
-  
+   
    #class StateListener
    #  include java.awt.event.WindowListener	
    #end

@@ -20,6 +20,7 @@ require 'sane' # gem dependency
 require_relative 'swing_helpers'
 
 module SimpleGuiCreator
+
     JFile = java.io.File # no import for this one, so we don't lose access to Ruby's File class
   
     def self.open_url_to_view_it_non_blocking url
