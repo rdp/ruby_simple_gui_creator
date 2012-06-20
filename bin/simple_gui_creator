@@ -24,7 +24,7 @@ class TestWindow < ParseTemplate::JFramer
           | [                                                                    ]  |
           | [                                                                    ]  |
           |                                                                         |
-          | [Show code snippet :create_snippet]                                    |
+          | [Show code snippet :create_snippet]                                     |
           --------------------------------------------------------------------------
     EOL
 	Kernel.print string
@@ -34,19 +34,47 @@ class TestWindow < ParseTemplate::JFramer
 	  ParseTemplate::JFramer.new.parse_setup_string elements[:text_area_to_use].text
 	}
 	elements[:create_snippet].on_clicked {
-	  frame = ParseTemplate::JFramer.new.parse_setup_string elements[:text_area_to_use].text
-	  frame.close
+	  code = create_snippet_from_current
+	  
+	  display_frame = ParseTemplate::JFramer.new.parse_setup_string <<-EOL
+        "Here's your snippet!"
+        [:code,width=500,height=400]
+        [                          ]
+        [                          ]
+        "Here's your template:"
+        [:template_text,width=500,height=400,font=fixed_width]
+        [                                                    ]
+        [Save Both files:save_all]
+	  EOL
+	  display_frame.elements[:code].text = code
+	  template_text = elements[:text_area_to_use].text
+	  display_frame.elements[:template_text].text = template_text
+	  
+	  display_frame.elements[:save_all].on_clicked { 
+	    dir = SimpleGuiCreator.new_existing_dir_chooser_and_go "Pick directory to save both files to:"
+		File.write(dir + '/my_window.template', elements[:text_area_to_use].text)
+		File.write(dir + '/my_window.rb', create_snippet_from_current)
+		
+	  }
+	}
+  end  
+  
+  def create_snippet_from_current
+      # create a demo frame, so I can then pull elements from it
+      fake_frame = ParseTemplate::JFramer.new.parse_setup_string elements[:text_area_to_use].text
+	  fake_frame.close
 	  
 	  element_code = ""
-      frame.elements.each{|e| 
+      fake_frame.elements.each{|e| 
         if e[1].is_a? Java::JavaxSwing::JButton
 	      element_code += "    elements[:#{e[0]}].on_clicked { puts 'clicked #{e[0]}' }\n"
-	    end
+	    else
+		  element_code += "    #{e[0]}_current_text = elements[:#{e[0]}]\n"
+		end
       }	  
+      code=<<-END_CODE
 	  
-      code=<<-EOL
-	  
-require 'simple-ruby-gui-creator.rb'
+require 'simple_gui_creator.rb'
 
 class MyWindow < ParseTemplate::JFramer
   def initialize
@@ -58,31 +86,11 @@ class MyWindow < ParseTemplate::JFramer
   
 end
 MyWindow.new
-	  EOL
-	  frame2 = ParseTemplate::JFramer.new.parse_setup_string <<-EOL
-        "Here's your snippet!"
-        [:code,width=500,height=400]
-        [                          ]
-        [                          ]
-        [Save Code Snippet:snippet_save]
-        "Here's your template:"
-        [:template_text,width=500,height=400,font=fixed_width]
-        [                                                    ]
-        [Save Template:template_save]
-	  EOL
-	  frame2.elements[:code].text = code
-	  frame2.elements[:snippet_save].on_clicked { save_file 'simple-gui-demo.rb', code}
-	  template = elements[:text_area_to_use].text
-	  frame2.elements[:template_text].text = template
-      frame2.elements[:template_save].on_clicked { save_file 'template.simple-gui-demo', template}
-	}
+
+     END_CODE
+	 code
   end
   
-  def save_file default_filename, text
-    location = SimpleGuiCreator.new_nonexisting_or_existing_filechooser_and_go "Choose where to save:", nil, default_filename
-	File.write(location, text)
-  end
-
 end
 
 TestWindow.new
