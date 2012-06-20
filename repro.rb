@@ -21,10 +21,9 @@ java_import javax.swing.JFileChooser
     end
 	end
 
-module SimpleGuiCreator
 
     # choose a file that may or may not exist yet...
-    def self.new_nonexisting_or_existing_filechooser_and_go title = nil, default_dir = nil, default_filename = nil # within JFileChooser class for now...
+    def new_nonexisting_or_existing_filechooser_and_go title = nil, default_dir = nil, default_filename = nil # within JFileChooser class for now...
       out = JFileChooser.new
       if default_dir
         out.set_current_directory JFile.new(default_dir)
@@ -35,7 +34,6 @@ module SimpleGuiCreator
       out.go true
 	  
     end
-	end
 	
 
 begin
