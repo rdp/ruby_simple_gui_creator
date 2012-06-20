@@ -29,7 +29,7 @@ module SimpleGuiCreator
         system("start #{url.gsub('&', '^&')}") # LODO would launchy help/work here with the full url?
       else
         system "#{OS.open_file_command} \"#{url}\""
-        sleep 2 # disallow exiting immediately after...LODO
+        sleep 2 # disallow any program exiting immediately...which can make the window *not* popup in certain circumstances...LODO
       end
     end
   
@@ -44,6 +44,9 @@ module SimpleGuiCreator
         out.set_file default_filename
       end
       got = out.go true
+	  if !got
+	    raise "did not select anything #{title} #{default_dir} #{default_filename}"
+	  end
 	  got
     end
 	

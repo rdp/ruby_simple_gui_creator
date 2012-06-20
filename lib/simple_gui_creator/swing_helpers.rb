@@ -117,7 +117,7 @@ module SimpleGuiCreator
         success = show_open_dialog nil
       end
       unless success == Java::javax::swing::JFileChooser::APPROVE_OPTION
-        java.lang.System.exit 1 # kills background proc...but we shouldn't let them do stuff while a background proc is running, anyway
+        return nil
       end
       get_selected_file.get_absolute_path
     end
