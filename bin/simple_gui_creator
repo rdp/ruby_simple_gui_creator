@@ -52,9 +52,12 @@ class TestWindow < ParseTemplate::JFramer
 	  
 	  display_frame.elements[:save_all].on_clicked { 
 	    dir = SimpleGuiCreator.new_existing_dir_chooser_and_go "Pick directory to save both files to:"
-		File.write(dir + '/my_window.template', elements[:text_area_to_use].text)
-		File.write(dir + '/my_window.rb', create_snippet_from_current)
-		
+		template_file = dir + '/my_window.template'
+		File.write(template_file, elements[:text_area_to_use].text)
+		rb_file = dir + '/my_window.rb'
+		File.write(rb_file, create_snippet_from_current)
+		puts 'wrote to ' + rb_file + ' and ' + template_file 
+		SimpleGuiCreator.show_in_explorer rb_file
 	  }
 	}
   end  
