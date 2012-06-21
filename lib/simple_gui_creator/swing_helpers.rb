@@ -1,5 +1,4 @@
-require 'sane'
-
+require 'sane' # require_relative
 require_relative 'jframe_helper_methods' # jframe stuff gets its own file, it's so much.
 
 module SimpleGuiCreator

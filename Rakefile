@@ -8,7 +8,7 @@ Jeweler::Tasks.new do |gem|
   gem.homepage = "http://github.com/rdp/simple-ruby-gui-creator"
   gem.authors = ["rogerdpack"]
   gem.add_dependency 'sane'
-  gem.add_dependency 'launchy'
+#  gem.add_dependency 'launchy'
 end
 
 Jeweler::RubygemsDotOrgTasks.new

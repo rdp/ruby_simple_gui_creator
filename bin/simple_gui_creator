@@ -41,8 +41,7 @@ class TestWindow < SimpleGuiCreator::ParseTemplate
       "Some text"
       [Button text    :button1]
       [a text area :text_area1,height=300]
-      [                                  ]	  
-      
+      [                                  ]      
 	EOL
 	
 	elements[:replace].on_clicked {

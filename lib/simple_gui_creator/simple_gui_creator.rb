@@ -15,9 +15,10 @@ This file is part of Sensible Cinema.
     You should have received a copy of the GNU General Public License
     along with Sensible Cinema.  If not, see <http://www.gnu.org/licenses/>.
 =end
+
 require 'java'
-require 'sane' # gem dependency
-require_relative 'swing_helpers'
+#require 'sane' # gem dependency
+require File.dirname(__FILE__) + '/swing_helpers'
 
 $simple_creator_show_console_prompts = true
 

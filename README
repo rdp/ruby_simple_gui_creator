@@ -59,8 +59,15 @@ To install/use:
 
 $ gem install simple-ruby-gui-creator
 
->> require 'simple_gui'
->> ... [see above]
+>> require 'simple_gui_creator'
+>> ... [see other examples]
+
+
+It also comes with its own "test as you go" design builder helper GUI, programmed, appropriately enough, using simple gui creator.
+$ jruby -S simple_gui_creator
+
+This pulls up a window with some demo code, and some links that let you save it.  It's almost more of a "demo of how it works" than a
+real editing tool, but feature requests/suggestions wanted!
 
 == Documentation ==
 
