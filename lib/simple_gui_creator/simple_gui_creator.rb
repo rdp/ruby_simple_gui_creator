@@ -130,15 +130,18 @@ module SimpleGuiCreator
 
   def self.show_in_explorer filename_or_path
     raise 'nonexistent file cannot reveal in explorer?' + filename_or_path unless File.exist?(filename_or_path)
+    filename_or_path = '"' + filename_or_path.to_filename + '"' # escape it
     if OS.doze?
       begin
         c = "explorer /e,/select,#{filename_or_path.to_filename}" 
-        system c # command returns immediately...so system is ok
+        system c # command returns immediately...so calling system on it is ok
       rescue => why_does_this_happen_ignore_this_exception_it_probably_actually_succeeded
       end
     elsif OS.mac?
       c = "open -R " + "\"" + filename_or_path.to_filename + "\""
-      puts c
+      system c # returns immediately
+    elsif OS.linux?
+      c = "nohup nautilus --no-desktop #{filename_or_path}" 
       system c
     else
       raise 'os reveal unsupported?'

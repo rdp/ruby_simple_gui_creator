@@ -1,4 +1,6 @@
-on_minimized fix
+does launchy 
+
+= never =
 
 ask_should_allow_on_minimize {
 }
