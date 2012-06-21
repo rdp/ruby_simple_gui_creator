@@ -82,7 +82,7 @@ class TestWindow < SimpleGuiCreator::ParseTemplate
 		File.write(template_file, elements[:text_area_to_use].text)
 		rb_file = dir + '/my_window.rb'
 		File.write(rb_file, create_snippet_from_current)
-		puts 'wrote to ' + rb_file + ' and ' + template_file 
+		puts 'wrote to ' + rb_file + ' and ' + template_file
 		SimpleGuiCreator.show_in_explorer rb_file
 	  }
 	}

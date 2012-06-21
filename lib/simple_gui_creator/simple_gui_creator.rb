@@ -144,12 +144,13 @@ module SimpleGuiCreator
     filename_or_path = '"' + to_filename(filename_or_path.gsub('"', '\\"')) + '"' # quotify, escape it, FWIW untested
     if OS.doze?
       begin
-        c = "explorer /e,/select,#{filename_or_path.to_filename}" 
+        c = "explorer /e,/select,#{filename_or_path}" 
         system c # command returns immediately...so calling system on it is ok
       rescue => why_does_this_happen_ignore_this_exception_it_probably_actually_succeeded
+	    3 # for debugging so it can break here
       end
     elsif OS.mac?
-      c = "open -R " + "\"" + filename_or_path.to_filename + "\""
+      c = "open -R " + "\"" + filename_or_path + "\""
       system c # returns immediately
     elsif OS.linux?
       c = "nohup nautilus --no-desktop #{filename_or_path}" 
