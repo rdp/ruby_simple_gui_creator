@@ -10,25 +10,23 @@ You can specify "easy window layout" in ASCII text, example, if you have a layou
 It will create a window that has buttons and text "like that," with reasonable spacing.
 
 Here's how:
->> frame = SimpleGuiCreator::ParseTemplate::JFramer.new # or optionally subclass this instead
+>> frame = SimpleGuiCreator::ParseTemplate.new # or optionally subclass this instead, and call super in your constructor
 >> frame.parse_setup_filename 'some_filename'
 
-You can program behavior, like this:
+You can then program behaviors like this:
 
 >> frame.elements['button1'].on_clicked { 
   SimpleGuiCreator.show_blocking_message_dialog "you clicked button1!" 
 }  
 
-This has the effect of separating your view from your controller, in this case, because you can store the layouts in
-an entirely separate file, or embedded in the code.  "Normal humans" can edit the design layout files, for instance,
-and the separation allows for easy peace of mind.
+This separates your views from your controllers, in this case, because you can store the layouts in
+an entirely separate file, or embedded in the code.  "Normal humans" can then edit the design layout files, for instance.
 
-It also has helper methods for common GUI tasks, like the above show_blocking_message_dialog:
-
-SimpleGui.new_nonexisting_filechooser_and_go # select file or filename for a "new file" (not yet existing)
-SimpleGui.new_existing_dir_chooser_and_go # select pre-existing directory
-SimpleGui.show_in_explorer(filename) # reveals file in Explorer for windows, Finder for OS X
-text_from_user = SimpleGui.get_user_input "Input your name:" # these raise an exception if the user cancels the dialog,
+It also has helper methods for common GUI tasks, like the above show_blocking_message_dialog, and also:
+SimpleGuiCreator.new_nonexisting_filechooser_and_go # select file or filename for a "new file" (not yet existing)
+SimpleGuiCreator.new_existing_dir_chooser_and_go # select pre-existing directory
+SimpleGuiCreator.show_in_explorer(filename) # reveals file in Explorer for windows, Finder for OS X
+text_from_user = SimpleGuiCreator.get_user_input "Input your name:" # these raise an exception if the user cancels the dialog,
 
 A select-button prompt dialog:
 
@@ -66,7 +64,7 @@ $ gem install simple-ruby-gui-creator
 
 == Documentation ==
 
-Basically, see the examples folder, the "bin/*" files, and also the specs and lib files themselves.
+Basically, see this file, the examples folder, the "bin/*" files, and also the specs and lib files themselves.
 https://github.com/rdp/ruby_simple_gui_creator
 
 == Known problems ==
