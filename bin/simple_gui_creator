@@ -1,12 +1,18 @@
 #!/usr/bin/env ruby
 # assumes has rubygems loaded...since we need the sane gem
-require 'os'
+
+begin
+  require 'os'
+rescue LoadError # ease of development :P
+ require 'rubygems'
+ retry
+end
+
 if !OS.jruby?
   $stderr.puts 'jruby only for now, you can request a change to this, exiting...'
   exit 1
 end
 require File.dirname(__FILE__) + "/../lib/simple_gui_creator.rb"
-
 $simple_creator_show_console_prompts = true
 
 class TestWindow < SimpleGuiCreator::ParseTemplate
@@ -14,9 +20,9 @@ class TestWindow < SimpleGuiCreator::ParseTemplate
   def initialize
     super
     string = <<-EOL
-          ---------- Simple Ruby Gui Creator Test Window ---------------------------
+          ---------- Simple Ruby Gui Creator Test Window ----------------------------
           | "Edit this, then..."                                                    |
-          | [Test it out! :create_button]                                           |
+          | [Test it out! :create_button]  [Insert code for this window:replace]    |
           | [      :text_area_to_use, width=70chars, height=500, font=fixed_width]  |
           | [                                                                    ]  |
           | [                                                                    ]  |
@@ -26,13 +32,25 @@ class TestWindow < SimpleGuiCreator::ParseTemplate
           | [                                                                    ]  |
           | [                                                                    ]  |
           |                                                                         |
-          | [Create code snippet :create_snippet]                              |
-          --------------------------------------------------------------------------
+          | [Create code snippet :create_snippet]                                   |
+          ---------------------------------------------------------------------------
     EOL
 	parse_setup_string string
-	elements[:text_area_to_use].text=string
+	elements[:text_area_to_use].text = <<-EOL
+    -------------A Title-------------
+      "Some text"
+      [Button text    :button1]
+      [a text area :text_area1,height=300]
+      [                                  ]	  
+      
+	EOL
+	
+	elements[:replace].on_clicked {
+	  elements[:text_area_to_use].text = string
+	}
     elements[:create_button].on_clicked {
-	  SimpleGuiCreator::ParseTemplate.new.parse_setup_string elements[:text_area_to_use].text
+	  frame = SimpleGuiCreator::ParseTemplate.new
+	  frame.parse_setup_string elements[:text_area_to_use].text
 	}
 	elements[:create_snippet].on_clicked {
 	  code = create_snippet_from_current

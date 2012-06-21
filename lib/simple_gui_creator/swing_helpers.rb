@@ -62,8 +62,6 @@ module SimpleGuiCreator
        begin
          block.call
        rescue Exception => e
-	   require 'ruby-debug'
-	   debugger
              # e.backtrace[0] == "/Users/rogerdpack/sensible-cinema/lib/gui/create.rb:149:in `setup_create_buttons'"
              bt_out = ""
              for line in e.backtrace[0..1]
