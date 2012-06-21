@@ -7,6 +7,8 @@ if !OS.jruby?
 end
 require File.dirname(__FILE__) + "/../lib/simple_gui_creator.rb"
 
+$simple_creator_show_console_prompts = true
+
 class TestWindow < SimpleGuiCreator::ParseTemplate
 
   def initialize

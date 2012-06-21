@@ -64,6 +64,11 @@ $ gem install simple-ruby-gui-creator
 >> require 'simple_gui'
 >> ... [see above]
 
+== Documentation ==
+
+Basically, see the examples folder, the "bin/*" files, and also the specs and lib files themselves.
+https://github.com/rdp/ruby_simple_gui_creator
+
 == Known problems ==
 
 Only allows single element types per line currently, like "all text" or "all buttons", but I'm working on it :)

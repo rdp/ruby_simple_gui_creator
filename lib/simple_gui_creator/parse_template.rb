@@ -2,7 +2,7 @@ require 'java'
 
 require File.dirname(__FILE__) + '/swing_helpers.rb' # for JButton#on_clicked, etc.,
 
-# for docs, see the README/specs
+# for documentation, see the README file
 module SimpleGuiCreator
 
   include_package 'javax.swing'; [JFrame, JPanel, JButton, JTextArea, JLabel, UIManager, JScrollPane]
