@@ -3,7 +3,7 @@ require File.dirname(__FILE__)+ '/common'
 describe ParseTemplate do
 
   def parse_string string
-    @frame = ParseTemplate::JFramer.new
+    @frame = SimpleGuiCreator::ParseTemplate.new
 	@frame.parse_setup_string(string)
 	@frame
   end

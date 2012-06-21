@@ -19,6 +19,8 @@ require 'java'
 require 'sane' # gem dependency
 require_relative 'swing_helpers'
 
+$simple_creator_show_console_prompts = true
+
 module SimpleGuiCreator
 
     JFile = java.io.File # no import for this one, so we don't lose access to Ruby's File class
@@ -64,7 +66,7 @@ module SimpleGuiCreator
 	  while(!found_non_exist) 
         got = out.go true
 		if(File.exist? got) 
-		  SwingHelpers.show_blocking_message_dialog 'this file already exists, choose a new filename ' + got		  
+		  SimpleGuiCreator.show_blocking_message_dialog 'this file already exists, choose a new filename ' + got		  
 		else
 		 found_non_exist = true
 		end
@@ -127,10 +129,18 @@ module SimpleGuiCreator
     p 'received answer:' + received
     received
   end
+  
+ def self.to_filename string
+  if File::ALT_SEPARATOR
+    File.expand_path(string).gsub('/', File::ALT_SEPARATOR)
+  else
+    File.expand_path(string)
+  end
+ end
 
   def self.show_in_explorer filename_or_path
     raise 'nonexistent file cannot reveal in explorer?' + filename_or_path unless File.exist?(filename_or_path)
-    filename_or_path = '"' + filename_or_path.to_filename + '"' # escape it
+    filename_or_path = '"' + to_filename(filename_or_path.gsub('"', '\\"')) + '"' # quotify, escape it, FWIW untested
     if OS.doze?
       begin
         c = "explorer /e,/select,#{filename_or_path.to_filename}" 
@@ -149,7 +159,7 @@ module SimpleGuiCreator
   end
   
   def self.show_blocking_message_dialog message, title = message.split("\n")[0], style= JOptionPane::INFORMATION_MESSAGE
-    puts "please use GUI window popup... #{message} ..."
+    puts "please use GUI window popup... #{message} ..." if $simple_creator_show_console_prompts
     JOptionPane.showMessageDialog(nil, message, title, style)
     # the above has no return value <sigh> so just return true
     true
@@ -189,14 +199,4 @@ module SimpleGuiCreator
     SwingUtilities.invoke_later { yield }
   end
 
-end
-
-class String
- def to_filename
-  if File::ALT_SEPARATOR
-    File.expand_path(self).gsub('/', File::ALT_SEPARATOR)
-  else
-    File.expand_path(self)
-  end
- end
 end

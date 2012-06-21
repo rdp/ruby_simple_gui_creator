@@ -37,8 +37,7 @@ module SimpleGuiCreator
         UIManager.put("OptionPane.noButtonText", names_hash[:cancel])
       end
       title = message.split(' ')[0..5].join(' ')
-      returned = JOptionPane.showConfirmDialog SwingHelpers.get_always_on_top_frame, message, title, JOptionPane::YES_NO_CANCEL_OPTION
-      SwingHelpers.close_always_on_top_frame
+      returned = JOptionPane.showConfirmDialog nil, message, title, JOptionPane::YES_NO_CANCEL_OPTION
       old.each{|name, old_setting| UIManager.put(name, old_setting)}
       out = JOptionReturnValuesTranslator[returned]
       if !out || !names_hash.key?(out)
@@ -63,19 +62,21 @@ module SimpleGuiCreator
        begin
          block.call
        rescue Exception => e
+	   require 'ruby-debug'
+	   debugger
              # e.backtrace[0] == "/Users/rogerdpack/sensible-cinema/lib/gui/create.rb:149:in `setup_create_buttons'"
              bt_out = ""
              for line in e.backtrace[0..1]
                backtrace_pieces = line.split(':')
-               backtrace_pieces.shift if OS.doze? # ignore drive letter
+               backtrace_pieces.shift if OS.doze? && backtrace_pieces[1..1] == ':' # ignore drive letter colon split, which isn't always there oddly enough [1.8 mode I guess]
 	       filename = backtrace_pieces[0].split('/')[-1]
 	       line_number =  backtrace_pieces[1]
                bt_out += " #{filename}:#{line_number}" 
              end
-         puts 'button cancelled somehow!' + e.to_s + ' ' + get_text[0..50] + bt_out
+         puts 'button cancelled somehow!' + e.to_s + ' ' + get_text[0..50] + bt_out if $simple_creator_show_console_prompts
          if $VERBOSE
-          puts "got fatal exception thrown in button [aborted] #{e} #{e.class} #{e.backtrace[0]}"
-          puts e.backtrace, e
+          puts "got fatal exception thrown in button [aborted] #{e} #{e.class} #{e.backtrace[0]}" if $simple_creator_show_console_prompts
+          puts e.backtrace, e if $simple_creator_show_console_prompts
          end
        end        
      end
@@ -205,14 +206,14 @@ module SimpleGuiCreator
     
     # returns index from initial array that they selected, or raises if they hit the x on it
     def go_selected_index
-      puts 'select from dropdown window'
+      puts 'select from dropdown window' if $simple_creator_show_console_prompts
       show # blocks...
       raise 'did not select, exited early ' + @prompt unless @selected_idx
       @selected_idx
     end
     
     def go_selected_value
-      puts 'select from dropdown window ' + @drop_down_elements[-1] + ' ...'
+      puts 'select from dropdown window ' + @drop_down_elements[-1] + ' ...' if $simple_creator_show_console_prompts
       show # blocks...
       raise 'did not select, exited early ' + @prompt unless @selected_idx
       @drop_down_elements[@selected_idx]

@@ -18,7 +18,8 @@ This file is part of Sensible Cinema.
 
 require File.expand_path(File.dirname(__FILE__) + '/common')
 
-module SwingHelpers
+module SimpleGuiCreator
+
  describe 'functionality' do
    puts "most of these require user interaction, sadly"
 
@@ -34,34 +35,34 @@ module SwingHelpers
   
   it "should be able to convert filenames well" do
     if OS.windows?
-      "a/b/c".to_filename.should == File.expand_path("a\\b\\c").gsub('/', "\\")
+      SimpleGuiCreator.to_filename("a/b/c").should == File.expand_path("a\\b\\c").gsub('/', "\\")
     else
-      "a/b/c".to_filename.should == File.expand_path("a/b/c")
+      SimpleGuiCreator.to_filename("a/b/c").should == File.expand_path("a/b/c")
     end
   end
 
   it "should reveal a file" do
     FileUtils.touch "a b"
-    SwingHelpers.show_in_explorer "a b"
+    SimpleGuiCreator.show_in_explorer "a b"
     Dir.mkdir "a dir" unless File.exist?('a dir')
-    SwingHelpers.show_in_explorer "a dir"
+    SimpleGuiCreator.show_in_explorer "a dir"
   end
 
   it "should reveal a url" do
-    SwingHelpers.open_url_to_view_it_non_blocking "http://www.google.com"
+    SimpleGuiCreator.open_url_to_view_it_non_blocking "http://www.google.com"
   end
   
   it "should select folders" do
-    raise unless File.directory?(c = SwingHelpers.new_existing_dir_chooser_and_go('hello', '.'))
+    raise unless File.directory?(c = SimpleGuiCreator.new_existing_dir_chooser_and_go('hello', '.'))
     p c
-    raise unless File.directory?(c = SwingHelpers.new_existing_dir_chooser_and_go)
+    raise unless File.directory?(c = SimpleGuiCreator.new_existing_dir_chooser_and_go)
     p c
   end
 
   it "should select nonexisting" do
     name = JFileChooser.new_nonexisting_filechooser_and_go 'should force you to select nonexisting..'
     raise if File.exist? name
-    name = SwingHelpers.new_previously_existing_file_selector_and_go 'should forc select existing file, try to select nonexist'
+    name = SimpleGuiCreator.new_previously_existing_file_selector_and_go 'should forc select existing file, try to select nonexist'
     raise unless File.exist? name # it forced them to retry 
   end
   

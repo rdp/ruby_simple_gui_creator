@@ -3,12 +3,12 @@ require 'java'
 require File.dirname(__FILE__) + '/swing_helpers.rb' # for JButton#on_clicked, etc.,
 
 # for docs, see the README/specs
-module ParseTemplate
+module SimpleGuiCreator
 
   include_package 'javax.swing'; [JFrame, JPanel, JButton, JTextArea, JLabel, UIManager, JScrollPane]
   java_import java.awt.Font
   
-  class JFramer < JFrame
+  class ParseTemplate < JFrame
     
     def initialize 
       super()
@@ -204,6 +204,5 @@ module ParseTemplate
 		  require 'ruby-debug'
 		  debugger
   end
-
 
 end

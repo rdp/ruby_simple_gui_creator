@@ -10,13 +10,13 @@ You can specify "easy window layout" in ASCII text, example, if you have a layou
 It will create a window that has buttons and text "like that," with reasonable spacing.
 
 Here's how:
->> frame = ParseTemplate::JFramer.new # or optionally subclass this instead
+>> frame = SimpleGuiCreator::ParseTemplate::JFramer.new # or optionally subclass this instead
 >> frame.parse_setup_filename 'some_filename'
 
 You can program behavior, like this:
 
 >> frame.elements['button1'].on_clicked { 
-  SimpleGui.show_blocking_message_dialog "you clicked button1!" 
+  SimpleGuiCreator.show_blocking_message_dialog "you clicked button1!" 
 }  
 
 This has the effect of separating your view from your controller, in this case, because you can store the layouts in
@@ -32,7 +32,7 @@ text_from_user = SimpleGui.get_user_input "Input your name:" # these raise an ex
 
 A select-button prompt dialog:
 
-if(SimpleGui.show_select_buttons_prompt("message title", :yes => 'text for the yes button', :no => 'text for the no button', :cancel => 'text for the cancel button') == :yes)
+if(SimpleGuiCreator.show_select_buttons_prompt("message title", :yes => 'text for the yes button', :no => 'text for the no button', :cancel => 'text for the cancel button') == :yes)
   # they chose the "yes" equivalent button...
 end
 
