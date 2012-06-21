@@ -29,7 +29,7 @@ module SimpleGuiCreator
         system("start #{url.gsub('&', '^&')}") # LODO would launchy help/work here with the full url?
       else
         system "#{OS.open_file_command} \"#{url}\""
-        sleep 2 # disallow any program exiting immediately...which can make the window *not* popup in certain circumstances...LODO
+        sleep 2 # disallow any program exiting immediately...which can make the window *not* popup in certain circumstances...LODO fix [is it windows only?]
       end
     end
   
