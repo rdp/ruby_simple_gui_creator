@@ -19,20 +19,20 @@ class TestWindow < SimpleGuiCreator::ParseTemplate
   def initialize
     super
     string = <<-EOL
-          ---------- Simple Ruby Gui Creator Test Window ----------------------------
-          | "Edit this, then..."                                                    |
-          | [Test it out! :create_button]  [Insert code for this window:replace]    |
-          | [      :text_area_to_use, width=70chars, height=500, font=fixed_width]  |
-          | [                                                                    ]  |
-          | [                                                                    ]  |
-          | [                                                                    ]  |
-          | [                                                                    ]  |
-          | [                                                                    ]  |
-          | [                                                                    ]  |
-          | [                                                                    ]  |
-          |                                                                         |
-          | [Create code snippet :create_snippet]                                   |
-          ---------------------------------------------------------------------------
+          ---------- Simple Ruby Gui Creator Test Window ----------------------------------------
+          | "Edit this, then..."                                                                |
+          | [Test it out! :test_it_out_button]  [Insert code for this window:replace_button]    |
+          | [      :text_area_to_use, width=70chars, height=500, font=fixed_width]              |
+          | [                                                                    ]              |
+          | [                                                                    ]              |
+          | [                                                                    ]              |
+          | [                                                                    ]              |
+          | [                                                                    ]              |
+          | [                                                                    ]              |
+          | [                                                                    ]              |
+          |                                                                                     |
+          | [Create code snippet :create_snippet]                                               |
+          ---------------------------------------------------------------------------------------
     EOL
 	parse_setup_string string
 	elements[:text_area_to_use].text = <<-EOL
@@ -43,12 +43,13 @@ class TestWindow < SimpleGuiCreator::ParseTemplate
       [                                  ]      
 	EOL
 	
-	elements[:replace].on_clicked {
+	elements[:replace_button].on_clicked {
 	  elements[:text_area_to_use].text = string
 	}
-    elements[:create_button].on_clicked {
+    elements[:test_it_out_button].on_clicked {
 	  frame = SimpleGuiCreator::ParseTemplate.new
 	  frame.parse_setup_string elements[:text_area_to_use].text
+	  frame.instance_eval(enumerate_elements_and_get_code) # give the buttons something to do when clicked :P
 	}
 	elements[:create_snippet].on_clicked {
 	  code = create_snippet_from_current
@@ -89,6 +90,28 @@ class TestWindow < SimpleGuiCreator::ParseTemplate
   
   def create_snippet_from_current
       # create a demo frame, so I can then pull elements from it
+	  element_code = enumerate_elements_and_get_code
+      code=<<-END_CODE
+# demo code to parse template file
+require 'rubygems'	  
+require 'simple_gui_creator'
+
+class MyWindow < SimpleGuiCreator::ParseTemplate
+  def initialize
+    super
+    parse_setup_filename 'my_window.template' # create this file first	
+#{element_code}
+  end
+  
+end
+
+MyWindow.new # runs forever until closed
+
+     END_CODE
+	 code
+  end
+
+  def enumerate_elements_and_get_code
       fake_frame = SimpleGuiCreator::ParseTemplate.new.parse_setup_string elements[:text_area_to_use].text
 	  fake_frame.close
 	  
@@ -100,25 +123,7 @@ class TestWindow < SimpleGuiCreator::ParseTemplate
 		  element_code += "    #{e[0]}_current_text = elements[:#{e[0]}].text\n"
 		end
       }	  
-      code=<<-END_CODE
-# demo code to parse template file
-require 'rubygems'	  
-require 'simple_gui_creator'
-
-class MyWindow < SimpleGuiCreator::ParseTemplate
-  def initialize
-    super
-    parse_setup_filename 'my_window.template' # create this file first
-	
-#{element_code}
-  end
-  
-end
-
-MyWindow.new
-
-     END_CODE
-	 code
+	  element_code
   end
   
 end
