@@ -1,3 +1,5 @@
+puts 'dont build this from a git submodule!'
+
 require 'sane'
 require 'jeweler2'
 Jeweler::Tasks.new do |gem|
