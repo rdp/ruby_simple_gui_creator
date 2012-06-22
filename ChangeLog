@@ -1,3 +1,4 @@
 0.1.1
   linux compat.
   completely change the module structure/hierarchy LOL.
+  less pollution of global namespace

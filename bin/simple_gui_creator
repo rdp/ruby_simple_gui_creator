@@ -12,8 +12,7 @@ if !OS.jruby?
   $stderr.puts 'jruby only for now, you can request a change to this, exiting...'
   exit 1
 end
-require File.dirname(__FILE__) + "/../lib/simple_gui_creator.rb"
-$simple_creator_show_console_prompts = true
+require 'simple_gui_creator'#File.dirname(__FILE__) + "/../lib/simple_gui_creator.rb"
 
 class TestWindow < SimpleGuiCreator::ParseTemplate
 
@@ -102,8 +101,9 @@ class TestWindow < SimpleGuiCreator::ParseTemplate
 		end
       }	  
       code=<<-END_CODE
-# demo code to parse template file	  
-require 'simple_gui_creator.rb'
+# demo code to parse template file
+require 'rubygems'	  
+require 'simple_gui_creator'
 
 class MyWindow < SimpleGuiCreator::ParseTemplate
   def initialize
