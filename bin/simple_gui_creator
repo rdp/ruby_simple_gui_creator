@@ -73,7 +73,7 @@ class TestWindow < SimpleGuiCreator::ParseTemplate
 	    dir = SimpleGuiCreator.new_existing_dir_chooser_and_go "Pick directory to save both files to:"
 		template_file = dir + '/my_window.template'
 		if File.exist? template_file
-		  if(SimpleGuiCreator.show_select_buttons_prompt("#{template_file} already exists, overwrite?", :yes => 'overwrite') != :yes)
+		  if(SimpleGuiCreator.show_select_buttons_prompt("#{template_file} already exists, overwrite?", :yes => 'Overwrite!') != :yes)
 		    raise 'abort this button!'
 		  end
 		end
