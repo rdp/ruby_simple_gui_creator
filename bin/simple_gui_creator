@@ -99,7 +99,7 @@ require 'simple_gui_creator'
 class MyWindow < SimpleGuiCreator::ParseTemplate
   def initialize
     super
-    parse_setup_filename 'my_window.template' # create this file first	
+    parse_setup_filename 'my_window.template' # layout/design template
 #{element_code}
   end
   
