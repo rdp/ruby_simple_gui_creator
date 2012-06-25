@@ -2,11 +2,13 @@ if the window goes too low, they can't see it all?
 
 gets h,w of trivial text areas *wrong* oh so wrong
 
+use native file handlers, the swing ones shuck with default save filenames
+
 = never =
 
-Parsing failed on line "      _                       _\t  \n" number: 5!
+fix: Parsing failed on line "      _                       _\t  \n" number: 5!
 
-use launchy for url's in linux [?]
+use launchy for at least url's in linux
 
 ask_should_allow_on_minimize {
 }
