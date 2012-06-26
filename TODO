@@ -1,6 +1,21 @@
+gets h,w of trivial text areas *wrong* oh so wrong
+
+YAML-possible for the layout, in a separate file. 
+
+Make an GUI editor for the YAML as objects.
+
+= maybe =
+
 if the window goes too low, they can't see it all?
 
-gets h,w of trivial text areas *wrong* oh so wrong
+HTML linked version. what the woot! LOL.
+  serialize the object...to RAM for now LOL.
+  pull the object from a db based on ID
+  instance_exec the [saved in RAM] proc
+    this would mean you can never "wildly redefine" action for pages though clicks...hmm...
+	or you could just pass "self" through...hmm...
+	whatever would be first pass ideal, just make that happen
+  
 
 = never =
 
