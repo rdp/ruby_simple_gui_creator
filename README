@@ -1,34 +1,65 @@
-This gem is meant to make GUI development in Ruby easy, and even fun.
+This gem is meant to make GUI development in Ruby easy, and trivial.
 
-You can specify "easy window layout" in ASCII text, example, if you have a layout like this:
+Basically it allows you to design your window layout using 
+(opinionated) ASCII art-like text:
 
----------- A Title ---------------------------
-| [a button:button1]   [button text:button2] |
-| "some text2:text1"                         |
-----------------------------------------------
+---------------My Window Title--------------------------
+| [Click this button      :button1]                    |
+| [Click this button too! :button2]                    |
+--------------------------------------------------------
 
-It will create a window that has buttons and text "like that," with reasonable spacing.
+And then bind actions to ruby code, like:
+
+  elements[:button1].on_clicked { puts 'you clicked button1' }
+
+This makes the design part of the GUI much easier than trying to figure
+it out by trial and error, or "guessing" what swing or shoes are going to actually
+give for you in the end.  It comes with its own "GUI Editor" for
+experimenting with designs on the fly.
+
+# if you don't have jruby yet installed, for OS X or linux users:
+$ rvm install jruby
+$ rvm use jruby
+
+# now install the gem.
+$ gem install simple_gui_creator
+$ jruby -S simple_gui_creator # the GUI editor
+
+Another example:
+
+---------- Window Title ----------------------------------
+| [a button:button1]   [button text:button2]             |
+| "some text2:text1"                                     |
+| [An Editable Text Area with 4 rows:text_area]          |
+| [                                           ]          |
+| [                                           ]          |
+| [                                           ]          |
+----------------------------------------------------------
 
 Here's how:
+
 >> frame = SimpleGuiCreator::ParseTemplate.new # or optionally subclass this instead, and call super in your constructor
 >> frame.parse_setup_filename 'some_filename'
 
-You can then program behaviors like this:
+Set behaviors like this:
 
 >> frame.elements['button1'].on_clicked { 
   SimpleGuiCreator.show_blocking_message_dialog "you clicked button1!" 
 }  
 
-This separates your views from your controllers, in this case, because you can store the layouts in
-an entirely separate file, or embedded in the code.  "Normal humans" can then edit the design layout files, for instance.
+Having the layout as ASCII text separates views from controllers, in this case, because you can store the layouts in
+an entirely separate file (or embedded in the code).  "Normal humans" can then edit the design layout files, for instance.
+It has proven quite nice at separating concerns.
 
-It also has helper methods for common GUI tasks, like the above show_blocking_message_dialog, and also:
+The library also has helper methods for common GUI tasks, like:
+
+SimpleGuiCreator.show_blocking_message_dialog "A message box"
 SimpleGuiCreator.new_nonexisting_filechooser_and_go # select file or filename for a "new file" (not yet existing)
 SimpleGuiCreator.new_existing_dir_chooser_and_go # select pre-existing directory
 SimpleGuiCreator.show_in_explorer(filename) # reveals file in Explorer for windows, Finder for OS X
 text_from_user = SimpleGuiCreator.get_user_input "Input your name:" # these raise an exception if the user cancels the dialog,
 
-A select-button prompt dialog:
+Select-button prompt dialog:
 
 if(SimpleGuiCreator.show_select_buttons_prompt("message title", :yes => 'text for the yes button', :no => 'text for the no button', :cancel => 'text for the cancel button') == :yes)
   # they chose the "yes" equivalent button...
@@ -36,7 +67,7 @@ end
 
 etc. ...
 
-It provies a few helper methods to the ParseTemplate::JFramer (and JFrame) class, like:
+It provies a few helper methods to the ParseTemplate (and also JFrame) class, like:
 
 #bring_to_front
 #minimize
@@ -44,23 +75,16 @@ It provies a few helper methods to the ParseTemplate::JFramer (and JFrame) class
 #after_closed { ... }
 #after_minimized { ... }
 
-It has helpers to control/playback audio, like mp3's or wave's, starting/stopping asynchronously (see the files in the 'lib/ruby-easy-gui-creator' directory.
+See the files in the lib folder.
+
+It has helpers to control/playback audio, like mp3's or wave's, starting/stopping asynchronously (see the files in the 'lib/*/*' directory.
 It has helpers to set/get system clipboard contents.
 It has helpers to control/query the mouse (I use this, but don't know why anybody else ever would want to LOL).
 It has helpers to query the current system for its DVD drives, be notified when disks are inserted/changed, etc.
 
 Feedback/feature requests welcome.
 http://groups.google.com/group/roger-projects,  roger-projects@googlegroups.com
-I'd even be happy to wrap other gui frameworks (currently jruby/swing only) with the same helper functions, if anybody wanted it.
-
-Enjoy!
-
-To install/use:
-
-$ gem install simple-ruby-gui-creator
-
->> require 'simple_gui_creator'
->> ... [see other examples]
+I'd even be happy to wrap other gui frameworks (currently jruby/swing only) with the same functionality, if anybody wanted it.
 
 == GUI Editor ==
 
@@ -72,14 +96,14 @@ real editing tool, but feature requests/suggestions wanted!
 
 == Documentation ==
 
-Basically, see this file, the examples folder, the "bin/*" files, and also the specs and lib files themselves.
+Basically, see this file, the examples folder, the "bin/*" file, and also the specs and lib files themselves.
 https://github.com/rdp/ruby_simple_gui_creator
 
 == Known problems ==
 
 Only allows single element types per line currently, like "all text" or "all buttons", but I'm working on it :)
-Only Jruby today, which can make loading time painful (hint: use splash screen).
+Only Jruby today, which can make load time painful (hint: use splash screen).
 
 = License ==
 
-MIT license (which is very open), see file license.mit.txt
+MIT license (which is quite open), see file license.mit.txt
