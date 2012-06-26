@@ -79,3 +79,7 @@ https://github.com/rdp/ruby_simple_gui_creator
 
 Only allows single element types per line currently, like "all text" or "all buttons", but I'm working on it :)
 Only Jruby today, which can make loading time painful (hint: use splash screen).
+
+= License ==
+
+MIT license (which is very open), see file license.mit.txt

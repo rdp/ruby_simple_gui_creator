@@ -17,11 +17,13 @@ HTML linked version. what the woot! LOL.
 	whatever would be first pass ideal, just make that happen
   
 
+use native file handlers, the swing ones shuck with default save filenames
+
 = never =
 
-Parsing failed on line "      _                       _\t  \n" number: 5!
+fix: Parsing failed on line "      _                       _\t  \n" number: 5!
 
-use launchy for url's in linux [?]
+use launchy for at least url's in linux
 
 ask_should_allow_on_minimize {
 }
