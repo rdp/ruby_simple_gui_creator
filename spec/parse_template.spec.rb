@@ -82,16 +82,22 @@ describe SimpleGuiCreator::ParseTemplate do
     proc { parse_string " \" text:name,fake=fake \" "}.should raise_exception
   end
   
- # LODO allow internal sub-boxes LOL
+  it "should allow mixed on the same line" do
+    proc { parse_string %! "text:text", ["button:button]" \" text:name,fake=fake \" "}.should raise_exception
+    
+  
+  end
+  
+ # LODO gets h,w of trivial text areas *wrong* oh so wrong
+ # TODO you can line up stuff to get start coords for everything
+ #   end sizes
  # TODO mixeds on the same line
- # LODO should pass the button through to on_clicked [?] or button with frame, too?
- # LODO should be able to clear everything a button does or used to do...
- # LODO a 'title managing' object LOL
- # LODO rel_width=+100 or some odd
- # buttons should require a code name :P
  # allow prepropagation of textareas, for easier width detection...and/or separating out concerns...hmm...
+ #    YAML-possible for the layout, in a separate file.  Then it's still semi-separated LOL
  #    parse_setup_string string, :text_area_to_use_text => string
+ #      Make an GUI editor for editing YAML
  # parse_setup_string :default_font =>
+ # 
  
  it "should accept height, width, abs_x, abs_y" do
    frame = parse_string ' [a:my_name,abs_x=1,abs_y=2,width=100,height=101] '

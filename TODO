@@ -1,12 +1,21 @@
-gets h,w of trivial text areas *wrong* oh so wrong
-
-YAML-possible for the layout, in a separate file. 
-
-Make an GUI editor for the YAML as objects.
+see spec/parse_template.spec.rb for another (the real) TODO list
 
 = maybe =
 
-if the window goes too low, they can't see it all?
+ # LODO allow internal sub-boxes LOL
+ # LODO should pass the button through to on_clicked [?] or button with frame, too?
+ # LODO should be able to clear everything a button does or used to do...
+ # LODO a 'title managing' object LOL
+ # LODO rel_width=+100 or some odd
+ # LODO real documentation LOL
+ # buttons should require a code name :P
+
+if the window goes too low, they can't see it all, and it doesn't scroll?
+
+
+use native file handlers, the swing ones shuck with default save filenames
+
+= never =
 
 HTML linked version. what the woot! LOL.
   serialize the object...to RAM for now LOL.
@@ -16,11 +25,6 @@ HTML linked version. what the woot! LOL.
 	or you could just pass "self" through...hmm...
 	whatever would be first pass ideal, just make that happen
   
-
-use native file handlers, the swing ones shuck with default save filenames
-
-= never =
-
 fix: Parsing failed on line "      _                       _\t  \n" number: 5!
 
 use launchy for at least url's in linux
