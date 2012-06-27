@@ -1,6 +1,6 @@
 require File.dirname(__FILE__)+ '/common'
 
-describe ParseTemplate do
+describe SimpleGuiCreator::ParseTemplate do
 
   def parse_string string
     @frame = SimpleGuiCreator::ParseTemplate.new
