@@ -56,25 +56,22 @@ module SimpleGuiCreator
       elsif line =~ blank_line_regex
         @current_y += @current_line_height
       else
-        if line =~ button_line_regex       
-          # button, or TextArea line
-          cur_x = 0        
-          while next_match = closest_next_regex_match([button_line_regex], line[cur_x..-1])
-            cur_spot = line[cur_x..-1] =~ next_match
-            cur_spot += cur_x # we had only acted on a partial line, above, so add in the part we didn't do, to get the right offset number
-            captured = $1
-            end_spot = cur_spot + captured.length
+        # attempt an element line
+        cur_x = 0        
+        while next_match = closest_next_regex_match([button_line_regex, text_regex], line[cur_x..-1])
+          cur_spot = line[cur_x..-1] =~ next_match
+          cur_spot += cur_x # we had only acted on a partial line, above, so add in the part we didn't do, to get the right offset number
+          captured = $1
+          end_spot = cur_spot + captured.length
+          if next_match == button_line_regex
             handle_button_at_current captured, cur_spot, end_spot, all_lines, idx
-            cur_x = end_spot
-          end        
-           @current_y += @current_line_height
-        elsif line =~ text_regex
-          for name in line.scan(text_regex)
+          elsif next_match == text_regex
             label = JLabel.new
-            setup_element(label, name[0])
+            setup_element(label, captured)            
           end
-          @current_y += @current_line_height
-        end
+          cur_x = end_spot
+        end        
+        @current_y += @current_line_height
       end
       
       # build in realtime LOL
