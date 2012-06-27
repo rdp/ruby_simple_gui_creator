@@ -54,12 +54,13 @@ module SimpleGuiCreator
         @frame.set_title $1 # done :)
         @frame.original_title = $1.dup.freeze # freeze...LOL        
       elsif line =~ blank_line_regex
-           @current_y += @current_line_height
+        @current_y += @current_line_height
       else
         if line =~ button_line_regex       
           # button, or TextArea line
           cur_x = 0        
-          while cur_spot = (line[cur_x..-1] =~ button_line_regex)
+          while next_match = closest_next_regex_match([button_line_regex], line[cur_x..-1])
+            cur_spot = line[cur_x..-1] =~ next_match
             cur_spot += cur_x # we had only acted on a partial line, above, so add in the part we didn't do, to get the right offset number
             captured = $1
             end_spot = cur_spot + captured.length
@@ -87,6 +88,17 @@ module SimpleGuiCreator
   end
   
   private
+  
+  def closest_next_regex_match options, line
+    mapped = options.map{|option| line =~ option}
+    best = 10000
+    mapped.each{|number| best = [best, number].min if number}
+    if best == 10000
+      return nil
+    else
+      return options[mapped.index(best)] # yikes that was hard
+    end
+  end
   
   def handle_button_at_current captured, cur_spot, end_spot, all_lines, idx
     count_lines_below = 0
