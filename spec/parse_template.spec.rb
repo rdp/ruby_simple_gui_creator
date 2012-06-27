@@ -83,9 +83,10 @@ describe SimpleGuiCreator::ParseTemplate do
   end
   
   it "should allow mixed on the same line" do
-    proc { parse_string %! "text:text", ["button:button]" \" text:name,fake=fake \" "}.should raise_exception
-    
-  
+    frame = parse_string %! "text:text", [button:button] !
+	frame.elements.size.should == 2
+	frame.elements[:button].should_not be_nil
+	frame.elements[:text].should_not be_nil
   end
   
  # LODO gets h,w of trivial text areas *wrong* oh so wrong
@@ -96,8 +97,7 @@ describe SimpleGuiCreator::ParseTemplate do
  #    YAML-possible for the layout, in a separate file.  Then it's still semi-separated LOL
  #    parse_setup_string string, :text_area_to_use_text => string
  #      Make an GUI editor for editing YAML
- # parse_setup_string :default_font =>
- # 
+ #   parse_setup_string :default_font =>
  
  it "should accept height, width, abs_x, abs_y" do
    frame = parse_string ' [a:my_name,abs_x=1,abs_y=2,width=100,height=101] '
