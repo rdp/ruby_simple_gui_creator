@@ -46,7 +46,7 @@ module SimpleGuiCreator
       #=> [["Setup Preferences:preferences"], ["Start:start"], ["Stop:stop"]]
       
       text_regex = /"([^"]+)"/ # "some text:name"
-      blank_line_regex = /^\s*(|\|)\s+(|\|)\s*$/ # " | | " or just empty...
+      blank_line_regex = /^\s*(|\|)\s+(|\|)\s*$/ # matches " | | " or just empty...
       title_regex = /\s*[-]+([\w ]+)[-]+\s*$/  # ----(a Title)---
       @current_line_height = 25
       
@@ -100,7 +100,7 @@ module SimpleGuiCreator
   def handle_button_at_current captured, cur_spot, end_spot, all_lines, idx
     count_lines_below = 0
     matching_blank_text_area_string = '[' + ' '*(end_spot-cur_spot) + ']'
-    empty_it_out = matching_blank_text_area_string.gsub(/[\[\]]/, '_') # can't actually blank it out...
+    empty_it_out = matching_blank_text_area_string.gsub(/[\[]/, '_') # can't actually remove it...
     for line2 in all_lines[idx+1..-1]
       if line2[cur_spot..(end_spot+1)] == matching_blank_text_area_string
         line2[cur_spot, end_spot-cur_spot+2] = empty_it_out # :)
