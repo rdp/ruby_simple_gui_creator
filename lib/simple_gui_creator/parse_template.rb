@@ -57,35 +57,14 @@ module SimpleGuiCreator
            @current_y += @current_line_height
       else
         if line =~ button_line_regex       
-          # button, or TextArea
+          # button, or TextArea line
           cur_x = 0        
           while cur_spot = (line[cur_x..-1] =~ button_line_regex)
-            cur_spot += cur_x# we had only acted on a partial line, above, so add in the part we didn't do
-            name = $1
-            end_spot = cur_spot + name.length
-            count_lines_below = 0
-            matching_blank_text_area_string = '[' + ' '*(end_spot-cur_spot) + ']'
-            empty_it_out = matching_blank_text_area_string.gsub(/[\[\]]/, '_') # can't actually blank it out...
-            for line2 in all_lines[idx+1..-1]
-              if line2[cur_spot..(end_spot+1)] == matching_blank_text_area_string
-                line2[cur_spot, end_spot-cur_spot+2] = empty_it_out # :)
-                count_lines_below += 1
-              else
-                break
-              end
-            end
-            if count_lines_below > 0
-              rows = count_lines_below + 1
-              text_area = JTextArea.new(rows, name.split(':')[0].length)
-              text_area.text="\n"*rows
-              # width?
-              scrollPane = JScrollPane.new(text_area)
-              setup_element(scrollPane, name, scrollPane.getPreferredSize.height, text_area)
-            else
-              button = JButton.new
-              setup_element(button, name)
-            end          
-            cur_x = end_spot # creep forward within this line...
+            cur_spot += cur_x # we had only acted on a partial line, above, so add in the part we didn't do, to get the right offset number
+            captured = $1
+            end_spot = cur_spot + captured.length
+            handle_button_at_current captured, cur_spot, end_spot, all_lines, idx
+            cur_x = end_spot
           end        
            @current_y += @current_line_height
         elsif line =~ text_regex
@@ -108,6 +87,31 @@ module SimpleGuiCreator
   end
   
   private
+  
+  def handle_button_at_current captured, cur_spot, end_spot, all_lines, idx
+    count_lines_below = 0
+    matching_blank_text_area_string = '[' + ' '*(end_spot-cur_spot) + ']'
+    empty_it_out = matching_blank_text_area_string.gsub(/[\[\]]/, '_') # can't actually blank it out...
+    for line2 in all_lines[idx+1..-1]
+      if line2[cur_spot..(end_spot+1)] == matching_blank_text_area_string
+        line2[cur_spot, end_spot-cur_spot+2] = empty_it_out # :)
+        count_lines_below += 1
+      else
+        break
+      end
+    end
+    if count_lines_below > 0
+      rows = count_lines_below + 1
+      text_area = JTextArea.new(rows, captured.split(':')[0].length)
+      text_area.text="\n"*rows
+      # width?
+      scrollPane = JScrollPane.new(text_area)
+      setup_element(scrollPane, captured, scrollPane.getPreferredSize.height, text_area)
+    else
+      button = JButton.new
+      setup_element(button, captured)
+    end
+  end
   
   def get_text_width text
     get_text_dimentia(text).width
