@@ -135,7 +135,7 @@ module SimpleGuiCreator
       end
       setup_element drop_down, ':' + code_name_with_attrs, nil, drop_down, drop_down.getPreferredSize.width
     else
-      # normal button
+      # a "normal" button
       button = JButton.new
       setup_element(button, captured)
     end
