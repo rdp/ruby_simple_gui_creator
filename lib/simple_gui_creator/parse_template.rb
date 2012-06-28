@@ -111,10 +111,8 @@ module SimpleGuiCreator
         break
       end
     end
-    # LODO DRY up
-    just_left_side_of_colon = captured.split(':')[0..-1].join(':').andand.strip
-    colon_and_right = ':' +  captured.split(':')[-1]
-    #_dbg
+    text, code_name_with_attrs = split_int_text_name_and_code captured
+    text.strip! # hope we don't care for buttons...for now...
     if count_lines_below > 0
       rows = count_lines_below + 1 # at least 2...
       text_area = JTextArea.new(rows, captured.split(':')[0].length)
@@ -122,16 +120,20 @@ module SimpleGuiCreator
       # width?
       scrollPane = JScrollPane.new(text_area)
       setup_element(scrollPane, captured, scrollPane.getPreferredSize.height, text_area)
-    elsif just_left_side_of_colon == "✓"
+    elsif text == "✓"
       check_box = JCheckBox.new
-      setup_element(check_box, colon_and_right, nil, check_box, check_box.getPreferredSize.width)
-    elsif just_left_side_of_colon[-2..-1] == "\/" # a dropdown!
+      setup_element(check_box, ':' + code_name_with_attrs, nil, check_box, check_box.getPreferredSize.width)
+    elsif text.end_with?("\\/") || text.end_with?("▼") # dropdowns
       drop_down = JComboBox.new
-      initial_value = just_left_side_of_colon[0..-3]
-      if initial_value.present?
-        drop_down.add_item initial_value
+      if text.end_with?("▼")      
+        initial_value = text = text.gsub(/▼$/, '')
+      else
+        initial_value = text[0..-3].strip
       end
-      setup_element drop_down, colon_and_right, drop_down, drop_down.getPreferredSize.width
+      if initial_value.present?
+        drop_down.add_item initial_value.strip # set the top line as default
+      end
+      setup_element drop_down, ':' + code_name_with_attrs, nil, drop_down, drop_down.getPreferredSize.width
     else
       # normal button
       button = JButton.new
@@ -150,61 +152,62 @@ module SimpleGuiCreator
     textLayout.bounds # has #height and #width
   end
   
-  def split_int_name_and_code name_and_code
-  
+  def split_int_text_name_and_code name_and_code
+      if name_and_code.include?(':') && !name_and_code.end_with?(':') # like "Start:start_button"  or "start:button:code_name,attribs" but not "Hello:" let that through
+        text = name_and_code.split(':')[0..-2].join(':') # only accept last colon, so they can have text with colons in it
+        code_name_with_attrs = name_and_code.split(':')[-1]
+        [text, code_name_with_attrs]
+      else
+        [name_and_code, nil]
+      end
   end
   
   def setup_element element, name_and_code, height=nil, set_text_on_this = element, width=nil
           abs_x = nil
           abs_y = nil
-          #height = nil
-          
-          if name_and_code.include?(':') && !name_and_code.end_with?(':') # like "Start:start_button"  or "start:button:code_name,attribs" but not "Hello:" let that through
-            text = name_and_code.split(':')[0..-2].join(':') # only accept last colon, so they can have text with colons in it
-            code_name_with_attrs = name_and_code.split(':')[-1]
+          text, code_name_with_attrs = split_int_text_name_and_code name_and_code
+          if code_name_with_attrs
+            # extract attributes
             if code_name_with_attrs.split(',')[0] !~ /=/
-              # like code_name,width=250,x=y
+              # then like code_name,width=250,x=y
               code_name, *attributes = code_name_with_attrs.split(',')
             else
               code_name = nil
               attributes = code_name_with_attrs.split(',')
             end
-              attributes_hashed = {}
-              attributes.each{|attr| 
-                key, value = attr.split('=')
-                attributes_hashed[key.strip] = value.strip
-              }
-              if type = attributes_hashed.delete('font')
-                if type == "fixed_width"
-                  set_text_on_this.font=Font.new("Monospaced", Font::PLAIN, 14)
+            attributes_hashed = {}
+            attributes.each{|attr| 
+              key, value = attr.split('=')
+              attributes_hashed[key.strip] = value.strip
+            }
+            if type = attributes_hashed.delete('font')
+              if type == "fixed_width"
+                set_text_on_this.font = Font.new("Monospaced", Font::PLAIN, 14)
+              else
+                 raise "all we support is fixed_width font as of yet #{type} #{name_and_code}"
+              end                
+            end
+            
+            for name2 in ['abs_x', 'abs_y', 'width', 'height']
+              var = attributes_hashed.delete(name2)
+              if var
+                if var =~ /chars$/
+                  count = var[0..-5].to_i
+                  var = get_text_width('m'*count) # TODO fails for height 30chars
+                elsif var =~ /px$/
+                  var = var[0..-3].to_i
                 else
-                   raise "all we support is fixed_width font as of yet #{type} #{name_and_code}"
-                end                
-              end
-              
-              for name2 in ['abs_x', 'abs_y', 'width', 'height']
-                var = attributes_hashed.delete(name2)
-                if var
-                  if var =~ /chars$/
-                    count = var[0..-5].to_i
-                    var = get_text_width('m'*count) # TODO fails for height 30chars
-                  elsif var =~ /px$/
-                    var = var[0..-3].to_i
-                  else
-                    var = var.to_i # allow it to be clean :P
-                  end
-                  raise "#{var} has value of zero?" if var == 0
-                  eval("#{name2} = #{var}") # ugh
+                  var = var.to_i # allow it to be clean :P
                 end
+                raise "#{var} has value of zero?" if var == 0
+                eval("#{name2} = #{var}") # ugh
               end
-              raise "unknown attributes found: #{attributes_hashed.keys.inspect} #{attributes_hashed.inspect} #{code_name} #{name_and_code}" if attributes_hashed.length > 0
-          else
-            # no code name, for instance "just text"
-            text = name_and_code
+            end
+            raise "unknown attributes found: #{attributes_hashed.keys.inspect} #{attributes_hashed.inspect} #{code_name} #{name_and_code}" if attributes_hashed.length > 0
           end
           if !width
             if text.blank?
-              raise 'cannot have blank original text without some size specifier:' + name
+              raise 'cannot have blank original text without width specifier:' + name
             end
             if text.strip != text
               # let blank space count as "space" for now, but don't actually set it LOL
@@ -215,7 +218,7 @@ module SimpleGuiCreator
               width = get_text_width(text) + 35
             end
            end
-          set_text_on_this.text=text
+          set_text_on_this.text=text if text.present?
           abs_x ||= @current_x
           abs_y ||= @current_y
           height ||= 20

@@ -41,11 +41,16 @@ describe SimpleGuiCreator::ParseTemplate do
   end
   
   it "should parse drop down lines" do
-    for string in ["[some dropdown lines \/:dropdown_name]", "[some dropdown lines \/ : dropdown_name]", "[some dropdown lines\/: dropdown_name]"] # TODO: ▼
+    for string in ["[some dropdown lines \\/:dropdown_name]", "[some dropdown lines \\/ : dropdown_name]", "[some dropdown lines\\/: dropdown_name]", "[some dropdown lines ▼ : dropdown_name]"]
       frame = parse_string string
       frame.elements[:dropdown_name].class.should ==  Java::JavaxSwing::JComboBox
+      frame.elements[:dropdown_name].add_items ['a', 'b', 'c']
       frame.elements[:dropdown_name].get_item_at(0).should == 'some dropdown lines'
+      frame.elements[:dropdown_name].on_select_new_element{|element, idx| p element, idx} # seems to work...
+      frame.close
     end
+    frame = parse_string "[\\/:dropdown_name]"
+    frame.elements[:dropdown_name].get_item_at(0).should be_nil    
  end
 
   it "should parse text strings" do

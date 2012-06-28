@@ -177,7 +177,7 @@ module SimpleGuiCreator
   class JComboBox
     def on_select_new_element &block
        add_item_listener { |e|
-         block.call(get_item(get_selected_index), get_selected_index)
+         block.call(get_item_at(get_selected_index), get_selected_index)
        }
     end
     
