@@ -95,7 +95,7 @@ describe SimpleGuiCreator::ParseTemplate do
  # allow prepropagation of textareas, for easier width detection...and/or separating out concerns...hmm...
  #    YAML-possible for the layout, in a separate file.  Then it's still semi-separated LOL
  #    parse_setup_string string, :text_area_to_use_text => string
- #      Make an GUI editor for editing YAML
+ #      Make a GUI editor for editing YAML
  #   parse_setup_string :default_font =>
  # LODO allow for +---------------------+
  
