@@ -10,6 +10,7 @@ Jeweler::Tasks.new do |gem|
   gem.homepage = "https://github.com/rdp/ruby_simple_gui_creator"
   gem.authors = ["rogerdpack"]
   gem.add_dependency 'sane'
+  gem.add_dependency 'andand'
 #  gem.add_dependency 'launchy'
 end
 

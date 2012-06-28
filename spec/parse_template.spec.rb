@@ -1,25 +1,26 @@
+# encoding: UTF-8
 require File.dirname(__FILE__)+ '/common'
 
 describe SimpleGuiCreator::ParseTemplate do
 
   def parse_string string
     @frame = SimpleGuiCreator::ParseTemplate.new
-	@frame.parse_setup_string(string)
-	@frame
+	  @frame.parse_setup_string(string)
+	  @frame
   end
   
   after do
     @frame.close if @frame
   end
   
-  it "should parse titles" do
+  it "should parse title lines" do
     frame = parse_string " ------------A Title-------------------------------------------"
-	frame.title.should == "A Title"
-	frame.get_title.should == "A Title" # java method mapping :)
-	frame.original_title.should == "A Title"
-	frame.title= 'new title'
-	frame.get_title.should == "new title"
-	frame.original_title.should == "A Title"
+	  frame.title.should == "A Title"
+	  frame.get_title.should == "A Title" # java method mapping :)
+	  frame.original_title.should == "A Title"
+	  frame.title= 'new title'
+	  frame.get_title.should == "new title"
+	  frame.original_title.should == "A Title"
   end
   
   it "should parse button only lines, with several buttons same line" do
@@ -158,11 +159,15 @@ describe SimpleGuiCreator::ParseTemplate do
 	frame = parse_string string
 	frame.elements[:text_area].class.should == Java::JavaxSwing::JTextArea
 	frame.elements.length.should == 1 # not create fake empty buttons underneath :)
-  if get_dimentia(frame.elements[:text_area]) == [0,0,0,0] # it hasn't warmed up yet?
-    puts 'weird 0,0,0,0'
-    sleep 1
-  end
-	get_dimentia(frame.elements[:text_area]).should == [0, 0, 32, 319] # it's "sub-contained"  in a jscrollpane so these numbers are relative to that <sigh>
+	text_area_dimentia(frame.elements[:text_area]).should == [0, 0, 32, 319] # it's "sub-contained"  in a jscrollpane so these numbers are relative to that <sigh>
+ end
+ 
+ def text_area_dimentia(element)
+   while(get_dimentia(element) == [0,0,0,0])
+     puts 'weird TextArea 0,0,0,0'
+     sleep 0.2
+   end
+   get_dimentia(element)
  end
  
  it "should let you use ending colons" do
@@ -186,8 +191,8 @@ describe SimpleGuiCreator::ParseTemplate do
    [button : button][textare : textarea]
                     [                  ]
    EOL
-   p frame.elements
- 
+   text_area_dimentia(frame.elements[:textarea]).should == [0, 0, 32, 88]
+   
  end
  
  it "should allow for blank lines to mean spacing" do
@@ -199,7 +204,12 @@ describe SimpleGuiCreator::ParseTemplate do
  end
  
  it "should allow for checkboxes" do
-   
+   for string in ["[✓:checkbox_name]", "[✓ : checkbox_name]"]
+     f = parse_string string
+     f.elements[:checkbox_name].get_text.should == ""
+     f.elements[:checkbox_name].class.should == Java::JavaxSwing::JCheckBox
+     f.close
+   end
  end
 
 end

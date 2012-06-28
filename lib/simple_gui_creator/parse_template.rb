@@ -1,11 +1,13 @@
+# encoding: UTF-8
 require 'java'
+require 'andand'
 
 require File.dirname(__FILE__) + '/swing_helpers.rb' # for JButton#on_clicked, etc.,
 
 # for documentation, see the README file
 module SimpleGuiCreator
 
-  include_package 'javax.swing'; [JFrame, JPanel, JButton, JTextArea, JLabel, UIManager, JScrollPane]
+  include_package 'javax.swing'; [JFrame, JPanel, JButton, JTextArea, JLabel, UIManager, JScrollPane, JCheckBox]
   java_import java.awt.Font
   
   class ParseTemplate < JFrame
@@ -116,7 +118,12 @@ module SimpleGuiCreator
       # width?
       scrollPane = JScrollPane.new(text_area)
       setup_element(scrollPane, captured, scrollPane.getPreferredSize.height, text_area)
+    elsif captured.split(':')[0].andand.strip == "✓"
+      check_box = JCheckBox.new
+      without_checkbox_char = ':' + captured.split(':')[1]
+      setup_element(check_box, without_checkbox_char, nil, check_box, check_box.getPreferredSize.width)
     else
+      # normal button
       button = JButton.new
       setup_element(button, captured)
     end
@@ -133,11 +140,10 @@ module SimpleGuiCreator
     textLayout.bounds # has #height and #width
   end
   
-  def setup_element element, name, height=nil, set_text_on_this = element
+  def setup_element element, name, height=nil, set_text_on_this = element, width=nil
           abs_x = nil
           abs_y = nil
           #height = nil
-          width = nil
           if name.include?(':') && !name.end_with?(':') # like "Start:start_button"  or "start:button:code_name,attribs" but not "Hello:" let that through
             text = name.split(':')[0..-2].join(':') # only accept last colon, so they can have text with colons in it
             code_name_with_attrs = name.split(':')[-1]
@@ -179,7 +185,7 @@ module SimpleGuiCreator
               end
               raise "unknown attributes found: #{attributes_hashed.keys.inspect} #{attributes_hashed.inspect} #{code_name}" if attributes_hashed.length > 0
           else
-            # no code name
+            # no code name, for instance "just text"
             text = name
           end
           if !width
