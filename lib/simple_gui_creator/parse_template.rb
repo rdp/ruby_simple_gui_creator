@@ -202,7 +202,7 @@ module SimpleGuiCreator
           element.set_bounds(abs_x, abs_y, width, height)
           @frame.panel.add element
           if code_name
-            code_name.rstrip!
+            code_name.strip!
             raise "double name not allowed #{name} #{code_name}" if @frame.elements[code_name.to_sym]
             @frame.elements[code_name.to_sym] = set_text_on_this # just symbol access for now...
           end

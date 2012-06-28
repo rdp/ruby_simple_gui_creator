@@ -176,7 +176,19 @@ describe SimpleGuiCreator::ParseTemplate do
    get_dimentia(frame.elements[:text])[3].should == 200
  end
  
- it "should parse text areas that aren't first, also one right next to it both sides"
+ it "should allow for non symbol names" do
+   frame = parse_string "[button : button]"
+   frame.elements[:button].should_not be_nil
+ end
+ 
+ it "should parse text areas that aren't first, also one right next to it both sides" do
+   frame = parse_string <<-EOL
+   [button : button][textare : textarea]
+                    [                  ]
+   EOL
+   p frame.elements
+ 
+ end
  
  it "should allow for blank lines to mean spacing" do
    frame = parse_string "| [ a button] |\n [ a button] \n[ a button]"
@@ -184,6 +196,10 @@ describe SimpleGuiCreator::ParseTemplate do
    frame.close
    frame = parse_string "| [ a button] |\n [ a button] \n[ a button]\n| |"
    frame.size.height.should == 150
+ end
+ 
+ it "should allow for checkboxes" do
+   
  end
 
 end
