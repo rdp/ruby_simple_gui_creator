@@ -174,6 +174,19 @@ module SimpleGuiCreator
     alias close dispose # yikes
   end
 
+  class JComboBox
+    def on_select_new_element &block
+       add_item_listener { |e|
+         block.call(get_item(get_selected_index), get_selected_index)
+       }
+    end
+    
+    def add_items items
+      for item in items
+        add_item item
+      end
+    end
+  end
 
   class DropDownSelector < JDialog # JDialog is blocking...
     
@@ -193,8 +206,8 @@ module SimpleGuiCreator
       end
 
       box.add_item @prompt = prompt_for_top_entry # put something in index 0
-      options_array.each{|drive|
-        box.add_item drive
+      options_array.each{|option|
+        box.add_item option
       }
       add box
       pack # how do you get this arbitrary size? what the...
@@ -218,8 +231,8 @@ module SimpleGuiCreator
     
   end
   
-  
   class JCheckBox
+  
    def after_checked &block
      add_action_listener {
        if isSelected # they just 'added' a check mark
@@ -227,9 +240,10 @@ module SimpleGuiCreator
        end
      }
    end
+   
   def after_unchecked &block
      add_action_listener {
-       if !isSelected # they just 'added' a check mark
+       if !isSelected # they just "unchecked" it
          block.call
        end
      }

@@ -7,7 +7,7 @@ require File.dirname(__FILE__) + '/swing_helpers.rb' # for JButton#on_clicked, e
 # for documentation, see the README file
 module SimpleGuiCreator
 
-  include_package 'javax.swing'; [JFrame, JPanel, JButton, JTextArea, JLabel, UIManager, JScrollPane, JCheckBox]
+  include_package 'javax.swing'; [JFrame, JPanel, JButton, JTextArea, JLabel, UIManager, JScrollPane, JCheckBox, JComboBox]
   java_import java.awt.Font
   
   class ParseTemplate < JFrame
@@ -111,6 +111,10 @@ module SimpleGuiCreator
         break
       end
     end
+    # LODO DRY up
+    just_left_side_of_colon = captured.split(':')[0..-1].join(':').andand.strip
+    colon_and_right = ':' +  captured.split(':')[-1]
+    #_dbg
     if count_lines_below > 0
       rows = count_lines_below + 1 # at least 2...
       text_area = JTextArea.new(rows, captured.split(':')[0].length)
@@ -118,10 +122,16 @@ module SimpleGuiCreator
       # width?
       scrollPane = JScrollPane.new(text_area)
       setup_element(scrollPane, captured, scrollPane.getPreferredSize.height, text_area)
-    elsif captured.split(':')[0].andand.strip == "✓"
+    elsif just_left_side_of_colon == "✓"
       check_box = JCheckBox.new
-      without_checkbox_char = ':' + captured.split(':')[1]
-      setup_element(check_box, without_checkbox_char, nil, check_box, check_box.getPreferredSize.width)
+      setup_element(check_box, colon_and_right, nil, check_box, check_box.getPreferredSize.width)
+    elsif just_left_side_of_colon[-2..-1] == "\/" # a dropdown!
+      drop_down = JComboBox.new
+      initial_value = just_left_side_of_colon[0..-3]
+      if initial_value.present?
+        drop_down.add_item initial_value
+      end
+      setup_element drop_down, colon_and_right, drop_down, drop_down.getPreferredSize.width
     else
       # normal button
       button = JButton.new
@@ -140,13 +150,18 @@ module SimpleGuiCreator
     textLayout.bounds # has #height and #width
   end
   
-  def setup_element element, name, height=nil, set_text_on_this = element, width=nil
+  def split_int_name_and_code name_and_code
+  
+  end
+  
+  def setup_element element, name_and_code, height=nil, set_text_on_this = element, width=nil
           abs_x = nil
           abs_y = nil
           #height = nil
-          if name.include?(':') && !name.end_with?(':') # like "Start:start_button"  or "start:button:code_name,attribs" but not "Hello:" let that through
-            text = name.split(':')[0..-2].join(':') # only accept last colon, so they can have text with colons in it
-            code_name_with_attrs = name.split(':')[-1]
+          
+          if name_and_code.include?(':') && !name_and_code.end_with?(':') # like "Start:start_button"  or "start:button:code_name,attribs" but not "Hello:" let that through
+            text = name_and_code.split(':')[0..-2].join(':') # only accept last colon, so they can have text with colons in it
+            code_name_with_attrs = name_and_code.split(':')[-1]
             if code_name_with_attrs.split(',')[0] !~ /=/
               # like code_name,width=250,x=y
               code_name, *attributes = code_name_with_attrs.split(',')
@@ -163,12 +178,12 @@ module SimpleGuiCreator
                 if type == "fixed_width"
                   set_text_on_this.font=Font.new("Monospaced", Font::PLAIN, 14)
                 else
-                   raise "all we support is fixed_width font as of yet #{type} #{name}"
+                   raise "all we support is fixed_width font as of yet #{type} #{name_and_code}"
                 end                
               end
               
-              for name in ['abs_x', 'abs_y', 'width', 'height']
-                var = attributes_hashed.delete(name)
+              for name2 in ['abs_x', 'abs_y', 'width', 'height']
+                var = attributes_hashed.delete(name2)
                 if var
                   if var =~ /chars$/
                     count = var[0..-5].to_i
@@ -176,17 +191,16 @@ module SimpleGuiCreator
                   elsif var =~ /px$/
                     var = var[0..-3].to_i
                   else
-                    #raise "need to specify like 10px #{var} #{name}"                    
                     var = var.to_i # allow it to be clean :P
                   end
                   raise "#{var} has value of zero?" if var == 0
-                  eval("#{name} = #{var}") # ugh
+                  eval("#{name2} = #{var}") # ugh
                 end
               end
-              raise "unknown attributes found: #{attributes_hashed.keys.inspect} #{attributes_hashed.inspect} #{code_name}" if attributes_hashed.length > 0
+              raise "unknown attributes found: #{attributes_hashed.keys.inspect} #{attributes_hashed.inspect} #{code_name} #{name_and_code}" if attributes_hashed.length > 0
           else
             # no code name, for instance "just text"
-            text = name
+            text = name_and_code
           end
           if !width
             if text.blank?

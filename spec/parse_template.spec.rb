@@ -40,14 +40,18 @@ describe SimpleGuiCreator::ParseTemplate do
    frame.get_size.width.should be > 0
   end
   
-#  it "should parse drop down lines"
-#    frame = parse_string "| [some dropdown lines:dropdowns \/] |"
-# end
+  it "should parse drop down lines" do
+    for string in ["[some dropdown lines \/:dropdown_name]", "[some dropdown lines \/ : dropdown_name]", "[some dropdown lines\/: dropdown_name]"] # TODO: ▼
+      frame = parse_string string
+      frame.elements[:dropdown_name].class.should ==  Java::JavaxSwing::JComboBox
+      frame.elements[:dropdown_name].get_item_at(0).should == 'some dropdown lines'
+    end
+ end
 
   it "should parse text strings" do
     frame = parse_string '|  "Temp Dir location:temp_dir" |'
-	assert frame.elements.length == 1
-	frame.elements[:temp_dir].should_not be nil
+	  assert frame.elements.length == 1
+	  frame.elements[:temp_dir].should_not be nil
   end
   
   it "should handle a string below buttons" do
@@ -62,7 +66,7 @@ describe SimpleGuiCreator::ParseTemplate do
   
   it "should split escaped colons" do
     frame = parse_string "| \"some stuff ::my_name\""
-	frame.elements[:my_name].text.should == 'some stuff :'
+	  frame.elements[:my_name].text.should == 'some stuff :'
   end
   
   it "should not accept zero length strings without width spec" do  
@@ -71,7 +75,7 @@ describe SimpleGuiCreator::ParseTemplate do
   
   it "should accept zero length strings if they have a width spec" do
     frame = parse_string "| \":my_name,width=250\""
-	frame.elements[:my_name].text.should == ''
+	  frame.elements[:my_name].text.should == ''
   end
   
   it "should not add codeless items to elements" do
@@ -85,9 +89,9 @@ describe SimpleGuiCreator::ParseTemplate do
   
   it "should allow mixed on the same line" do
     frame = parse_string %! "text:text", [button:button] !
-	frame.elements.size.should == 2
-	frame.elements[:button].should_not be_nil
-	frame.elements[:text].should_not be_nil
+	  frame.elements.size.should == 2
+	  frame.elements[:button].should_not be_nil
+	  frame.elements[:text].should_not be_nil
   end
   
  # LODO gets h,w of trivial text areas *wrong* oh so wrong
