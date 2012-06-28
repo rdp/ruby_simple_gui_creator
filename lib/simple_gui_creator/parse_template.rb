@@ -110,7 +110,7 @@ module SimpleGuiCreator
       end
     end
     if count_lines_below > 0
-      rows = count_lines_below + 1
+      rows = count_lines_below + 1 # at least 2...
       text_area = JTextArea.new(rows, captured.split(':')[0].length)
       text_area.text="\n"*rows
       # width?

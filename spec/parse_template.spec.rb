@@ -158,7 +158,11 @@ describe SimpleGuiCreator::ParseTemplate do
 	frame = parse_string string
 	frame.elements[:text_area].class.should == Java::JavaxSwing::JTextArea
 	frame.elements.length.should == 1 # not create fake empty buttons underneath :)
-	get_dimentia(frame.elements[:text_area]).should == [0, 0, 32, 319]# it's "sub-contained"  in a jscrollpane <sigh>
+  if get_dimentia(frame.elements[:text_area]) == [0,0,0,0] # it hasn't warmed up yet?
+    puts 'weird 0,0,0,0'
+    sleep 1
+  end
+	get_dimentia(frame.elements[:text_area]).should == [0, 0, 32, 319] # it's "sub-contained"  in a jscrollpane so these numbers are relative to that <sigh>
  end
  
  it "should let you use ending colons" do
