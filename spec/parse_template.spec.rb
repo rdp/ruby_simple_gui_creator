@@ -99,6 +99,7 @@ describe SimpleGuiCreator::ParseTemplate do
  #      Make a GUI editor for editing YAML
  #   parse_setup_string :default_font =>
  # LODO allow for +---------------------+
+ # gui guy template onclick for checkboxes.
  
  it "should accept height, width, abs_x, abs_y" do
    frame = parse_string ' [a:my_name,abs_x=1,abs_y=2,width=100,height=101] '
@@ -208,6 +209,8 @@ describe SimpleGuiCreator::ParseTemplate do
      f = parse_string string
      f.elements[:checkbox_name].get_text.should == ""
      f.elements[:checkbox_name].class.should == Java::JavaxSwing::JCheckBox
+     f.elements[:checkbox_name].after_checked { puts 'checked!' }
+     f.elements[:checkbox_name].after_unchecked { puts 'unchecked!' }
      f.close
    end
  end

@@ -6,7 +6,7 @@ module SimpleGuiCreator
  include_package 'javax.swing'
  # and use  these constants (bug: http://jira.codehaus.org/browse/JRUBY-5107)
  [JProgressBar, JButton, JLabel, JPanel, JOptionPane,
-   JFileChooser, JComboBox, JDialog, SwingUtilities, JSlider, JPasswordField, UIManager] 
+   JFileChooser, JComboBox, JDialog, SwingUtilities, JSlider, JPasswordField, JCheckBox, UIManager] 
    
  include_package 'java.awt'; [Font, FileDialog] 
  
@@ -217,5 +217,23 @@ module SimpleGuiCreator
     end
     
   end
+  
+  
+  class JCheckBox
+   def after_checked &block
+     add_action_listener {
+       if isSelected # they just 'added' a check mark
+         block.call
+       end
+     }
+   end
+  def after_unchecked &block
+     add_action_listener {
+       if !isSelected # they just 'added' a check mark
+         block.call
+       end
+     }
+   end
+   end
   
 end
