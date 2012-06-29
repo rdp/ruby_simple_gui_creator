@@ -56,7 +56,7 @@ More complicated example:
 | [                                           ]          |
 | [                                           ]          |
 | [Dropdown Default \/ :dropdown_name]                   |
-| [✓:checkbox_name] "Some text"                          |
+| [✓:checkbox_name] "Some text"                         |
 ----------------------------------------------------------
 
 See the file spec/parse_template.spec.rb for examples of how to use each element.
