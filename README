@@ -1,44 +1,38 @@
-This gem is meant to make GUI development in Ruby easy, and trivial.
+This gem is meant to make GUI development in Ruby apps trivial, 
+and easy to add to a project.
 
-Basically it allows you to design your window layout using 
-(opinionated) ASCII art-like text:
+Basically it allows you to design your window GUI layout using 
+ASCII art-like text:
 
 ---------------My Window Title--------------------------
 | [Click this button      :button1]                    |
 | [Click this button too! :button2]                    |
 --------------------------------------------------------
 
-And then bind actions to ruby code, like:
+And then bind actions to ruby code, like this:
 
   elements[:button1].on_clicked { puts 'you clicked button1' }
 
 This makes the design part of the GUI much easier than trying to figure
 it out by trial and error, or "guessing" what swing or shoes are going to actually
-give for you in the end.  It comes with its own "GUI Editor" for
-experimenting with designs on the fly.
+give for you in the end.  It comes with its own experimental "GUI Editor" for
+trying out designs on the fly.
 
-# if you don't have jruby yet installed, for OS X or linux users:
+How to get it:
+
+# if you don't have jruby yet installed, for OS X or linux users (windows users use the jruby installer exe):
 $ rvm install jruby
 $ rvm use jruby
 
 # now install the gem.
 $ gem install simple_gui_creator
-$ jruby -S simple_gui_creator # the GUI editor
 
-Another example:
+# now run the GUI design editor
+$ jruby -S simple_gui_creator
 
----------- Window Title ----------------------------------
-| [a button:button1]   [button text:button2]             |
-| "some text2:text1"                                     |
-| [An Editable Text Area with 4 rows:text_area]          |
-| [                                           ]          |
-| [                                           ]          |
-| [                                           ]          |
-----------------------------------------------------------
+Here's how to code it:
 
-Here's how:
-
->> frame = SimpleGuiCreator::ParseTemplate.new # or optionally subclass this instead, and call super in your constructor
+>> frame = SimpleGuiCreator::ParseTemplate.new # or optionally subclass this instead, and make sure to call super() in your constructor
 >> frame.parse_setup_filename 'some_filename'
 
 Set behaviors like this:
@@ -47,9 +41,26 @@ Set behaviors like this:
   SimpleGuiCreator.show_blocking_message_dialog "you clicked button1!" 
 }  
 
+
 Having the layout as ASCII text separates views from controllers, in this case, because you can store the layouts in
 an entirely separate file (or embedded in the code).  "Normal humans" can then edit the design layout files, for instance.
 It has proven quite nice at separating concerns.
+
+More complicated example:
+
+---------- Window Title ----------------------------------
+| [a button:button1]   [button text:button2]             |
+| "some text2:text1"                                     |
+| [An Editable Text Area with 4 rows:text_area]          |
+| [                                           ]          |
+| [                                           ]          |
+| [                                           ]          |
+| [Dropdown Default \/ :dropdown_name]                   |
+| [✓:checkbox_name] "Some text"                          |
+----------------------------------------------------------
+
+See the file spec/parse_template.spec.rb for examples of how to use each element.
+The window borders are also optional.
 
 The library also has helper methods for common GUI tasks, like:
 
@@ -60,50 +71,52 @@ SimpleGuiCreator.show_in_explorer(filename) # reveals file in Explorer for windo
 text_from_user = SimpleGuiCreator.get_user_input "Input your name:" # these raise an exception if the user cancels the dialog,
 
 Select-button prompt dialog:
-
 if(SimpleGuiCreator.show_select_buttons_prompt("message title", :yes => 'text for the yes button', :no => 'text for the no button', :cancel => 'text for the cancel button') == :yes)
   # they chose the "yes" equivalent button...
 end
 
 etc. ...
 
-It provies a few helper methods to the ParseTemplate (and also JFrame) class, like:
+It provies a few helper methods to the SimpleGuiCreator::ParseTemplate (and JFrame) classes, like:
 
 #bring_to_front
 #minimize
+#maximize
 #restore
 #after_closed { ... }
 #after_minimized { ... }
 
-See the files in the lib folder.
+See the files lib/simple_gui_creator/swing_helpers.rb and lib/simple_gui_creator/jframe_helper_methods.rb.
 
-It has helpers to control/playback audio, like mp3's or wave's, starting/stopping asynchronously (see the files in the 'lib/*/*' directory.
+It has helpers to playback/control audio files, like mp3's or wave's, starting/stopping asynchronously (see the files in the 'lib/simple_gui_creator/*' directory.
 It has helpers to set/get system clipboard contents.
-It has helpers to control/query the mouse (I use this, but don't know why anybody else ever would want to LOL).
+It has helpers to control/query the system mouse.
 It has helpers to query the current system for its DVD drives, be notified when disks are inserted/changed, etc.
 
 Feedback/feature requests welcome.
 http://groups.google.com/group/roger-projects,  roger-projects@googlegroups.com
-I'd even be happy to wrap other gui frameworks (currently jruby/swing only) with the same functionality, if anybody wanted it.
+I'd even be happy to wrap other gui frameworks (currently jruby/swing only) with the same functionality, 
+if anybody wanted it.
 
 == GUI Editor ==
 
 It also comes with its own "test as you go" design builder helper GUI, programmed, appropriately enough, using simple gui creator.
 $ jruby -S simple_gui_creator
 
-This pulls up a window with some demo code, and some links that let you save it.  It's almost more of a "demo of how it works" than a
+This pulls up a window with some demo code, and some links that let you save it.  
+It's almost more of a "demo of how using it looks like" (the bin/simple_gui_creator file) than a
 real editing tool, but feature requests/suggestions wanted!
 
 == Documentation ==
 
-Basically, see this file, the examples folder, the "bin/*" file, and also the specs and lib files themselves.
+Basically, see this README file, the examples folder, the "bin/*" file, and also the specs and lib files themselves.
 https://github.com/rdp/ruby_simple_gui_creator
 
 == Known problems ==
 
-Only allows single element types per line currently, like "all text" or "all buttons", but I'm working on it :)
-Only Jruby today, which can make load time painful (hint: use splash screen).
+Only Jruby today, which can make load times painful (hint: use splash screen).
 
 = License ==
 
-MIT license (which is quite open), see file license.mit.txt
+MIT license (which is quite open), see accompanying file license.mit.txt.
+(C) 2012 Roger Pack
