@@ -1,5 +1,5 @@
 This gem is meant to make GUI development in Ruby apps trivial, 
-and easy to add to a project.
+and easy to wrap your head around.
 
 Basically it allows you to design your window GUI layout using 
 ASCII art-like text:
