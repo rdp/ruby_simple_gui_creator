@@ -16,9 +16,10 @@ This file is part of Sensible Cinema.
     along with Sensible Cinema.  If not, see <http://www.gnu.org/licenses/>.
 =end
 
-# shamelessly stolen from redcar
+# shamelessly "borrowed" and slightly modified, from Redcar
 
 require 'yaml'
+
     class Storage
       class << self
         attr_writer :storage_dir

@@ -12,7 +12,7 @@ module SimpleGuiCreator
 end
 
 # some autoloads, in case they save any load time...
-for clazz in [:DriveInfo, :MouseControl, :PlayAudio, :PlayMp3Audio, :RubyClip]
+for clazz in [:DriveInfo, :MouseControl, :PlayAudio, :PlayMp3Audio, :RubyClip, :Storage]
   new_path = File.dirname(__FILE__) + '/simple_gui_creator/' + SimpleGuiCreator.snake_case(clazz) + '.rb'
   autoload clazz, new_path
 end

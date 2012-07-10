@@ -1,6 +1,5 @@
 # encoding: UTF-8
 require 'java'
-require 'andand'
 
 require File.dirname(__FILE__) + '/swing_helpers.rb' # for JButton#on_clicked, etc.,
 
@@ -17,8 +16,8 @@ module SimpleGuiCreator
       @panel = JPanel.new
       @elements = {}
       @panel.set_layout nil
-      add @panel # why can't I just slap these down? panel? huh?
-       show # this always bites me...I new it up an it just doesn't appear...
+      add @panel # why can't I just slap these down? panel? huh?      
+      show # this always bites me...I new it up an it just doesn't appear...      
     end
     
     attr_reader :panel
@@ -43,29 +42,25 @@ module SimpleGuiCreator
       if line =~ /\t/
         raise "sorry, tabs arent allowed, but you can request it"
       end
-      button_line_regex = /\[(.*?)\]/
-      #>> "|  [Setup Preferences:preferences] [Start:start] [Stop:stop] |" .scan button_line_regex
-      #=> [["Setup Preferences:preferences"], ["Start:start"], ["Stop:stop"]]
-      
+      button_regex = /\[(.*?)\]/      
       text_regex = /"([^"]+)"/ # "some text:name"
       blank_line_regex = /^\s*(|\|)\s+(|\|)\s*$/ # matches " | | " or just empty...
       title_regex = /\s*[-]+([\w ]+)[-]+\s*$/  # ----(a Title)---
-      @current_line_height = 25
-      
+      @current_line_height = 25      
       if line =~ title_regex
         @frame.set_title $1 # done :)
         @frame.original_title = $1.dup.freeze # freeze...LOL        
       elsif line =~ blank_line_regex
         @current_y += @current_line_height
       else
-        # attempt an element line
+        # attempt an line of several elements...
         cur_x = 0        
-        while next_match = closest_next_regex_match([button_line_regex, text_regex], line[cur_x..-1])
+        while next_match = closest_next_regex_match([button_regex, text_regex], line[cur_x..-1])
           cur_spot = line[cur_x..-1] =~ next_match
           cur_spot += cur_x # we had only acted on a partial line, above, so add in the part we didn't do, to get the right offset number
           captured = $1
           end_spot = cur_spot + captured.length
-          if next_match == button_line_regex
+          if next_match == button_regex
             handle_button_at_current captured, cur_spot, end_spot, all_lines, idx
           elsif next_match == text_regex
             label = JLabel.new
@@ -76,8 +71,8 @@ module SimpleGuiCreator
         @current_y += @current_line_height
       end
       
-      # build in realtime LOL
-      @frame.set_size @window_max_x + 25, @current_y + 40      
+      # this causes it to build in 'realtime' by resizing the window as it gets lower and lower...
+      @frame.set_size @window_max_x + 25, @current_y + 15 # lodo do we need 15 here? I don't see why...
       rescue
         puts "Parsing failed on line #{line.inspect} number: #{idx+1}!"
         raise
