@@ -39,7 +39,7 @@ class javax::swing::JFrame
 	 # setDefaultCloseOperation(EXIT_ON_CLOSE)
 	 # which basically does a System.exit(0) when the last jframe closes. Yikes jdk, yikes.	 
 	 #addWindowListener(CloseListener.new(self))
-     dispose_on_close # don't keep running after being closed, and prevent the app from exiting! whoa!
+     dispose_on_close # don't keep running after being closed, and otherwise prevent the app from exiting! whoa!
    end   
    
    def close
