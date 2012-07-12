@@ -144,7 +144,7 @@ class DriveInfo
     else
       require 'ruby-wmi'
       disks = WMI::Win32_LogicalDisk.find(:all)
-      disks.map{|d| d2 = OpenStruct.new
+      out = disks.map{|d| d2 = OpenStruct.new
         d2.Description = d.Description
         d2.VolumeName = d.VolumeName
         d2.Name = d.Name
@@ -152,7 +152,9 @@ class DriveInfo
         d2.MountPoint = d.Name[0..2] # like f:\
         d2.DevicePoint = d2.MountPoint
         d2
-      } 
+      }
+      disks.each{|d| d.ole_free} # require rdp-ruby-wmi to not leak here, even with this ole_free...
+      out
     end
   end
 end
