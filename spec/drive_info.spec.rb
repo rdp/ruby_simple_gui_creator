@@ -18,6 +18,7 @@ This file is part of Sensible Cinema.
 require File.expand_path(File.dirname(__FILE__) + '/common')
 
 require 'socket' # gethostname
+require 'fileutils' # touch
 
 describe 'dvd_drive_info' do
 
@@ -27,18 +28,7 @@ describe 'dvd_drive_info' do
       File.binwrite("VTS_01_0.IFO", "b")
       File.binwrite("VIDEO_TS.IFO", "a")
     end
-    # different because of different volume names I think
-    expected= 
-      if Socket.gethostname == "PACKR-B1C04F564"
-        "212780b8|dbf8e73e"
-      elsif OS.mac?
-       "e293328f|519cd647"
-     else
-        p 'unknown drive label maybe expected?...' + DriveInfo.md5sum_disk("./") # unfortunately varies depending on drive label...
-        nil
-     end
-	 p 'comparing', DriveInfo.md5sum_disk("./"), expected
-    DriveInfo.md5sum_disk("./").should == expected if expected
+    DriveInfo.md5sum_disk("./").should_not be_empty
   end
 
   def assert_has_mounted_disk
@@ -59,10 +49,13 @@ describe 'dvd_drive_info' do
   end
 
   it "should return a drive with most space" do
+    require 'fileutils'
     space_drive = DriveInfo.get_drive_with_most_space_with_slash
     space_drive[1..-1].should == ":/" if OS.windows? # hope forward slash is ok...
     space_drive[0..0].should == "/" if !OS.windows?
-    require 'fileutils'
+    if File.exist?(space_drive + '/tmp')
+      space_drive = space_drive + '/tmp/' # try to avoid Permission denied - C:/touched_file
+    end
     FileUtils.touch space_drive + 'touched_file'
     FileUtils.rm space_drive + 'touched_file'
   end
