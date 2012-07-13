@@ -2,7 +2,6 @@ require 'sane' # require_relative
 require_relative 'jframe_helper_methods' # jframe stuff gets its own file, it's so much.
 
 module SimpleGuiCreator
-  
  include_package 'javax.swing'
  # and use  these constants (bug: http://jira.codehaus.org/browse/JRUBY-5107)
  [JProgressBar, JButton, JLabel, JPanel, JOptionPane,
@@ -65,7 +64,7 @@ module SimpleGuiCreator
              bt_out = ""
              for line in e.backtrace[0..1]
                backtrace_pieces = line.split(':')
-               backtrace_pieces.shift if OS.doze? && backtrace_pieces[1..1] == ':' # ignore drive letter colon split, which isn't always there oddly enough [1.8 mode I guess]
+               backtrace_pieces.shift if OS.doze? && backtrace_pieces[0].size == 1 # ignore drive letter colon split, which isn't always there oddly enough [1.8 mode I guess]
 	       filename = backtrace_pieces[0].split('/')[-1]
 	       line_number =  backtrace_pieces[1]
                bt_out += " #{filename}:#{line_number}" 

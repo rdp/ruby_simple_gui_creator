@@ -17,10 +17,10 @@ This file is part of Sensible Cinema.
 =end
 
 require 'java'
-#require 'sane' # gem dependency
+require 'os'
 require File.dirname(__FILE__) + '/swing_helpers'
 
-$simple_creator_show_console_prompts = true
+$simple_creator_show_console_prompts = true # so that you can disable console "helper prompts" if you want to...
 
 module SimpleGuiCreator
 
@@ -29,7 +29,7 @@ module SimpleGuiCreator
     def self.open_url_to_view_it_non_blocking url
       raise 'non http url?' unless url =~ /^http/i
       if OS.windows?
-        system("start #{url.gsub('&', '^&')}") # LODO would launchy help/work here with the full url?
+        system("start #{url.gsub('&', '^&')}")
       else
         system "#{OS.open_file_command} \"#{url}\""
         sleep 2 # disallow any program exiting immediately...which can make the window *not* popup in certain circumstances...LODO fix [is it windows only?]
@@ -122,12 +122,14 @@ module SimpleGuiCreator
   def self.get_user_input(message, default = '', cancel_or_blank_ok = false)
     p 'please enter the information in the prompt:' + message[0..50] + '...'
     received = javax.swing.JOptionPane.showInputDialog(nil, message, default)
-    if !cancel_or_blank_ok
-      raise 'user cancelled input prompt ' + message unless received
-  	  raise 'did not enter anything?' + message unless received.present?
-	  received = nil # always return nil
+    p 'received answer:' + received.to_s
+    if !received.present?
+      if !cancel_or_blank_ok
+        raise 'user cancelled input prompt ' + message unless received
+  	    raise 'did not enter anything?' + message unless received.present?
+      end
+      received = nil
     end
-    p 'received answer:' + received
     received
   end
   

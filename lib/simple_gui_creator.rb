@@ -11,13 +11,13 @@ module SimpleGuiCreator
   end
 end
 
+require File.dirname(__FILE__) + '/simple_gui_creator/simple_gui_creator.rb'
+
 # some autoloads, in case they save any load time...
 for clazz in [:DriveInfo, :MouseControl, :PlayAudio, :PlayMp3Audio, :RubyClip, :Storage]
   new_path = File.dirname(__FILE__) + '/simple_gui_creator/' + SimpleGuiCreator.snake_case(clazz) + '.rb'
   autoload clazz, new_path
 end
-
-require File.dirname(__FILE__) + '/simple_gui_creator/simple_gui_creator.rb'
 
 module SimpleGuiCreator
   autoload :ParseTemplate, File.dirname(__FILE__) + '/simple_gui_creator/parse_template.rb'
