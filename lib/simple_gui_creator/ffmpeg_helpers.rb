@@ -1,6 +1,4 @@
-# use vendored ffmpeg
 require 'sane'
-ENV['PATH'] = File.dirname(__FILE__) + '\vendor\ffmpeg\bin;' + ENV['PATH']
 
 module FfmpegHelpers
   def self.enumerate_directshow_devices
