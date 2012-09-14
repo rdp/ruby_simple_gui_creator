@@ -172,6 +172,7 @@ module SimpleGuiCreator
   
   class << self
     alias :show_message :show_blocking_message_dialog
+    alias :display_text :show_blocking_message_dialog
   end
   
   def self.show_non_blocking_message_dialog message, close_button_text = 'Close'
