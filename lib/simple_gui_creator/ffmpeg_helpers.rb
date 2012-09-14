@@ -3,6 +3,8 @@ require 'sane'
 # NB requires a version of ffmpeg.exe to be in the path, and uses the first one it finds
 module FfmpegHelpers
   # returns like {:audio => ['audio name 1', 'audio name 2'], :video => ['vid name 1', 'vid name 2' ]}
+  # use like vid_names = FfmpegHelpers.enumerate_directshow_devices[:video]
+  # use like   name = DropDownSelector.new(nil, vid_names, "Select audio device to capture and stream").go_selected_value
   def self.enumerate_directshow_devices
     ffmpeg_list_command = "ffmpeg.exe -list_devices true -f dshow -i dummy 2>&1"
     enum = `#{ffmpeg_list_command}`

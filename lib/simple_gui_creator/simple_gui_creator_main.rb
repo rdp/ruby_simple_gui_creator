@@ -94,10 +94,10 @@ module SimpleGuiCreator
   # this doesn't have an "awesome" way to force existence, just loops
   def self.new_previously_existing_file_selector_and_go title, use_this_dir = nil
   
-    out = FileDialog.new(nil, title, FileDialog::LOAD) # LODO no self in here... ?
+    out = FileDialog.new(nil, title, FileDialog::LOAD) # LODO self in here... ?
     out.set_title title
 	out.set_filename_filter {|file, name|
-          true # works os x, not doze?
+        true # works os x, not doze? some jruby forum thread discussed it...I think we're in the wrong dir here...
 	}
 	
     if use_this_dir
@@ -133,13 +133,17 @@ module SimpleGuiCreator
     received
   end
   
- def self.to_filename string
-  if File::ALT_SEPARATOR
-    File.expand_path(string).gsub('/', File::ALT_SEPARATOR)
-  else
-    File.expand_path(string)
+  class << self
+    alias :get_input :get_user_input 
   end
- end
+  
+  def self.to_filename string
+   if File::ALT_SEPARATOR
+     File.expand_path(string).gsub('/', File::ALT_SEPARATOR)
+   else
+     File.expand_path(string)
+   end
+  end
 
   def self.show_in_explorer filename_or_path
     raise 'nonexistent file cannot reveal in explorer?' + filename_or_path unless File.exist?(filename_or_path)
@@ -172,7 +176,7 @@ module SimpleGuiCreator
   
   class << self
     alias :show_message :show_blocking_message_dialog
-    alias :display_text :show_blocking_message_dialog
+    alias :display_text :show_blocking_message_dialog # hate having to remember these...
   end
   
   def self.show_non_blocking_message_dialog message, close_button_text = 'Close'

@@ -13,28 +13,38 @@ module SimpleGuiCreator
     
     def initialize 
       super()
+	  init_setup
+      show # this always bites me...I new it up an it just doesn't appear...so always display instead, even before it has buttons yet :)
+    end
+	
+	def init_setup
+	  content_pane=nil # method to clear it
       @panel = JPanel.new
       @elements = {}
       @panel.set_layout nil
       add @panel # why can't I just slap these down? panel? huh?      
-      show # this always bites me...I new it up an it just doesn't appear...      
-    end
+	end
     
     attr_reader :panel
     attr_reader :elements
     attr_accessor :original_title
     attr_accessor :frame
     
-  def parse_setup_filename filename
+  def parse_setup_filename filename  
     parse_setup_string File.read(filename)
+    self
+  end
+  
+  def add_setup_string_at_bottom string_to_add_at_bottom
+    parse_setup_string string_to_add_at_bottom
     self
   end
   
   # "matches" whatever the template string looks like...
   def parse_setup_string string
     @frame = self # LODO refactor
-    @current_y = 10
-    @window_max_x = 100
+    @current_y ||= 10 # allow it to be called a second time, and not reset to the top...
+    @window_max_x ||= 100
     all_lines = string.lines.to_a
     all_lines.each_with_index{|line, idx|
       begin
@@ -53,7 +63,7 @@ module SimpleGuiCreator
       elsif line =~ blank_line_regex
         @current_y += @current_line_height
       else
-        # attempt an line of several elements...
+        # attempt a line of several elements...
         cur_x = 0        
         while next_match = closest_next_regex_match([button_regex, text_regex], line[cur_x..-1])
           cur_spot = line[cur_x..-1] =~ next_match
@@ -72,7 +82,9 @@ module SimpleGuiCreator
       end
       
       # this causes it to build in 'realtime' by resizing the window as it gets lower and lower...
-      @frame.set_size @window_max_x + 25, @current_y + 15 # lodo do we need 15 here? I don't see why...
+	  size_x = @window_max_x + 25
+	  size_y = @current_y + 15   # lodo do we need 15 here? I don't see why...
+      @frame.set_size size_x, size_y
       rescue
         puts "Parsing failed on line #{line.inspect} number: #{idx+1}!"
         raise
