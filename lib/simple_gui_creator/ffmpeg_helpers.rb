@@ -32,8 +32,8 @@ module FfmpegHelpers
 	out = []
 	lines = enum.scan(/(pixel_format|vcodec)=([^ ]+)  min s=(\d+)x(\d+) fps=([^ ]+) max s=(\d+)x(\d+) fps=([^ ]+)$/)
 	lines.map{|video_type, video_type_name, min_x, min_y, min_fps, max_x, max_y, max_fps|
-	   {:video_type => video_type, :video_type_name => video_type_name, :min_x => min_x, 
-	    :max_x => max_x, :max_y => max_y, max_fps => max_fps}
+	   {:video_type => video_type, :video_type_name => video_type_name, :min_x => min_x.to_i, :min_y => min_y.to_i,
+	    :max_x => max_x.to_i, :max_y => max_y.to_i, :min_fps => min_fps.to_f, :max_fps => max_fps.to_f}
 	}
   end
   
