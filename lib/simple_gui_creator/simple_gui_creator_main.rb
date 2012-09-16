@@ -151,7 +151,6 @@ module SimpleGuiCreator
       begin
 	    raise 'jruby doesnt like quotes' if filename_or_path =~ /"/
         c = "explorer /e,/select,#{to_filename filename_or_path}"
-        puts c		
         system c # command returns immediately...so calling system on it is ok
       rescue => why_does_this_happen_ignore_this_exception_it_probably_actually_succeeded
 	    3 # for debugging so it can break here
