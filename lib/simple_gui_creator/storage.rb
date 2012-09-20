@@ -64,13 +64,12 @@ require 'yaml'
       def rollback
         if File.exists?(path)
           @storage = YAML.load_file(path)
-          unless @storage.is_a? Hash
-            
+          unless @storage.is_a? Hash            
             $stderr.puts 'storage file is corrupted--deleting ' + path
-            clear!
-         
-          end
-          update_timestamp
+            clear!         
+          else
+            update_timestamp
+		  end
         else
           @storage = {}
         end
