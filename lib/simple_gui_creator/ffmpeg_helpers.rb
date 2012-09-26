@@ -1,26 +1,28 @@
 require 'sane'
 
-# NB requires a version of ffmpeg.exe to be in the path, and uses the first one it finds
-module FfmpegHelpers
+# NB requires a version of ffmpeg.{exe,bat} to be in the path or current working dir, and of course it will just use the first one it finds (cwd or then in the path
+module FfmpegHelpers # LODO rename
   # returns like {:audio => ['audio name 1', 'audio name 2'], :video => ['vid name 1', 'vid name 2' ]}
   # use like vid_names = FfmpegHelpers.enumerate_directshow_devices[:video]
   # use like   name = DropDownSelector.new(nil, vid_names, "Select audio device to capture and stream").go_selected_value
   def self.enumerate_directshow_devices
     ffmpeg_list_command = "ffmpeg -list_devices true -f dshow -i dummy 2>&1"
     enum = `#{ffmpeg_list_command}`
-    unless enum.present?
-      p 'failed', enum
-	  sleep 1
+	count = 0
+    while !enum.present? || !enum.split('DirectShow')[2] # last part seems necessary for ffmpeg.bat files [?]
+	  sleep 0.1 # sleep might not be needed.. = .
+	  orig = enum
 	  enum = `#{ffmpeg_list_command}`
-      out = '2nd try resulted in :' + enum
-      p out
-      #raise out # jruby and MRI both get here???? LODO...
+      out = 'ffmpeg 2nd try enum resulted in :' + enum +' first was:' + orig
+	  
+      raise out if enum == '' && count == 20 # jruby and MRI both get here without the cou???? LODO...
+	  count += 1
     end
 
     audio = enum.split('DirectShow')[2]
     raise enum.inspect unless audio
     video = enum.split('DirectShow')[1]
-	# TODO pass back index, too...
+	# TODO pass back indexes, too...
     audio_names = audio.scan(/"([^"]+)"/).map{|matches| matches[0]}
     video_names = video.scan(/"([^"]+)"/).map{|matches| matches[0]}
     {:audio => audio_names, :video => video_names}
@@ -41,4 +43,8 @@ module FfmpegHelpers
     system "ffmpeg -list_devices true -f dshow -i dummy 2>&1"
   end
   
+end
+
+if $0 == __FILE__
+ loop { p FfmpegHelpers.enumerate_directshow_devices }
 end
