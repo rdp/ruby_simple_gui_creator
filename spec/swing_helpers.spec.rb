@@ -53,14 +53,14 @@ module SimpleGuiCreator
   end
   
   it "should select folders" do
-    raise unless File.directory?(c = SimpleGuiCreator.new_existing_dir_chooser_and_go('hello', '.'))
+    raise unless File.directory?(c = SimpleGuiCreator.new_existing_dir_chooser_and_go('try o select nonexistent dir, should not let you', '.'))
     p c
     raise unless File.directory?(c = SimpleGuiCreator.new_existing_dir_chooser_and_go)
     p c
   end
 
   it "should select nonexisting" do
-    name = JFileChooser.new_nonexisting_filechooser_and_go 'should force you to select nonexisting..'
+    name = SimpleGuiCreator.new_nonexisting_filechooser_and_go 'should force you to select nonexisting filename..'
     raise if File.exist? name
     name = SimpleGuiCreator.new_previously_existing_file_selector_and_go 'should forc select existing file, try to select nonexist'
     raise unless File.exist? name # it forced them to retry 
