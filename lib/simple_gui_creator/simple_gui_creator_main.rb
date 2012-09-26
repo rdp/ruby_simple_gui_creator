@@ -82,12 +82,18 @@ module SimpleGuiCreator
       chooser.setFileSelectionMode(JFileChooser::DIRECTORIES_ONLY)
       chooser.setAcceptAllFileFilterUsed(false)
       chooser.set_approve_button_text "Select This Directory"
-
-      if (chooser.showOpenDialog(nil) == JFileChooser::APPROVE_OPTION)
-        return chooser.getSelectedFile().get_absolute_path
-      else
-       raise "No dir selected " + title.to_s
-      end
+	  while true
+        if (chooser.showOpenDialog(nil) == JFileChooser::APPROVE_OPTION)
+ 	       got = chooser.getSelectedFile().get_absolute_path
+           unless File.directory? got
+	         show_blocking_message_dialog "please select a directory that already exists, or cancel" 
+	       else
+            return got
+           end			
+        else
+          raise "No dir selected/dialog cancelled " + title.to_s
+        end
+	  end
     end
 
   
@@ -97,7 +103,7 @@ module SimpleGuiCreator
     out = FileDialog.new(nil, title, FileDialog::LOAD) # LODO self in here... ?
     out.set_title title
 	out.set_filename_filter {|file, name|
-        true # works os x, not doze? some jruby forum thread discussed it...I think we're in the wrong dir here...
+        true # works os x, not doze? some jruby forum thread discussed it...I think we start in the wrong dir here...
 	}
 	
     if use_this_dir
