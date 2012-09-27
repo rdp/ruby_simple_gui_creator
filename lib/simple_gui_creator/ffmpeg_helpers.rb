@@ -31,6 +31,7 @@ module FfmpegHelpers # LODO rename
     name.gsub('"', '\\"')
   end
   
+  # name is a non-escaped name, like video-screen-capture-device
   def self.get_options_video_device name
     ffmpeg_get_options_command = "ffmpeg  -list_options true -f dshow -i video=\"#{escape_for_input name}\" 2>&1"
 	enum = `#{ffmpeg_get_options_command}`
