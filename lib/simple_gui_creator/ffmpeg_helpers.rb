@@ -20,16 +20,19 @@ module FfmpegHelpers # LODO rename
     end
 
     audio = enum.split('DirectShow')[2]
-    raise enum.inspect unless audio
     video = enum.split('DirectShow')[1]
 	# TODO pass back indexes, too...
-    audio_names = audio.scan(/"([^"]+)"/).map{|matches| matches[0]}
-    video_names = video.scan(/"([^"]+)"/).map{|matches| matches[0]}
+    audio_names = audio.scan(/"(.+)"\n/).map{|matches| matches[0]}
+    video_names = video.scan(/"(.+)"\n/).map{|matches| matches[0]}
     {:audio => audio_names, :video => video_names}
   end
   
+  def self.escape_for_input name
+    name.gsub('"', '\\"')
+  end
+  
   def self.get_options_video_device name
-    ffmpeg_get_options_command = "ffmpeg  -list_options true -f dshow -i video=\"#{name}\" 2>&1"
+    ffmpeg_get_options_command = "ffmpeg  -list_options true -f dshow -i video=\"#{escape_for_input name}\" 2>&1"
 	enum = `#{ffmpeg_get_options_command}`
 	out = []
 	lines = enum.scan(/(pixel_format|vcodec)=([^ ]+)  min s=(\d+)x(\d+) fps=([^ ]+) max s=(\d+)x(\d+) fps=([^ ]+)$/)
@@ -46,5 +49,6 @@ module FfmpegHelpers # LODO rename
 end
 
 if $0 == __FILE__
- loop { p FfmpegHelpers.enumerate_directshow_devices }
+ p FfmpegHelpers.enumerate_directshow_devices
+ FfmpegHelpers.enumerate_directshow_devices[:video].each{|name| p name, FfmpegHelpers.get_options_video_device(name) }
 end
