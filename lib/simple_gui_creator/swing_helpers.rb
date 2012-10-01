@@ -209,6 +209,7 @@ module SimpleGuiCreator
         box.add_item option
       }
       add box
+      setDefaultCloseOperation JDialog::DISPOSE_ON_CLOSE # is this really necessary? that is sooo lame
       pack # how do you get this arbitrary size? what the...
       
     end
