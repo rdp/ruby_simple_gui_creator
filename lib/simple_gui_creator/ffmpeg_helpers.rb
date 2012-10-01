@@ -18,7 +18,7 @@ module FfmpegHelpers # LODO rename
       raise out if enum == '' && count == 20 # jruby and MRI both get here without the cou???? LODO...
 	  count += 1
     end
-
+    enum.gsub!("\r\n", "\n") # work around JRUBY-6913
     audio = enum.split('DirectShow')[2]
     video = enum.split('DirectShow')[1]
 	# TODO pass back indexes, too...
