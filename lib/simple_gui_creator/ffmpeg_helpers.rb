@@ -22,8 +22,8 @@ module FfmpegHelpers # LODO rename
     audio = enum.split('DirectShow')[2]
     video = enum.split('DirectShow')[1]
 	# TODO pass back indexes, too...
-    audio_names = audio.scan(/"(.+)"\n/).map{|matches| matches[0]}
-    video_names = video.scan(/"(.+)"\n/).map{|matches| matches[0]}
+    audio_names = audio.scan(/"(.+)"\n/).map{|matches| matches[0]}.uniq # some still duplicates?
+    video_names = video.scan(/"(.+)"\n/).map{|matches| matches[0]}.uniq
     {:audio => audio_names, :video => video_names}
   end
   
@@ -45,6 +45,18 @@ module FfmpegHelpers # LODO rename
   
   def self.warmup_ffmpeg_so_itll_be_disk_cached 
     system "ffmpeg -list_devices true -f dshow -i dummy 2>&1"
+  end
+  
+  def self.wait_for_ffmpeg_close out_handle # like IO.popen("ffmpeg ...", "w")
+    while !out_handle.closed?
+      begin
+        Process.kill 0, out_handle.pid # ping it
+	    sleep 0.2
+	  rescue IOError => e
+	    puts 'detected ffmpeg is done'
+	    out_handle.close
+	  end
+    end
   end
   
 end
