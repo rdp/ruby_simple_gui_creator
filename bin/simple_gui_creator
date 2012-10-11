@@ -3,15 +3,16 @@
 
 begin
   require 'os'
-rescue LoadError # ease of development :P
+rescue LoadError # ease of development :P 
  require 'rubygems'
- retry
+ require 'os'
 end
 
 if !OS.jruby?
   $stderr.puts 'jruby only for now, you can request a change to this, exiting...'
   exit 1
 end
+
 require 'simple_gui_creator'#File.dirname(__FILE__) + "/../lib/simple_gui_creator.rb"
 
 class TestWindow < SimpleGuiCreator::ParseTemplate

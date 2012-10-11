@@ -1,5 +1,6 @@
 This gem is meant to make GUI development in Ruby apps trivial, 
-and easy to wrap your head around.
+and easy to wrap your head around.  It attempts to do what YAML
+did to XML.  Make it easier.
 
 Basically it allows you to design your window GUI layout using 
 ASCII art-like text:

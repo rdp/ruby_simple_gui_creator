@@ -40,11 +40,24 @@ module FfmpegHelpers # LODO rename
 	lines.map{|video_type, video_type_name, min_x, min_y, min_fps, max_x, max_y, max_fps|
 	   {:video_type => video_type, :video_type_name => video_type_name, :min_x => min_x.to_i, :min_y => min_y.to_i,
 	    :max_x => max_x.to_i, :max_y => max_y.to_i, :min_fps => min_fps.to_f, :max_fps => max_fps.to_f}
-	}
+	}.uniq  # LODO some duplicates?
   end
   
   def self.warmup_ffmpeg_so_itll_be_disk_cached 
     system "ffmpeg -list_devices true -f dshow -i dummy 2>&1"
+  end
+  
+  def self.wait_for_ffmpeg_close out_handle # like the result of IO.popen("ffmpeg ...", "w")
+    # requires some funky version of jruby to work...
+    while !out_handle.closed?
+      begin
+        Process.kill 0, out_handle.pid # ping it
+	    sleep 0.2
+	  rescue Errno::EPERM => e
+	    puts 'detected ffmpeg is done'
+	    out_handle.close
+	  end
+    end
   end
   
 end

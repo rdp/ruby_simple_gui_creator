@@ -105,7 +105,8 @@ describe SimpleGuiCreator::ParseTemplate do
  # allow prepropagation of textareas, for easier width detection...and/or separating out concerns...hmm...
  #    YAML-possible for the layout, in a separate file.  Then it's still semi-separated LOL
  #    parse_setup_string string, :text_area_to_use_text => string
- #      Make a GUI editor for editing YAML
+ #      Make a GUI editor for editing the YAML too :P
+ # single column editable text field?
  
  it "should accept height, width, abs_x, abs_y" do
    frame = parse_string ' [a:my_name,abs_x=1,abs_y=2,width=100,height=101] '
