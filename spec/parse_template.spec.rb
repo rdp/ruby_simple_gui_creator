@@ -212,7 +212,11 @@ describe SimpleGuiCreator::ParseTemplate do
  end
  
  it "should allow for checkboxes" do
-   f = parse_string "[✓:checkbox_name]"
+      @frame = SimpleGuiCreator::ParseTemplate.new
+	  require 'ruby-debug'
+	  debugger
+	  @frame.parse_setup_string("[✓:checkbox_name]")
+	  f = @frame
    checkbox = f.elements[:checkbox_name]
    got_check = false
    checkbox.after_checked { got_check = true }
