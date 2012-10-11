@@ -1,4 +1,5 @@
 # coding: UTF-8
+require 'rubygems'
 require '../lib/simple_gui_creator'
 include SimpleGuiCreator
   template = %!"Save to file:" [✓:record_to_file]!
