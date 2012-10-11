@@ -263,7 +263,9 @@ module SimpleGuiCreator
    end
 
    def on_clicked &block
+     puts 'setting up on_clicked'
      add_item_listener {
+	   puts 'in block'
 	   block.call isSelected
 	 }
    end
