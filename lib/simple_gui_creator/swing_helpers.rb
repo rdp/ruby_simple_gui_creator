@@ -82,6 +82,7 @@ module SimpleGuiCreator
    def simulate_click
      @block.call
    end
+   alias click! simulate_click
   
    def tool_tip= text
      if text
