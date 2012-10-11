@@ -214,7 +214,7 @@ module SimpleGuiCreator
           end
           if !width
             if text.blank?
-              raise 'found an element without any text, and without a width specifier:' + name + ' ' + name_and_code
+              raise 'found an element without any text, and without a width specifier:' + name_and_code + name_and_code.each_char.to_a.to_s
             end
             if text.strip != text
               # let blank space count as "space" for now, but don't actually set it LOL
@@ -231,8 +231,8 @@ module SimpleGuiCreator
           height ||= 20
           element.set_bounds(abs_x, abs_y, width, height)
           @frame.panel.add element
-          if code_name
-            code_name.strip!
+          if code_name and code_name.strip != ''
+            code_name.strip!			
             raise "double name not allowed #{name} #{code_name}" if @frame.elements[code_name.to_sym]
             @frame.elements[code_name.to_sym] = set_text_on_this # just symbol access for now...
           end

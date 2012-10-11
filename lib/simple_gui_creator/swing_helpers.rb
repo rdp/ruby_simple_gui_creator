@@ -257,7 +257,11 @@ module SimpleGuiCreator
    def set_checked!
      setSelected(true)
    end
-   
+
+   def set_unchecked!
+     setSelected(false)
+   end
+
    def on_clicked &block
      add_item_listener {
 	   block.call isSelected

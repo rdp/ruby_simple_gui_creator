@@ -218,24 +218,24 @@ describe SimpleGuiCreator::ParseTemplate do
    checkbox.after_checked { got_check = true }
    checkbox.set_checked!
    assert got_check
-   f.close
-   f = parse_string "[✓:checkbox_name]"
-   checkbox = f.elements[:checkbox_name]
-   got_check = false
+   got_check2 = false
+   got_check3 = false
+   checkbox.on_clicked { |value|
+    got_check2 = true
+   }
    checkbox.on_clicked {
-    got_check = true
+    got_check3 = true
    }
    checkbox.click!
-   assert got_check
-   f.close
-   f = parse_string "[✓:checkbox_name]"
-   checkbox = f.elements[:checkbox_name]
-   got_check = false
-   checkbox.after_unchecked { got_check = true } # untested...
+   assert got_check2
+   assert got_check3
+   checkbox.set_unchecked!
+   got_check5 = false
+   checkbox.after_unchecked { got_check5 = true }
    checkbox.click!
-   assert got_check == false
+   assert got_check5 == false
    checkbox.click!
-   assert got_check
+   assert got_check5
    f.close
    
    # fails 1.9 ...
