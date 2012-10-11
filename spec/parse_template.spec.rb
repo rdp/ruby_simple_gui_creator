@@ -249,9 +249,9 @@ describe SimpleGuiCreator::ParseTemplate do
  end
  
  it "should allow checkboxes with others" do
-   f = parse_string %!"Stream to url:" [✓:stream_to_url_checkbox]   "      none:width=250" [ Set streaming url : set_stream_url ]!
+   f = parse_string %!"Stream to url:" [✓:stream_to_url_checkbox]   "      none:code_name,width=250" [ Set streaming url : set_stream_url ]!
    f.elements[:stream_to_url_checkbox].class.should == Java::JavaxSwing::JCheckBox
-   f.elements.count.should == 4
+   f.elements.count.should == 3
  end
 
 end

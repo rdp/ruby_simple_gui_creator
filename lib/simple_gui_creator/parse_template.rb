@@ -77,7 +77,7 @@ module SimpleGuiCreator
             label = JLabel.new
             setup_element(label, captured)            
           end
-          cur_x = end_spot
+		  cur_x = end_spot + 2 # pass quotes, []'s too...hmm...
         end        
       end
       @current_y += @current_line_height
