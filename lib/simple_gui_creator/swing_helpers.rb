@@ -235,20 +235,29 @@ module SimpleGuiCreator
   class JCheckBox
   
    def after_checked &block
-     add_action_listener {
+     add_item_listener {
        if isSelected # they just 'added' a check mark
          block.call
        end
      }
    end
    
-  def after_unchecked &block
-     add_action_listener {
+   def after_unchecked &block
+     add_item_listener {
        if !isSelected # they just "unchecked" it
          block.call
        end
      }
    end
+   
+   def click!
+     doClick()
    end
+   
+   def set_checked!
+     setSelected(true)
+   end
+   
+  end
   
 end

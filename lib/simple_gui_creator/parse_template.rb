@@ -85,7 +85,6 @@ module SimpleGuiCreator
 	  size_x = @window_max_x + 25
 	  size_y = @current_y + 40 # 40, but why when the init was 10? huh?
       @frame.set_size size_x, size_y
-	  puts 'set size after line', line, idx, size_x, size_y
       rescue
         puts "Parsing failed on line #{line.inspect} number: #{idx+1}!"
         raise
@@ -215,7 +214,7 @@ module SimpleGuiCreator
           end
           if !width
             if text.blank?
-              raise 'cannot have blank original text without width specifier:' + name
+              raise 'found an element without any text, and without a width specifier:' + name + ' ' + name_and_code
             end
             if text.strip != text
               # let blank space count as "space" for now, but don't actually set it LOL
