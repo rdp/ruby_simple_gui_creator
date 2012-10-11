@@ -235,7 +235,7 @@ module SimpleGuiCreator
   class JCheckBox
   
    def after_checked &block
-     add_item_listener {
+     add_item_listener { |e|
        if isSelected # they just 'added' a check mark
          block.call
        end
@@ -243,7 +243,7 @@ module SimpleGuiCreator
    end
    
    def after_unchecked &block
-     add_item_listener {
+     add_item_listener { |e|
        if !isSelected # they just "unchecked" it
          block.call
        end
@@ -263,9 +263,7 @@ module SimpleGuiCreator
    end
 
    def on_clicked &block
-     puts 'setting up on_clicked'
-     add_item_listener {
-	   puts 'in block'
+     add_item_listener { |e|
 	   block.call isSelected
 	 }
    end
