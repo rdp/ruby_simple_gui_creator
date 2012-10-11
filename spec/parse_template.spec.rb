@@ -212,24 +212,39 @@ describe SimpleGuiCreator::ParseTemplate do
  end
  
  it "should allow for checkboxes" do
+   f = parse_string "[✓:checkbox_name]"
+   checkbox = f.elements[:checkbox_name]
+   got_check = false
+   checkbox.after_checked { got_check = true }
+   checkbox.set_checked!
+   assert got_check
+   f.close
+   f = parse_string "[✓:checkbox_name]"
+   checkbox = f.elements[:checkbox_name]
+   got_check = false
+   checkbox.on_clicked {
+    got_check = true
+   }
+   checkbox.click!
+   assert got_check
+   f.close
+   f = parse_string "[✓:checkbox_name]"
+   checkbox = f.elements[:checkbox_name]
+   got_check = false
+   checkbox.after_unchecked { got_check = true } # untested...
+   checkbox.click!
+   assert got_check == false
+   checkbox.click!
+   assert got_check
+   f.close
+   
    # fails 1.9 ...
    for string in ["[✓:checkbox_name]", "[✓ : checkbox_name]"] # UTF-8 <sigh> possibly someday: "[_:checkbox_name]"
      f = parse_string string
 	 checkbox = f.elements[:checkbox_name]
      checkbox.class.should == Java::JavaxSwing::JCheckBox
      checkbox.get_text.should == ""
-	 got_check = false
-     checkbox.after_checked { got_check = true }
-	 checkbox.set_checked!
-	 assert got_check
-	 checkbox.on_clicked {
-	   got_check = false
-	 }
-	 checkbox.click!
-	 assert got_check == false
-
-     #checkbox.after_unchecked { puts 'unchecked!' } # untested...
-     f.close
+	 f.close
    end
  end
 
