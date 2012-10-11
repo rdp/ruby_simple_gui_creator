@@ -4,7 +4,7 @@ require File.dirname(__FILE__)+ '/common'
 describe SimpleGuiCreator::ParseTemplate do
 
   def parse_string string
-    @frame = SimpleGuiCreator::ParseTemplate.new
+      @frame = SimpleGuiCreator::ParseTemplate.new
 	  @frame.parse_setup_string(string)
 	  @frame
   end
@@ -246,6 +246,12 @@ describe SimpleGuiCreator::ParseTemplate do
      checkbox.get_text.should == ""
 	 f.close
    end
+ end
+ 
+ it "should allow checkboxes with others" do
+   f = parse_string %!"Stream to url:" [✓:stream_to_url_checkbox]   "      none:width=250" [ Set streaming url : set_stream_url ]!
+   f.elements[:stream_to_url_checkbox].class.should == Java::JavaxSwing::JCheckBox
+   f.elements.count.should == 4
  end
 
 end
