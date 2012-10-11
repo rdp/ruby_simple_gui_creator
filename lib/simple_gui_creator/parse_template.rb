@@ -56,15 +56,16 @@ module SimpleGuiCreator
       text_regex = /"([^"]+)"/ # "some text:name"
       blank_line_regex = /^\s*(|\|)\s+(|\|)\s*$/ # matches " | | " or just empty...
       title_regex = /\s*[-]+([\w ]+)[-]+\s*$/  # ----(a Title)---
-      @current_line_height = 25      
       if line =~ title_regex
+        @current_line_height = 0
         @frame.set_title $1 # done :)
-        @frame.original_title = $1.dup.freeze # freeze...LOL        
+        @frame.original_title = $1.dup.freeze # #freeze...LOL
       elsif line =~ blank_line_regex
-        @current_y += @current_line_height
+        @current_line_height = 25
       else
+        @current_line_height = 0 # in case it doesn't find any...
         # attempt a line of several elements...
-        cur_x = 0        
+        cur_x = 0
         while next_match = closest_next_regex_match([button_regex, text_regex], line[cur_x..-1])
           cur_spot = line[cur_x..-1] =~ next_match
           cur_spot += cur_x # we had only acted on a partial line, above, so add in the part we didn't do, to get the right offset number
@@ -78,13 +79,13 @@ module SimpleGuiCreator
           end
           cur_x = end_spot
         end        
-        @current_y += @current_line_height
       end
-      
+      @current_y += @current_line_height
       # this causes it to build in 'realtime' by resizing the window as it gets lower and lower...
 	  size_x = @window_max_x + 25
-	  size_y = @current_y + 15   # lodo do we need 15 here? I don't see why...
+	  size_y = @current_y + 40 # 40, but why when the init was 10? huh?
       @frame.set_size size_x, size_y
+	  puts 'set size after line', line, idx, size_x, size_y
       rescue
         puts "Parsing failed on line #{line.inspect} number: #{idx+1}!"
         raise
