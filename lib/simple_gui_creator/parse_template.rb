@@ -214,7 +214,6 @@ module SimpleGuiCreator
           end
           if !width
             if text.blank?
-			_dbg
               raise 'found an element without any text, and without a width specifier:' + name_and_code + name_and_code.each_char.to_a.to_s
             end
             if text.strip != text
