@@ -222,6 +222,12 @@ describe SimpleGuiCreator::ParseTemplate do
      checkbox.after_checked { got_check = true }
 	 checkbox.set_checked!
 	 assert got_check
+	 checkbox.on_clicked {
+	   got_check = false
+	 }
+	 checkbox.click!
+	 assert got_check == false
+
      #checkbox.after_unchecked { puts 'unchecked!' } # untested...
      f.close
    end

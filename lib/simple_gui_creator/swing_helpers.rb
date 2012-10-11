@@ -258,6 +258,12 @@ module SimpleGuiCreator
      setSelected(true)
    end
    
+   def on_clicked &block
+     add_item_listener {
+	   block.call isSelected
+	 }
+   end
+   
   end
   
 end
