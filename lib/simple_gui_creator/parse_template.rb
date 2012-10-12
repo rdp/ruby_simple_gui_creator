@@ -161,7 +161,7 @@ module SimpleGuiCreator
   
   def split_int_text_name_and_code name_and_code
       if name_and_code.include?(':') && !name_and_code.end_with?(':') # like "Start:start_button"  or "start:button:code_name,attribs" but not "Hello:" let that through
-        text = name_and_code.split(':')[0..-2].join(':') # only accept last colon, so they can have text with colons in it
+        text = name_and_code.split(/:/)[0..-2].join(':') # only accept last colon, so they can have text with colons in it [colon regex to avoid jruby 6933]
         code_name_with_attrs = name_and_code.split(':')[-1]
         [text, code_name_with_attrs]
       else
