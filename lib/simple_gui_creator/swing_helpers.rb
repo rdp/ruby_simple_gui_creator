@@ -55,7 +55,6 @@ module SimpleGuiCreator
   
    def on_clicked &block
      raise unless block # sanity check
-     @block = block
      add_action_listener do |e|
        begin
          block.call
@@ -80,13 +79,14 @@ module SimpleGuiCreator
    end
   
    def simulate_click
-     @block.call
+     doClick
    end
+   
    alias click! simulate_click
   
    def tool_tip= text
      if text
-       text = "<html>" + text + "</html>"
+       text = "<html>" + text + "</html>" # allow for multiple lines...
        text = text.gsub("\n", "<br/>")
      end
      self.set_tool_tip_text text   

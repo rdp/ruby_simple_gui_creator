@@ -1,7 +1,9 @@
 require 'sane'
 
+# windows directshow ffmpeg helper
+
 # NB requires a version of ffmpeg.{exe,bat} to be in the path or current working dir, and of course it will just use the first one it finds (cwd or then in the path
-module FfmpegHelpers # LODO rename
+module FFmpegHelpers
   # returns like {:audio => ['audio name 1', 'audio name 2'], :video => ['vid name 1', 'vid name 2' ]}
   # use like vid_names = FfmpegHelpers.enumerate_directshow_devices[:video]
   # use like   name = DropDownSelector.new(nil, vid_names, "Select audio device to capture and stream").go_selected_value
@@ -63,9 +65,20 @@ module FfmpegHelpers # LODO rename
     end
   end
   
+  
+def self.combine_devices_for_ffmpeg_input audio_device, video_device
+ if audio_device
+   audio_device="-f dshow -i audio=\"#{FFmpegHelpers.escape_for_input audio_device}\""
+ end
+ if video_device
+   video_device="-f dshow -i video=\"#{FFmpegHelpers.escape_for_input video_device}\""
+ end
+ "#{video_device} #{audio_device}"
+end
+  
 end
 
 if $0 == __FILE__
- p FfmpegHelpers.enumerate_directshow_devices
- FfmpegHelpers.enumerate_directshow_devices[:video].each{|name| p name, FfmpegHelpers.get_options_video_device(name) }
+ p FFmpegHelpers.enumerate_directshow_devices
+ FFmpegHelpers.enumerate_directshow_devices[:video].each{|name| p name, FFmpegHelpers.get_options_video_device(name) }
 end
