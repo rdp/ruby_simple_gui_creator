@@ -44,13 +44,16 @@ module FfmpegHelpers # LODO rename
   end
   
   def self.warmup_ffmpeg_so_itll_be_disk_cached 
-    system "ffmpeg -list_devices true -f dshow -i dummy 2>&1"
+    system "ffmpeg -list_devices true -f dshow -i dummy 2>&1" # outputs to stdout but...that's informative sometimes
   end
   
   def self.wait_for_ffmpeg_close out_handle # like the result of IO.popen("ffmpeg ...", "w")
     # requires some funky version of jruby to work...
     while !out_handle.closed?
       begin
+	    if OS.jruby?
+		  raise 'need jruby 1.7.0 for working Process.kill 0 in windows' unless JRUBY_VERSION >= '1.7.0'
+		end
         Process.kill 0, out_handle.pid # ping it
 	    sleep 0.2
 	  rescue Errno::EPERM => e
