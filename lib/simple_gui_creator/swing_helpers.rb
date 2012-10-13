@@ -5,7 +5,7 @@ module SimpleGuiCreator
  include_package 'javax.swing'
  # and use  these constants (bug: http://jira.codehaus.org/browse/JRUBY-5107)
  [JProgressBar, JButton, JLabel, JPanel, JOptionPane,
-   JFileChooser, JComboBox, JDialog, SwingUtilities, JFrame, JSlider, JPasswordField, JCheckBox, UIManager] 
+   JFileChooser, JComboBox, JDialog, SwingUtilities, JFrame, JSlider, JPasswordField, JCheckBox, AbstractButton, UIManager] 
    
  include_package 'java.awt'; [Font, FileDialog] 
  
@@ -268,6 +268,18 @@ module SimpleGuiCreator
 	 }
    end
    
+  end
+  
+  class AbstractButton # like JCheckBox, et al
+  
+    def disable!
+	  setEnabled(false)
+	end
+	
+	def enable!
+	  setEnabled(true)
+	end
+  
   end
   
 end

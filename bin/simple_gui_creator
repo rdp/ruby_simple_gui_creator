@@ -13,7 +13,7 @@ if !OS.jruby?
   exit 1
 end
 
-require 'simple_gui_creator'#File.dirname(__FILE__) + "/../lib/simple_gui_creator.rb"
+require File.dirname(__FILE__) + "/../lib/simple_gui_creator.rb"
 
 class TestWindow < SimpleGuiCreator::ParseTemplate
 
@@ -22,7 +22,7 @@ class TestWindow < SimpleGuiCreator::ParseTemplate
     string = <<-EOL
           ---------- Simple Ruby Gui Creator Test Window ----------------------------------------
           | "Edit this, then..."                                                                |
-          | [Test it out! :test_it_out_button]  [Insert code for this window:replace_button]    |
+          | [Test it out! :test_it_out_button]                                                  |
           | [      :text_area_to_use, width=70chars, height=500, font=fixed_width]              |
           | [                                                                    ]              |
           | [                                                                    ]              |
@@ -32,7 +32,7 @@ class TestWindow < SimpleGuiCreator::ParseTemplate
           | [                                                                    ]              |
           | [                                                                    ]              |
           |                                                                                     |
-          | [Create code snippet :create_snippet]                                               |
+          | [Create code snippet :create_snippet]  [Insert code for this window:replace_button] |
           ---------------------------------------------------------------------------------------
     EOL
 	parse_setup_string string
