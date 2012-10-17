@@ -5,8 +5,8 @@ require 'sane'
 # NB requires a version of ffmpeg.{exe,bat} to be in the path or current working dir, and of course it will just use the first one it finds (cwd or then in the path
 module FFmpegHelpers
   # returns like {:audio => ['audio name 1', 'audio name 2'], :video => ['vid name 1', 'vid name 2' ]}
-  # use like vid_names = FfmpegHelpers.enumerate_directshow_devices[:video]
-  # use like   name = DropDownSelector.new(nil, vid_names, "Select audio device to capture and stream").go_selected_value
+  # use like vid_names = enumerate_directshow_devices[:video]
+  # then could use like name = DropDownSelector.new(nil, vid_names, "Select audio device to capture and stream").go_selected_value
   def self.enumerate_directshow_devices
     ffmpeg_list_command = "ffmpeg -list_devices true -f dshow -i dummy 2>&1"
     enum = `#{ffmpeg_list_command}`

@@ -83,7 +83,7 @@ module SimpleGuiCreator
       @current_y += @current_line_height
       # this causes it to build in 'realtime' by resizing the window as it gets lower and lower...
 	  size_x = @window_max_x + 25
-	  size_y = @current_y + 40 # 40, but why when the init was 10? huh?
+	  size_y = @current_y + 45 # 40, but why when the init was 10? huh?
       @frame.set_size size_x, size_y
       rescue
         puts "Parsing failed on line #{line.inspect} number: #{idx+1}!"
