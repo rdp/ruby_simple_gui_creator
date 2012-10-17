@@ -13,12 +13,16 @@ end
 
 require File.dirname(__FILE__) + '/simple_gui_creator/simple_gui_creator_main.rb'
 
-# some autoloads, in case they save any load time...
+# some autoloads, in case they save load time...
+
 # not in the SGC namespace since they're somewhat separate from GUI control...which seems a bit weird...
-for clazz in [:FfmpegHelpers, :DriveInfo, :MouseControl, :PlayAudio, :PlayMp3Audio, :RubyClip, :Storage]
+for clazz in [:DriveInfo, :MouseControl, :PlayAudio, :PlayMp3Audio, :RubyClip, :Storage]
   new_path = File.dirname(__FILE__) + '/simple_gui_creator/' + SimpleGuiCreator.snake_case(clazz) + '.rb'
   autoload clazz, new_path
 end
+
+# special case :P
+autoload :FFmpegHelpers, File.dirname(__FILE__) + '/simple_gui_creator/ffmpeg_helpers.rb' 
 
 module SimpleGuiCreator
   autoload :ParseTemplate, File.dirname(__FILE__) + '/simple_gui_creator/parse_template.rb'

@@ -1,6 +1,6 @@
 require 'common'
 
-describe FfmpegHelpers do
+describe FFmpegHelpers do
   it "should work" do
   
   end
