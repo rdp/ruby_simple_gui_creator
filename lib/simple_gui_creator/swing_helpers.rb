@@ -227,6 +227,8 @@ module SimpleGuiCreator
       raise 'did not select, exited early ' + @prompt unless @selected_idx
       @selected_idx
     end
+	
+	alias go_selected_idx go_selected_index
     
     def go_selected_value
       puts 'select from dropdown window ' + @drop_down_elements[-1] + ' ...' if $simple_creator_show_console_prompts

@@ -27,7 +27,6 @@ module FFmpegHelpers
     audio_names = parse_with_indexes audio
     video_names = parse_with_indexes video
     out = {:audio => audio_names, :video => video_names}
-	p out
 	out
   end
   
@@ -52,8 +51,8 @@ module FFmpegHelpers
   end
   
   # name is a non-escaped name, like video-screen-capture-device
-  def self.get_options_video_device name
-    ffmpeg_get_options_command = "ffmpeg  -list_options true -f dshow -i video=\"#{escape_for_input name}\" 2>&1"
+  def self.get_options_video_device name, idx = 0
+    ffmpeg_get_options_command = "ffmpeg  -list_options true -f dshow -i video=\"#{escape_for_input name}\" -video_device_number #{idx} 2>&1"
 	enum = `#{ffmpeg_get_options_command}`
 	out = []
 	lines = enum.scan(/(pixel_format|vcodec)=([^ ]+)  min s=(\d+)x(\d+) fps=([^ ]+) max s=(\d+)x(\d+) fps=([^ ]+)$/)
