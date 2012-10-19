@@ -181,7 +181,7 @@ module SimpleGuiCreator
     begin
 	  JOptionPane.showMessageDialog(temp_frame, message, title, style)
 	ensure
-	  t.dispose
+	  temp_frame.dispose
 	end
     # the above has no return value <sigh> so just return true
     true
