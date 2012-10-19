@@ -17,18 +17,36 @@ module FFmpegHelpers
 	  enum = `#{ffmpeg_list_command}`
       out = 'ffmpeg 2nd try enum resulted in :' + enum +' first was:' + orig
 	  
-      raise out if enum == '' && count == 20 # jruby and MRI both get here without the cou???? LODO...
+      raise out if enum == '' && count == 20 # jruby and MRI both get here...suspected cmd.exe bug
 	  count += 1
     end
     enum.gsub!("\r\n", "\n") # work around JRUBY-6913
-    audio = enum.split('DirectShow')[2]
     video = enum.split('DirectShow')[1]
-	# TODO pass back indexes, too...
-    audio_names = audio.scan(/"(.+)"\n/).map{|matches| matches[0]}
-    video_names = video.scan(/"(.+)"\n/).map{|matches| matches[0]}
-    {:audio => audio_names, :video => video_names}
+	audio = enum.split('DirectShow')[2]
+    
+    audio_names = parse_with_indexes audio
+    video_names = parse_with_indexes video
+    out = {:audio => audio_names, :video => video_names}
+	p out
+	out
   end
   
+  def self.parse_with_indexes string
+    names = [] # video_device_number
+	for line in string.lines
+	  if line =~ /"(.+)"\n/
+	    index = 0
+		names << [$1, index]
+	  elsif line =~ /repeated (\d+) times/
+	    $1.to_i.times {
+		  previous_name = names[-1][0]
+		  index += 1
+		  names << [previous_name, index]
+		}
+	  end
+	end
+	names
+  end
   def self.escape_for_input name
     name.gsub('"', '\\"')
   end
