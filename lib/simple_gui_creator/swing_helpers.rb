@@ -35,7 +35,12 @@ module SimpleGuiCreator
         UIManager.put("OptionPane.noButtonText", names_hash[:cancel])
       end
       title = message.split(' ')[0..5].join(' ')
-      returned = JOptionPane.showConfirmDialog nil, message, title, JOptionPane::YES_NO_CANCEL_OPTION
+	  temp_frame = JFrame.new
+	  temp_frame.minimize
+	  temp_frame.show
+	
+      returned = JOptionPane.showConfirmDialog temp_frame, message, title, JOptionPane::YES_NO_CANCEL_OPTION
+	  temp_frame.dispose
       old.each{|name, old_setting| UIManager.put(name, old_setting)}
       out = JOptionReturnValuesTranslator[returned]
       if !out || !names_hash.key?(out)

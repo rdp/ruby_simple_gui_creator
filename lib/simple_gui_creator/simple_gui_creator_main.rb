@@ -174,7 +174,15 @@ module SimpleGuiCreator
   
   def self.show_blocking_message_dialog message, title = message.split("\n")[0], style= JOptionPane::INFORMATION_MESSAGE
     puts "please use GUI window popup... #{message} ..." if $simple_creator_show_console_prompts
-    JOptionPane.showMessageDialog(nil, message, title, style)
+	temp_frame = JFrame.new
+	temp_frame.minimize
+	temp_frame.show
+	
+    begin
+	  JOptionPane.showMessageDialog(temp_frame, message, title, style)
+	ensure
+	  t.dispose
+	end
     # the above has no return value <sigh> so just return true
     true
   end
