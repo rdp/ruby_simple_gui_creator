@@ -66,10 +66,14 @@ module SimpleGuiCreator
 	  found_non_exist = false
 	  while(!found_non_exist) 
         got = out.go true
-		if(File.exist? got) 
-		  SimpleGuiCreator.show_blocking_message_dialog 'this file already exists, choose a new filename ' + got		  
+		if got
+		  if(File.exist? got) 
+		    SimpleGuiCreator.show_blocking_message_dialog 'this file already exists, choose a new filename ' + got		  
+		  else
+		   found_non_exist = true
+		  end
 		else
-		 found_non_exist = true
+		  raise "filechooser cancelled!"
 		end
 	  end
 	  got
