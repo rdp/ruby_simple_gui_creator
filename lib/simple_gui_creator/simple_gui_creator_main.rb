@@ -217,20 +217,20 @@ module SimpleGuiCreator
     end
   end
 
-  def self.run_later(seconds)
+  def self.run_later(seconds) # schedule something to be run by the GUI later....to avoid using spawning threads, basically, 
+    #I guess, for the same purpose or maybe there's other benefits, like...it runs in the swing thread, so you may avoid some concurrency issues...keeps things saner?
     timer = javax.swing.Timer.new(seconds*1000, nil)
 	timer.repeats=false # don't loop, just fire once :)
 	timer.add_action_listener {
 	  yield
 	}
 	timer.start
-	puts 'started timer...'
   end
   
   def self.hard_exit!; java::lang::System.exit 0; end
   
-  def self.invoke_in_gui_thread # sometimes I think I need this, but it never seems to help
-    SwingUtilities.invoke_later { yield }
+  def self.invoke_in_gui_thread # sometimes I think I might  need this, but it never seems to help...
+    SwingUtilities.invoke_and_wait { yield } # invoke_later ?
   end
 
 end
