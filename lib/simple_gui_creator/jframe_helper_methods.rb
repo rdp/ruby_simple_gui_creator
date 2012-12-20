@@ -46,6 +46,8 @@ class javax::swing::JFrame
      dispose # <sigh>
    end
    
+   alias close! close
+   
    def dispose_on_close
      setDefaultCloseOperation JFrame::DISPOSE_ON_CLOSE
    end
@@ -74,8 +76,7 @@ class javax::swing::JFrame
 	    #puts 'non restore'
 	  end
 	}
-   end
-  
+   end  
   
    def bring_to_front # kludgey...but said to work for swing frames...
     java.awt.EventQueue.invokeLater{
@@ -84,21 +85,27 @@ class javax::swing::JFrame
       repaint
     }      
    end
+   alias bring_to_front! bring_to_front
    
    def minimize
      setState(java.awt.Frame::ICONIFIED)
    end
+   
+   alias minimize! minimize
   
    def restore
      setState(java.awt.Frame::NORMAL) # this line is probably enough, but do more just in case...
      #setVisible(true)
    end
+   alias restore! restore
   
    alias unminimize restore
+   alias unminimize! restore
    
    def maximize
      setExtendedState(JFrame::MAXIMIZED_BOTH)
    end
+   alias maximize! maximize
    
    # avoid jdk6 always on top bug http://betterlogic.com/roger/2012/04/jframe-setalwaysontop-doesnt-work-after-using-joptionpane/
    alias always_on_top_original always_on_top=
