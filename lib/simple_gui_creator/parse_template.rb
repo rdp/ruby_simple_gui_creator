@@ -6,9 +6,11 @@ require File.dirname(__FILE__) + '/swing_helpers.rb' # for JButton#on_clicked, e
 # for documentation, see the README file
 module SimpleGuiCreator
 
-  include_package 'javax.swing'; [JFrame, JPanel, JButton, JTextArea, JLabel, UIManager, JScrollPane, JCheckBox, JComboBox]
+  include_package 'javax.swing'; [JFrame, JPanel, JButton, JTextArea, JLabel, UIManager, JScrollPane, JCheckBox, JComboBox, JComponent]
   java_import java.awt.Font
-  
+  class JComponent
+    attr_accessor :original_text
+  end
   class ParseTemplate < JFrame
     
     def initialize 
@@ -225,7 +227,10 @@ module SimpleGuiCreator
               width = get_text_width(text) + 35
             end
            end
-          set_text_on_this.text=text if text.present?
+          if text.present?
+		    set_text_on_this.text=text
+			set_text_on_this.original_text=text
+		  end
           abs_x ||= @current_x
           abs_y ||= @current_y
           height ||= 20

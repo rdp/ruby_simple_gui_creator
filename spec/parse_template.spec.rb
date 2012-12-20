@@ -23,6 +23,13 @@ describe SimpleGuiCreator::ParseTemplate do
 	  frame.original_title.should == "A Title"
   end
   
+  it "should save buttons original text" do
+    frame = parse_string "|  [Setup Preferences:preferences][Start:start] [Stop:stop] |"
+	frame.elements[:start].text='new text'
+	frame.elements[:start].text.should == 'new text'
+    frame.elements[:start].original_text.should == 'Start'
+  end
+  
   it "should parse button only lines, with several buttons same line" do
    frame = parse_string "|  [Setup Preferences:preferences][Start:start] [Stop:stop] |"
    get_dimentia(frame.elements[:stop]).should == [221, 10, 20, 60]
