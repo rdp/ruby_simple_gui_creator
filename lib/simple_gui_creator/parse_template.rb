@@ -6,11 +6,16 @@ require File.dirname(__FILE__) + '/swing_helpers.rb' # for JButton#on_clicked, e
 # for documentation, see the README file
 module SimpleGuiCreator
 
-  include_package 'javax.swing'; [JFrame, JPanel, JButton, JTextArea, JLabel, UIManager, JScrollPane, JCheckBox, JComboBox, JComponent]
-  java_import java.awt.Font
+  include_package 'javax.swing'; 
+  
+  [JFrame, JPanel, JButton, JTextArea, JLabel, UIManager, JScrollPane, JCheckBox, JComboBox, JComponent].each{|kls|
+    kls.__persistent__=true # lazy me--also pull in the constant :)
+  }
+  
   class JComponent
     attr_accessor :original_text
   end
+  
   class ParseTemplate < JFrame
     
     def initialize 
