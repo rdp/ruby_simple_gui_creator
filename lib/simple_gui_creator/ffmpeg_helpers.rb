@@ -66,8 +66,9 @@ module FFmpegHelpers
     system "ffmpeg -list_devices true -f dshow -i dummy 2>&1" # outputs to stdout but...that's informative sometimes
   end
   
-  def self.wait_for_ffmpeg_close out_handle # like the result of IO.popen("ffmpeg ...", "w")
-    # requires some funky version of jruby to work...
+  def self.wait_for_ffmpeg_close out_handle, expected_time=0 # like the result of an IO.popen("ffmpeg ...", "w")
+    # requires some funky version of jruby to work...since it lacks Process.waitpid currently
+	start_time = Time.now
     while !out_handle.closed?
       begin
 	    if OS.jruby?
@@ -76,10 +77,14 @@ module FFmpegHelpers
         Process.kill 0, out_handle.pid # ping it
 	    sleep 0.2
 	  rescue Errno::EPERM => e
-	    puts 'detected ffmpeg is done'
+	    puts 'detected ffmpeg is done wait_for_ffmpeg_close method'
 	    out_handle.close
 	  end
     end
+	elapsed = Time.now - start_time
+	if (expected_time > 0) && (elapsed < expected_time) # -1 ?
+	  raise "ffmpeg possibly exited early!"
+	end
   end
   
   
