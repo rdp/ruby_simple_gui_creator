@@ -205,10 +205,10 @@ describe SimpleGuiCreator::ParseTemplate do
  
  it "should allow for blank lines to mean spacing" do
    frame = parse_string "| [ a button] |\n [ a button] \n[ a button]"
-   frame.size.height.should == 125
+   frame.size.height.should == 130
    frame.close
    frame = parse_string "| [ a button] |\n [ a button] \n[ a button]\n| |"
-   frame.size.height.should == 150
+   frame.size.height.should == 155
  end
  
  it "should allow for checkboxes" do
