@@ -243,7 +243,7 @@ module SimpleGuiCreator
   
    def after_checked &block
      add_item_listener { |e|
-       if isSelected # they just 'added' a check mark
+       if self.isSelected # they just 'added' a check mark
          block.call
        end
      }
@@ -252,12 +252,12 @@ module SimpleGuiCreator
    
    def after_unchecked &block
      add_item_listener { |e|
-       if !isSelected # they just "unchecked" it
+       if !self.isSelected # they just "unchecked" it
          block.call
        end
      }
    end
-   alias on_unchecked after_checked
+   alias on_unchecked after_unchecked
    
    def click!
      doClick()
@@ -266,10 +266,12 @@ module SimpleGuiCreator
    def set_checked!
      setSelected(true)
    end
+   alias check! set_checked!
 
    def set_unchecked!
      setSelected(false)
    end
+   alias uncheck! set_unchecked!
 
    def on_clicked &block
      add_item_listener { |e|
