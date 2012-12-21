@@ -245,8 +245,7 @@ describe SimpleGuiCreator::ParseTemplate do
    assert got_check5
    f.close
    
-   # fails 1.9 ...
-   for string in ["[✓:checkbox_name]", "[✓ : checkbox_name]"] # UTF-8 <sigh> possibly someday: "[_:checkbox_name]"
+   for string in ["[✓:checkbox_name]", "[✓ : checkbox_name]", "[/:checkbox_name]"] # UTF-8
      f = parse_string string
 	 checkbox = f.elements[:checkbox_name]
      checkbox.class.should == Java::JavaxSwing::JCheckBox

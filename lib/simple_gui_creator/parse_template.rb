@@ -134,7 +134,7 @@ module SimpleGuiCreator
       # width?
       scrollPane = JScrollPane.new(text_area)
       setup_element(scrollPane, captured, scrollPane.getPreferredSize.height, text_area)
-    elsif text == "✓"
+    elsif text == "✓" || text == "/" # like [/:name]
       check_box = JCheckBox.new
       setup_element(check_box, ':' + code_name_with_attrs, nil, check_box, check_box.getPreferredSize.width)
     elsif text.end_with?("\\/") || text.end_with?("▼") # dropdowns

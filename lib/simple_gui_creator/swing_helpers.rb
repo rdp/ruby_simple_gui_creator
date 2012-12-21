@@ -248,6 +248,7 @@ module SimpleGuiCreator
        end
      }
    end
+   alias on_checked after_checked # TODO remove, also remove the non bang methods
    
    def after_unchecked &block
      add_item_listener { |e|
@@ -256,6 +257,7 @@ module SimpleGuiCreator
        end
      }
    end
+   alias on_unchecked after_checked
    
    def click!
      doClick()
