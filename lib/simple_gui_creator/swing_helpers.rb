@@ -84,7 +84,10 @@ module SimpleGuiCreator
    end
   
    def simulate_click
-     doClick
+     if !isEnabled
+	   raise 'cannot click a disabled button, ping me if you want this ability'
+	 end
+	 doClick
    end
    
    alias click! simulate_click
