@@ -18,10 +18,12 @@ module SimpleGuiCreator
   
   class ParseTemplate < JFrame
     
-    def initialize 
+    def initialize start_visible=true 
       super()
 	  init_setup
-      show # this always bites me...I new it up an it just doesn't appear...so always display instead, even before it has buttons yet :)
+	  if start_visible
+        show # this always bites me...I new it up an it just doesn't appear...so always display instead, even before it has buttons yet :)
+	  end
     end
 	
 	def init_setup
