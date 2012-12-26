@@ -51,10 +51,11 @@ class javax::swing::JFrame
    def dispose_on_close
      setDefaultCloseOperation JFrame::DISPOSE_ON_CLOSE
    end
-   
+
+  # NB this can only be called at most once per frame...at least...with dispose on close, not sure about the others...
    def after_closed &block
 	 addWindowListener(CloseListener.new(self) {
-	   block.call 
+	   block.call
 	 })
    end
    
