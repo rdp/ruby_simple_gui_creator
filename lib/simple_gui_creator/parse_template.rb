@@ -138,6 +138,7 @@ module SimpleGuiCreator
       setup_element(scrollPane, captured, scrollPane.getPreferredSize.height, text_area)
     elsif text == "✓" || text == "/" # like [/:name]
       check_box = JCheckBox.new
+	  check_box.setSelected(true) # start checked :)
       setup_element(check_box, ':' + code_name_with_attrs, nil, check_box, check_box.getPreferredSize.width)
     elsif text.end_with?("\\/") || text.end_with?("▼") # dropdowns
       drop_down = JComboBox.new
