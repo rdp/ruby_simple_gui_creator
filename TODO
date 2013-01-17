@@ -21,6 +21,8 @@ use native file handlers, the swing ones shuck with default save filenames
 
 = never =
 
+cool GUI self editor tool for resizing buttons :)
+
 HTML linked version. what the woot! LOL.
   serialize the object...to RAM for now LOL.
   pull the object from a db based on ID
