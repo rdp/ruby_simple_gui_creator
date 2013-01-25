@@ -1,14 +1,17 @@
 require 'sane'
 
-# windows directshow ffmpeg helper
+# windows directshow ffmpeg wrapper helper
 
 # NB requires a version of ffmpeg.{exe,bat} to be in the path or current working dir, and of course it will just use the first one it finds (cwd or then in the path
 module FFmpegHelpers
+
+  FFmpegNameToUse = 'ffmpeg' # can change it to whatever you want, like 'ffmpeg.exe' or 'full/path/ffmpeg.exe' or libav.exe
+
   # returns like {:audio => [['audio name 1', 0]], ['audio name 2', 0]], :video => ...}
   # use like vid_names = enumerate_directshow_devices[:video]
   # then could use like name = DropDownSelector.new(nil, vid_names, "Select audio device to capture and stream").go_selected_value
   def self.enumerate_directshow_devices
-    ffmpeg_list_command = "ffmpeg -list_devices true -f dshow -i dummy 2>&1"
+    ffmpeg_list_command = "#{FFmpegNameToUse} -list_devices true -f dshow -i dummy 2>&1"
     enum = `#{ffmpeg_list_command}`
 	count = 0
     while !enum.present? || !enum.split('DirectShow')[2] # last part seems necessary for ffmpeg.bat files [?]
@@ -52,18 +55,18 @@ module FFmpegHelpers
   
   # name is a non-escaped name, like video-screen-capture-device
   def self.get_options_video_device name, idx = 0
-    ffmpeg_get_options_command = "ffmpeg  -list_options true -f dshow -i video=\"#{escape_for_input name}\" -video_device_number #{idx} 2>&1"
+    ffmpeg_get_options_command = "#{FFmpegNameToUse} -list_options true -f dshow -i video=\"#{escape_for_input name}\" -video_device_number #{idx} 2>&1"
 	enum = `#{ffmpeg_get_options_command}`
 	out = []
 	lines = enum.scan(/(pixel_format|vcodec)=([^ ]+)  min s=(\d+)x(\d+) fps=([^ ]+) max s=(\d+)x(\d+) fps=([^ ]+)$/)
 	lines.map{|video_type, video_type_name, min_x, min_y, min_fps, max_x, max_y, max_fps|
 	   {:video_type => video_type, :video_type_name => video_type_name, :min_x => min_x.to_i, :min_y => min_y.to_i,
 	    :max_x => max_x.to_i, :max_y => max_y.to_i, :min_fps => min_fps.to_f, :max_fps => max_fps.to_f}
-	}.uniq  # LODO some duplicates?
+	}.uniq  # LODO actually starts with some duplicates ever? huh?
   end
   
-  def self.warmup_ffmpeg_so_itll_be_disk_cached 
-    system "ffmpeg -list_devices true -f dshow -i dummy 2>&1" # outputs to stdout but...that's informative sometimes
+  def self.warmup_ffmpeg_so_itll_be_disk_cached  # and hopefully faster LODO hackey
+    system "#{FFmpegNameToUse} -list_devices true -f dshow -i dummy 2>&1" # outputs to stdout but...that's informative sometimes
   end
   
   def self.wait_for_ffmpeg_close out_handle, expected_time=0 # like the result of an IO.popen("ffmpeg ...", "w")
@@ -72,7 +75,7 @@ module FFmpegHelpers
     while !out_handle.closed?
       begin
 	    if OS.jruby?
-		  raise 'need jruby 1.7.0 for working Process.kill 0 in windows' unless JRUBY_VERSION >= '1.7.0'
+		  raise 'need jruby 1.7.0 for working Process.kill 0 (which we use) in windows...' unless JRUBY_VERSION >= '1.7.0'
 		end
         Process.kill 0, out_handle.pid # ping it
 	    sleep 0.2
@@ -87,16 +90,16 @@ module FFmpegHelpers
 	end
   end
   
-  
-def self.combine_devices_for_ffmpeg_input audio_device, video_device
- if audio_device
-   audio_device="-f dshow -i audio=\"#{FFmpegHelpers.escape_for_input audio_device}\""
- end
- if video_device
-   video_device="-f dshow -i video=\"#{FFmpegHelpers.escape_for_input video_device}\""
- end
- "#{video_device} #{audio_device}"
-end
+  # who knows if I even use this anymore...
+  def self.combine_devices_for_ffmpeg_input audio_device, video_device
+   if audio_device
+     audio_device="-f dshow -i audio=\"#{FFmpegHelpers.escape_for_input audio_device}\""
+   end
+   if video_device
+     video_device="-f dshow -i video=\"#{FFmpegHelpers.escape_for_input video_device}\""
+   end
+   "#{video_device} #{audio_device}"
+  end
   
 end
 
