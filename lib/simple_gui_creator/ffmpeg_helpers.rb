@@ -33,8 +33,13 @@ module FFmpegHelpers
 	out
   end
   
+  def self.video_device_present? device_and_idx
+    all = enumerate_directshow_devices[:video]
+	all.include?(device_and_idx)
+  end
+  
   def self.parse_with_indexes string
-    names = [] # video_device_number
+    names = []
 	for line in string.lines
 	  if line =~ /"(.+)"\n/
 	    index = 0
