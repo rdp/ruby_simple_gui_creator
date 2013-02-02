@@ -29,11 +29,8 @@ module SimpleGuiCreator
       if names_hash[:no]
         UIManager.put("OptionPane.noButtonText", names_hash[:no])
       end
-      # if names_hash[:ok] # ???
-      #   UIManager.put("OptionPane.okButtonText", names_hash[:ok])
-      # end
       if names_hash[:cancel]
-        UIManager.put("OptionPane.noButtonText", names_hash[:cancel])
+        UIManager.put("OptionPane.cancelButtonText", names_hash[:cancel])
       end
       title = message.split(' ')[0..5].join(' ')
 	  temp_frame = JFrame.new
