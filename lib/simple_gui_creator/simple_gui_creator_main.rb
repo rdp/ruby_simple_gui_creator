@@ -25,7 +25,20 @@ $simple_creator_show_console_prompts = true # so that you can disable console "h
 module SimpleGuiCreator
 
     JFile = java.io.File # no import for this one, so we don't lose access to Ruby's File class
-  
+   
+    def self.launch_file filename
+	  p filename
+	  if OS.windows?
+	    filename = filename.gsub('/', "\\")
+		Dir.chdir(File.dirname(filename)) do
+		  system(cmd = %!explorer "#{File.filename(filename)}"!) # blocks
+		  p cmd
+		end
+	  else
+	    system(%!#{OS.open_file_command} "#{filename}"!)
+	  end
+	end
+   
     def self.open_url_to_view_it_non_blocking url
       raise 'non http url?' unless url =~ /^http/i
       if OS.windows?

@@ -162,7 +162,7 @@ module SimpleGuiCreator
       get_content_pane.set_layout nil
       lines.each_with_index{|line, idx|
         jlabel = JLabel.new line
-        jlabel.set_bounds(10, 15*idx, 550, 24)
+        jlabel.set_bounds(10, 15*idx, 1550, 24)
         get_content_pane.add jlabel
       }
       close = JButton.new( close_button_text ).on_clicked {
