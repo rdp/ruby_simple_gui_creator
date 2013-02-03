@@ -21,8 +21,8 @@ module SimpleGuiCreator
     def self.show_select_buttons_prompt message, names_hash = {}
       names_hash[:yes] ||= 'Yes'
       names_hash[:no] ||= 'No'
-      # ok ?
-      old = ['no', 'yes', 'ok'].map{|name| 'OptionPane.' + name + 'ButtonText'}.map{|name| [name, UIManager.get(name)]}
+	  # LODO I guess we could just psas in our own names [buttons?] instead of using yes, no, cancel...hmm or new method perhaps?
+      old = ['no', 'yes', 'cancel'].map{|name| 'OptionPane.' + name + 'ButtonText'}.map{|name| [name, UIManager.get(name)]}
       if names_hash[:yes]
         UIManager.put("OptionPane.yesButtonText", names_hash[:yes])
       end
@@ -33,7 +33,8 @@ module SimpleGuiCreator
         UIManager.put("OptionPane.cancelButtonText", names_hash[:cancel])
       end
       title = message.split(' ')[0..5].join(' ')
-	  temp_frame = JFrame.new
+	  temp_frame = JFrame.new # a fake parent frame, so that if there is no swing window open, *something* will show up in the taskbar
+	  # LODO pass in a frame...or maybe we don't need this if any other frame is already open and we can detect that?
 	  temp_frame.minimize
 	  temp_frame.show
 	
