@@ -30,8 +30,8 @@ class DriveInfo
    end
    raise exe + '--exe doesnt exist?' unless File.exist? exe
    command = "#{exe} \"#{dir}\""
-   output = `#{command}` # can take like 2.2s to spin up the disk...
-   raise 'dvdid command failed?' + command unless $?.exitstatus == 0
+   output = `#{command}` # this can take like 2.2s to spin up the disk...
+   raise 'dvdid command failed?' + command  + " with output:" + output unless $?.exitstatus == 0
    output.strip
   end
 
