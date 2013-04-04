@@ -5,10 +5,10 @@
 # It is necessary for linking the library.
 
 # The name that we can dlopen(3).
-dlname='libdvdid.0.dylib'
+dlname=''
 
 # Names of this library.
-library_names='libdvdid.0.dylib libdvdid.dylib'
+library_names=''
 
 # The name of the static archive.
 old_library='libdvdid.a'
@@ -38,4 +38,4 @@ dlopen=''
 dlpreopen=''
 
 # Directory that this library needs to be installed in:
-libdir='/Users/rogerdpack/mac_dvdid/lib'
+libdir='/Users/rogerdpack/dev/sensible-cinema/lib/jruby-swing-helpers/vendor/mac_dvdid/lib'
