@@ -1,0 +1,2 @@
+download original source
+./configure --enable-static --disable-shared --prefix=<here>
