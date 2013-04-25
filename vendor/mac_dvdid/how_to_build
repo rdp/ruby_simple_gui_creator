@@ -1,2 +1,6 @@
 download original source
-./configure --enable-static --disable-shared --prefix=<here>
+export CFLAGS="$CFLAGS -arch ppc -arch i386 -arch x86_64"
+export CXXFLAGS="$CXXFLAGS -arch ppc -arch i386 -arch x86_64"
+export LDFLAGS="$LDFLAGS -arch ppc -arch i386 -arch x86_64"
+./configure  --disable-dependency-tracking --enable-static --disable-shared --prefix=<here>
+make clean install

@@ -38,4 +38,4 @@ dlopen=''
 dlpreopen=''
 
 # Directory that this library needs to be installed in:
-libdir='/Users/rogerdpack/dev/sensible-cinema/lib/jruby-swing-helpers/vendor/mac_dvdid/lib'
+libdir='/Users/rogerdpack/dev/ruby_simple_gui_creator/vendor/mac_dvdid/lib'
