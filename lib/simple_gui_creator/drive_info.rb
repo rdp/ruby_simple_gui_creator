@@ -128,6 +128,7 @@ class DriveInfo
       require 'plist'
       Dir['/Volumes/*'].map{|dir|
        parsed = Plist.parse_xml(`diskutil info -plist "#{dir}"`)
+	   next unless parsed # some odd mount points like /Volumes/SugarSync have no output...
        d2 = OpenStruct.new
        d2.VolumeName = parsed["VolumeName"]
        d2.Name = dir # DevNode?
@@ -140,7 +141,7 @@ class DriveInfo
        end
        d2.DevicePoint = parsed['DeviceNode'].sub('disk', 'rdisk') # I've heard using rdisk is better/faster...
        d2
-      }
+      }.compact
     else
       require 'ruby-wmi'
       disks = WMI::Win32_LogicalDisk.find(:all)
