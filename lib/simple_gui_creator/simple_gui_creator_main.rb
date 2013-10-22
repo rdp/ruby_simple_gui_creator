@@ -142,6 +142,7 @@ module SimpleGuiCreator
   end
     
   # prompts for user input, raises if they cancel the prompt or if they enter nothing
+  # returns nil if cancel or if blank and cancel_or_blank_ok=true
   def self.get_user_input(message, default = '', cancel_or_blank_ok = false)
     p 'please enter the information in the prompt:' + message[0..50] + '...'
     received = javax.swing.JOptionPane.showInputDialog(nil, message, default)
