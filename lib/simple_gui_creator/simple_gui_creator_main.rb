@@ -223,7 +223,7 @@ module SimpleGuiCreator
     pwd = JPasswordField.new(10)
     got = JOptionPane.showConfirmDialog(nil, pwd, text, JOptionPane::OK_CANCEL_OPTION) < 0
     if got
-      raise 'cancelled ' + text
+      raise 'cancelled password prompt ' + text
     else
       # convert to ruby string [?]
       out = ''
