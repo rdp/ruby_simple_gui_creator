@@ -96,19 +96,23 @@ It has helpers to query the current system for its DVD drives, be notified when 
 
 Even more complicated example:
 
----------- Window Title ----------------------------------
+---------- Optional Window Title -------------------------
 | [a button:button1]   [button text:button2]             |
 | "some text2:text1"                                     |
 | [Editable Text Area with 4 rows   :text_area]          |
 | [                                           ]          |
 | [                                           ]          |
 | [                                           ]          |
-| [Editable Text Field with 1 row and fixed spacing chars  :width=700, height=1char, font=fixed_width]          |
-| [                                                                                                  ]          |
+  "you can use height/width like 700, 700px, 1char, 3chars:"
+| [Editable Text Field with 1 row and fixed spacing chars  :width=700px, height=1char, font=fixed_width]          
+| [                                                                                                    ]          
 | [Dropdown Default \/ :dropdown_name]                   |
+| [Dropdown Default ▼  :dropdown_name2]                  |
 | [✓:checkbox_name] "Some text"                         |
+| [/:checkbox_name2] "You don't have to use unicode"     |
+| [Start/Stop:start_stop_button,width=50chars]           |
+| "How to end text that has a colon (:) with a colon:unused_name"
 ----------------------------------------------------------
-
 
 
 Feedback/feature requests welcome.
