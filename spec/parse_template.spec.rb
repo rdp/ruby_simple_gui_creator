@@ -87,7 +87,14 @@ describe SimpleGuiCreator::ParseTemplate do
   
   it "should accept zero length strings if they have a width spec" do
     frame = parse_string "| \":my_name,width=250\""
-	  frame.elements[:my_name].text.should == ''
+	frame.elements[:my_name].text.should == ''
+  end
+  
+  it "should accept char as length" do
+    frame = parse_string "| \":my_name,width=255char\""
+	frame.elements[:my_name].size.width.should == 2719
+    frame = parse_string "| \":my_name,width=255chars\""
+	frame.elements[:my_name].size.width.should == 2719
   end
   
   it "should not add codeless items to elements" do
@@ -166,18 +173,38 @@ describe SimpleGuiCreator::ParseTemplate do
    button.size.width.should==129 # bigger than 35, basically
  end
  
+# not yet anyway :)
+# it "should parse text fields [single line text areas]" do
+#   string = "[    :text_area,type=editable]  |"
+#   frame = parse_string string
+#	frame.elements[:text_area].class.should == Java::JavaxSwing::JTextField
+# end
+ 
  it "should parse text areas" do
     string = <<-EOL
 | [                             :text_area]                  |
 | [                                       ]                  |
+| [                            :text_area2]                  |
+| [                                       ]                  |
     EOL
 	frame = parse_string string
-	frame.elements[:text_area].class.should == Java::JavaxSwing::JTextArea
-	frame.elements.length.should == 1 # not create fake empty buttons underneath :)
+	frame.elements.length.should == 2 # not create fake empty buttons underneath :)
 	text_area_dimentia(frame.elements[:text_area]).should == [0, 0, 48, 319] # it's "sub-contained"  in a jscrollpane so these numbers are relative to that <sigh>
+	text_area_dimentia(frame.elements[:text_area2]).should == [0, 0, 48, 319] # ?? 308
+ end
+ 
+ it "should allow text area sizing" do
+    string = <<-EOL
+ [                             :text_area,width=155char,height=255chars] 
+ [                                                                     ] 
+    EOL
+	frame = parse_string string	
+	text_area_dimentia(frame.elements[:text_area]).should == [0, 0,  2833, 1649] # XXX is this a "perfect" height?
  end
  
  def text_area_dimentia(element)
+ 	element.class.should == Java::JavaxSwing::JTextArea
+   # weird swing bug? it doesn't propagate size for awhile or something?
    while(get_dimentia(element) == [0,0,0,0])
      puts 'weird TextArea 0,0,0,0'
      sleep 0.2
@@ -189,7 +216,6 @@ describe SimpleGuiCreator::ParseTemplate do
    frame = parse_string "\"Here's your template:\""
    frame.elements.length.should == 0 # and hope it includes the colon in there :)
  end
- 
  
  it "should allow for spaced out attributes" do
    frame = parse_string "| [      :text, width = 200          ] "
@@ -206,8 +232,7 @@ describe SimpleGuiCreator::ParseTemplate do
    [button : button][textare : textarea]
                     [                  ]
    EOL
-   text_area_dimentia(frame.elements[:textarea]).should == [0, 0, 32, 88]
-   
+   text_area_dimentia(frame.elements[:textarea]).should == [0, 0, 32, 88]   
  end
  
  it "should allow for blank lines to mean spacing" do

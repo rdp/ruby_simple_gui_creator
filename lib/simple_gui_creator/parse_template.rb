@@ -8,7 +8,7 @@ module SimpleGuiCreator
 
   include_package 'javax.swing'; 
   
-  [JFrame, JPanel, JButton, JTextArea, JLabel, UIManager, JScrollPane, JCheckBox, JComboBox, JComponent].each{|kls|
+  [JFrame, JPanel, JButton, JTextArea, JLabel, UIManager, JScrollPane, JCheckBox, JComboBox, JComponent, JTextField].each{|kls|
     kls.__persistent__=true # lazy me--also pull in the constant :)
   }
   
@@ -161,6 +161,11 @@ module SimpleGuiCreator
   def get_text_width text
     get_text_dimentia(text).width
   end
+
+  def get_text_height text
+    get_text_dimentia(text).height
+  end
+
   
   def get_text_dimentia text
     font = UIManager.getFont("Label.font")
@@ -206,11 +211,17 @@ module SimpleGuiCreator
             end
             
             for name2 in ['abs_x', 'abs_y', 'width', 'height']
-              var = attributes_hashed.delete(name2)
+              var = attributes_hashed.delete(name2) # remove them
               if var
-                if var =~ /chars$/
+                if var =~ /char(s|)$/
                   count = var[0..-5].to_i
-                  var = get_text_width('m'*count) # TODO fails for height 30chars
+				  if name2 == 'width'
+                    var = get_text_width('m'*count)
+				  elsif name2 == 'height'
+				    var = get_text_height("lg")*count
+				  else
+				    raise "huh #{name2} #{var} has chars?"
+				  end
                 elsif var =~ /px$/
                   var = var[0..-3].to_i
                 else

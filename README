@@ -42,7 +42,6 @@ Set behaviors like this:
   SimpleGuiCreator.show_blocking_message_dialog "you clicked button1!" 
 }  
 
-
 Having the layout as ASCII text separates views from controllers, in this case, because you can store the layouts in
 an entirely separate file (or embedded in the code).  "Normal humans" can then edit the design layout files, for instance.
 It has proven quite nice at separating concerns.
@@ -52,16 +51,16 @@ More complicated example:
 ---------- Window Title ----------------------------------
 | [a button:button1]   [button text:button2]             |
 | "some text2:text1"                                     |
-| [An Editable Text Area with 4 rows:text_area]          |
-| [                                           ]          |
-| [                                           ]          |
-| [                                           ]          |
+| [Editable Text Area with 4 rows  :text_area_name]      |
+| [                                              ]       |
+| [                                              ]       |
+| [                                              ]       |
 | [Dropdown Default \/ :dropdown_name]                   |
 | [✓:checkbox_name] "Some text"                         |
 ----------------------------------------------------------
 
-See the file spec/parse_template.spec.rb for examples of how to use each element.
-The window borders are also optional.
+See the file spec/parse_template.spec.rb for examples of how to use the various elements.
+The window borders along the edge are optional.
 
 The library also has helper methods for common GUI tasks, like:
 
@@ -93,6 +92,24 @@ It has helpers to playback/control audio files, like mp3's or wave's, starting/s
 It has helpers to set/get system clipboard contents.
 It has helpers to control/query the system mouse.
 It has helpers to query the current system for its DVD drives, be notified when disks are inserted/changed, etc.
+
+
+Even more complicated example:
+
+---------- Window Title ----------------------------------
+| [a button:button1]   [button text:button2]             |
+| "some text2:text1"                                     |
+| [Editable Text Area with 4 rows   :text_area]          |
+| [                                           ]          |
+| [                                           ]          |
+| [                                           ]          |
+| [Editable Text Field with 1 row and fixed spacing chars  :width=700, height=1char, font=fixed_width]          |
+| [                                                                                                  ]          |
+| [Dropdown Default \/ :dropdown_name]                   |
+| [✓:checkbox_name] "Some text"                         |
+----------------------------------------------------------
+
+
 
 Feedback/feature requests welcome.
 http://groups.google.com/group/roger-projects,  roger-projects@googlegroups.com
