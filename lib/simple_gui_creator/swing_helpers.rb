@@ -233,7 +233,7 @@ module SimpleGuiCreator
 	alias go_selected_idx go_selected_index
     
     def go_selected_value
-      puts 'select from dropdown window ' + @drop_down_elements[-1] + ' ...' if $simple_creator_show_console_prompts
+      puts 'select from dropdown window ' + @drop_down_elements[-1].to_s + ' ...' if $simple_creator_show_console_prompts
       show # blocks...
       raise 'did not select, exited early ' + @prompt unless @selected_idx
       @drop_down_elements[@selected_idx]

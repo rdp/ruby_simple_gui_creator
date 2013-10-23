@@ -7,7 +7,7 @@ module FFmpegHelpers
 
   FFmpegNameToUse = 'ffmpeg' # can change it to whatever you want, like 'ffmpeg.exe' or 'full/path/ffmpeg.exe' or libav.exe
 
-  # returns like {:audio => [['audio name 1', 0]], ['audio name 2', 0]], :video => ...}
+  # returns like {:audio => [['audio name 1', 0]], ['audio name 1', 1], ['audio name 2', 0], :video => ...}
   # use like vid_names = enumerate_directshow_devices[:video]
   # then could use like name = DropDownSelector.new(nil, vid_names, "Select audio device to capture and stream").go_selected_value
   def self.enumerate_directshow_devices
@@ -27,9 +27,9 @@ module FFmpegHelpers
     video = enum.split('DirectShow')[1]
 	audio = enum.split('DirectShow')[2]
     
-    audio_names = parse_with_indexes audio
-    video_names = parse_with_indexes video
-    out = {:audio => audio_names, :video => video_names}
+    audio_devices = parse_with_indexes audio
+    video_devices = parse_with_indexes video
+    out = {:audio => audio_devices, :video => video_devices}
 	out
   end
   
@@ -37,6 +37,66 @@ module FFmpegHelpers
     all = enumerate_directshow_devices[:video]
 	all.include?(device_and_idx)
   end
+  
+  # name is a non-escaped name, like video-screen-capture-device
+  def self.get_options_video_device name, idx = 0
+    ffmpeg_get_options_command = "#{FFmpegNameToUse} -list_options true -f dshow -i video=\"#{escape_for_input name}\" -video_device_number #{idx} 2>&1"
+	enum = `#{ffmpeg_get_options_command}`
+	out = []
+	lines = enum.scan(/(pixel_format|vcodec)=([^ ]+)  min s=(\d+)x(\d+) fps=([^ ]+) max s=(\d+)x(\d+) fps=([^ ]+)$/)
+	lines.map{|video_type, video_type_name, min_x, min_y, min_fps, max_x, max_y, max_fps|
+	   {:video_type => video_type, :video_type_name => video_type_name, :min_x => min_x.to_i, :min_y => min_y.to_i,
+	    :max_x => max_x.to_i, :max_y => max_y.to_i, :min_fps => min_fps.to_f, :max_fps => max_fps.to_f}
+	}.uniq  # LODO actually starts with some duplicates ever? huh?
+  end
+  
+  def self.warmup_ffmpeg_so_itll_be_disk_cached  # and hopefully faster later LODO this feels hackey
+    Thread.new { 
+	  system "#{FFmpegNameToUse} -list_devices true -f dshow -i dummy 2>&1" # outputs to stdout but...that's informative at times 
+	}
+  end
+  
+  # out_handle like the result of an IO.popen("ffmpeg ...", "w")
+  # raises if it closes in less than expected_time (if set to something greater than 0, that is, obviously)
+  def self.wait_for_ffmpeg_close out_handle, expected_time=0
+    # requires updated version of jruby to work...Jruby lacks Process.waitpid currently for doze JRUBY-4354
+	start_time = Time.now
+    while !out_handle.closed?
+      begin
+	    if OS.jruby?
+		  raise 'need jruby 1.7.0 for working Process.kill 0 (which we use) in windows...' unless JRUBY_VERSION >= '1.7.0'
+		end
+        Process.kill 0, out_handle.pid # ping it for liveness
+	    sleep 0.1
+	  rescue Errno::EPERM => e
+	    # this can output twice in the case of one process piped to another? huh wuh?
+	    puts 'detected ffmpeg is done [ping said so] in wait_for_ffmpeg_close method'
+	    out_handle.close
+	  end
+    end
+	elapsed = Time.now - start_time
+	if (expected_time > 0) && (elapsed < expected_time) # XXX -1 default?
+	  message = "ffmpeg failed too quickly, in #{elapsed}s"
+	  puts message
+	  raise message
+	else
+	  puts "ffmpeg exited apparently gracefully in #{elapsed}s > #{expected_time}"
+	end
+  end
+  
+  # screen capturer uses this
+  def self.combine_devices_for_ffmpeg_input audio_device, video_device
+   # XXX combine into same line??
+   if audio_device
+     audio_device="-f dshow -audio_device_number #{audio_device[1]} -i audio=\"#{escape_for_input audio_device[0]}\" "
+   end
+   if video_device
+     video_device="-f dshow  -video_device_number #{video_device[1]} -i video=\"#{escape_for_input video_device[0]}\" "
+   end
+   "#{video_device} #{audio_device}"
+  end
+  
+  private  
   
   def self.parse_with_indexes string
     names = []
@@ -53,57 +113,10 @@ module FFmpegHelpers
 	  end
 	end
 	names
-  end
+  end  
+  
   def self.escape_for_input name
-    name.gsub('"', '\\"')
-  end
-  
-  # name is a non-escaped name, like video-screen-capture-device
-  def self.get_options_video_device name, idx = 0
-    ffmpeg_get_options_command = "#{FFmpegNameToUse} -list_options true -f dshow -i video=\"#{escape_for_input name}\" -video_device_number #{idx} 2>&1"
-	enum = `#{ffmpeg_get_options_command}`
-	out = []
-	lines = enum.scan(/(pixel_format|vcodec)=([^ ]+)  min s=(\d+)x(\d+) fps=([^ ]+) max s=(\d+)x(\d+) fps=([^ ]+)$/)
-	lines.map{|video_type, video_type_name, min_x, min_y, min_fps, max_x, max_y, max_fps|
-	   {:video_type => video_type, :video_type_name => video_type_name, :min_x => min_x.to_i, :min_y => min_y.to_i,
-	    :max_x => max_x.to_i, :max_y => max_y.to_i, :min_fps => min_fps.to_f, :max_fps => max_fps.to_f}
-	}.uniq  # LODO actually starts with some duplicates ever? huh?
-  end
-  
-  def self.warmup_ffmpeg_so_itll_be_disk_cached  # and hopefully faster LODO hackey
-    system "#{FFmpegNameToUse} -list_devices true -f dshow -i dummy 2>&1" # outputs to stdout but...that's informative sometimes
-  end
-  
-  def self.wait_for_ffmpeg_close out_handle, expected_time=0 # like the result of an IO.popen("ffmpeg ...", "w")
-    # requires some funky version of jruby to work...since it lacks Process.waitpid currently
-	start_time = Time.now
-    while !out_handle.closed?
-      begin
-	    if OS.jruby?
-		  raise 'need jruby 1.7.0 for working Process.kill 0 (which we use) in windows...' unless JRUBY_VERSION >= '1.7.0'
-		end
-        Process.kill 0, out_handle.pid # ping it
-	    sleep 0.2
-	  rescue Errno::EPERM => e
-	    puts 'detected ffmpeg is done wait_for_ffmpeg_close method'
-	    out_handle.close
-	  end
-    end
-	elapsed = Time.now - start_time
-	if (expected_time > 0) && (elapsed < expected_time) # -1 ?
-	  raise "ffmpeg possibly exited early!"
-	end
-  end
-  
-  # who knows if I even use this anymore...
-  def self.combine_devices_for_ffmpeg_input audio_device, video_device
-   if audio_device
-     audio_device="-f dshow -i audio=\"#{FFmpegHelpers.escape_for_input audio_device}\""
-   end
-   if video_device
-     video_device="-f dshow -i video=\"#{FFmpegHelpers.escape_for_input video_device}\""
-   end
-   "#{video_device} #{audio_device}"
+    name.gsub('"', '\\"') # for shell :)
   end
   
 end
