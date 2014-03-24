@@ -173,8 +173,9 @@ module SimpleGuiCreator
     raise 'nonexistent file cannot reveal in explorer?' + filename_or_path unless File.exist?(filename_or_path)
     if OS.doze?
       begin
-	    raise 'jruby doesnt like quotes' if filename_or_path =~ /"/
-        c = "explorer /e,/select,#{to_filename filename_or_path}"
+	    raise 'jruby doesnt like quotes in filenames?' if filename_or_path =~ /"/
+		exe = "#{__DIR__}/../../vendor/reveal_reuse_explorer.exe"
+        c = "\"#{exe}\" \"#{to_filename filename_or_path}\""
         system c # command returns immediately...so calling system on it is ok
       rescue => why_does_this_happen_ignore_this_exception_it_probably_actually_succeeded
 	    3 # for debugging so it can break here

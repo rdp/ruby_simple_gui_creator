@@ -20,10 +20,10 @@ module FFmpegHelpers
 	  enum = `#{ffmpeg_list_command}`
       out = 'ffmpeg 2nd try enum resulted in :' + enum +' first was:' + orig
 	  
-      raise out if enum == '' && count == 20 # jruby and MRI both get here...suspected cmd.exe bug
+      raise out if enum == '' && count == 20 # jruby and MRI both get here occasionally in error...suspected cmd.exe bug
 	  count += 1
     end
-    enum.gsub!("\r\n", "\n") # work around JRUBY-6913
+    enum.gsub!("\r\n", "\n") # work around JRUBY-6913, which may no longer be needed...
     video = enum.split('DirectShow')[1]
 	audio = enum.split('DirectShow')[2]
     
