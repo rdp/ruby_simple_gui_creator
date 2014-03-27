@@ -176,9 +176,10 @@ module SimpleGuiCreator
 	    raise 'jruby doesnt like quotes in filenames?' if filename_or_path =~ /"/
 		exe = "#{__DIR__}/../../vendor/reveal_reuse_explorer.exe"
         c = "\"#{exe}\" \"#{to_filename filename_or_path}\""
-        system c # command returns immediately...so calling system on it is ok
+		backup_command = "explorer /e,/select,#{to_filename filename_or_path}"
+        system(c) || system(backup_command) # commands return immediately...so calling system on it is ok
       rescue => why_does_this_happen_ignore_this_exception_it_probably_actually_succeeded
-	    3 # for debugging so it can break here
+	    3 # for debugging so it can break here...not sure why this used to occur with the explorer /e style...
       end
     elsif OS.mac?
       c = "open -R " + "\"" + filename_or_path + "\""

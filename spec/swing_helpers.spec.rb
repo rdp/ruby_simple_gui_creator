@@ -46,6 +46,7 @@ module SimpleGuiCreator
     SimpleGuiCreator.show_in_explorer "a b"
     Dir.mkdir "a dir" unless File.exist?('a dir')
     SimpleGuiCreator.show_in_explorer "a dir"
+	SimpleGuiCreator.show_in_explorer "c:\\"
   end
 
   it "should reveal a url" do
