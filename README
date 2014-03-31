@@ -114,6 +114,18 @@ Even more complicated example:
 | "How to end text that has a colon (:) with a colon:unused_name"
 ----------------------------------------------------------
 
+An example that "grows" dynamically:
+frame = SimpleGuiCreator::ParseTemplate.new "----my window title---"
+frame.add_setup_string_at_bottom "[✓:button_1]"
+frame.elements[:button_1].after_checked {
+  puts 'you checked me'
+}
+frame.add_setup_string_at_bottom "[button 1:button_2]"
+frame.elements[:button_2].after_unchecked {
+  puts 'you unchecked me'
+}
+
+frame.elements[:button_2].set_unchecked! # default is checked, but always set them, just to be sure...
 
 Feedback/feature requests welcome.
 http://groups.google.com/group/roger-projects,  roger-projects@googlegroups.com
