@@ -92,6 +92,7 @@ module FFmpegHelpers
      audio_device_string=audio_devices.map{|audio_device_name, audio_device_idx|
 	   "-f dshow -audio_device_number #{audio_device_idx} -i audio=\"#{escape_for_input audio_device_name}\" "
 	 }.join(' ')
+	 # amerge seems == amix here
 	 audio_device_string = "#{audio_device_string} -filter_complex amix=inputs=#{audio_devices.length}" # though I guess amix is the wrong way to go here?
    end
    if video_device
