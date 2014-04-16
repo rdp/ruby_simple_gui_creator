@@ -127,8 +127,3 @@ module FFmpegHelpers
   end
   
 end
-
-if $0 == __FILE__
- p FFmpegHelpers.enumerate_directshow_devices
- FFmpegHelpers.enumerate_directshow_devices[:video].each{|name| p name, FFmpegHelpers.get_options_video_device(name) }
-end
