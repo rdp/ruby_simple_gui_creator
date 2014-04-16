@@ -86,8 +86,7 @@ module FFmpegHelpers
   
   # screen capturer uses this
   # NB that it inserts a filter_complex [!]
-  def self.combine_devices_for_ffmpeg_input audio_devices, video_device
-   # XXX combine into same line??
+  def self.combine_devices_for_ffmpeg_input audio_devices, video_device, video_device_numeric_fps = nil
    if audio_devices
      audio_device_string=audio_devices.map{|audio_device_name, audio_device_idx|
 	   "-f dshow -audio_device_number #{audio_device_idx} -i audio=\"#{escape_for_input audio_device_name}\" "
@@ -96,6 +95,9 @@ module FFmpegHelpers
 	 audio_device_string = "#{audio_device_string} -filter_complex amix=inputs=#{audio_devices.length}" # though I guess amix is the wrong way to go here?
    end
    if video_device
+     if video_device_numeric_fps
+	   fps = "-framerate #{video_device_numeric_fps}"
+	 end
      video_device_string="-f dshow -video_device_number #{video_device[1]} -i video=\"#{escape_for_input video_device[0]}\" "
    end
    " #{video_device_string} #{audio_device_string} "
