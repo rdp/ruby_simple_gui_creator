@@ -21,7 +21,7 @@ for clazz in [:DriveInfo, :MouseControl, :PlayAudio, :PlayMp3Audio, :RubyClip, :
   autoload clazz, new_path
 end
 
-# special case :P
+# special case because of weird capitalization I think :P
 autoload :FFmpegHelpers, File.dirname(__FILE__) + '/simple_gui_creator/ffmpeg_helpers.rb' 
 
 module SimpleGuiCreator
