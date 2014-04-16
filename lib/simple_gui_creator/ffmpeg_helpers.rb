@@ -96,9 +96,9 @@ module FFmpegHelpers
    end
    if video_device
      if video_device_numeric_fps
-	   fps = "-framerate #{video_device_numeric_fps}"
+	   framerate = "-framerate #{video_device_numeric_fps}"
 	 end
-     video_device_string="-f dshow -video_device_number #{video_device[1]} -i video=\"#{escape_for_input video_device[0]}\" "
+     video_device_string="-f dshow #{framerate} -video_device_number #{video_device[1]} -i video=\"#{escape_for_input video_device[0]}\" "
    end
    " #{video_device_string} #{audio_device_string} "
   end
