@@ -194,16 +194,21 @@ module SimpleGuiCreator
   
   def self.show_blocking_message_dialog message, title = message.split("\n")[0], style= JOptionPane::INFORMATION_MESSAGE
     puts "please use GUI window popup... #{message} ..." if $simple_creator_show_console_prompts
-	temp_frame = JFrame.new
-	temp_frame.minimize
-	temp_frame.show
 	
-    begin
-	  JOptionPane.showMessageDialog(temp_frame, message, title, style)
-	ensure
-	  temp_frame.dispose
-	end
-    # the above has no return value <sigh> so just return true
+	invoke_in_gui_thread_non_blocking {
+	  # have to invoke this in a separate thread or it returns these spurious "action items" to, for instance, checkboxes.  Yikes, java!
+	  # http://betterlogic.com/roger/2014/04/jruby-woe-25
+	  temp_frame = JFrame.new
+	  temp_frame.minimize
+	  temp_frame.show
+	
+      begin
+	    JOptionPane.showMessageDialog(temp_frame, message, title, style)
+	  ensure
+	    temp_frame.dispose
+	  end
+      # the above has no return value <sigh> so just return true
+	}
     true
   end
   
@@ -248,8 +253,12 @@ module SimpleGuiCreator
   end
   
   def self.hard_exit!; java::lang::System.exit 0; end
+
+  def self.invoke_in_gui_thread_non_blocking
+    SwingUtilities.invoke_later { yield }
+  end
   
-  def self.invoke_in_gui_thread # sometimes I think I might  need this, but it never seems to help...
+  def self.invoke_in_gui_thread_blocking # sometimes I think I might  need this, but it never seems to help...
     SwingUtilities.invoke_and_wait { yield } # invoke_later ?
   end
 
