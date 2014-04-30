@@ -265,8 +265,8 @@ module SimpleGuiCreator
      doClick()
    end
    
-   def set_checked!
-     setSelected(true)
+   def set_checked! to_this_value=true # my java roots getting the best of me :)
+     setSelected(to_this_value)
    end
    alias check! set_checked!
 

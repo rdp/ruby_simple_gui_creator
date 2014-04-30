@@ -125,7 +125,14 @@ frame.elements[:button_2].after_unchecked {
   puts 'you unchecked me'
 }
 
-frame.elements[:button_2].set_unchecked! # default is checked, but always set them, just to be sure...
+frame.elements[:button_2].set_unchecked! # default is to start checked, but always set them either way, just to be sure...
+
+How to add your own spacing:
+---------- Optional Window Title --------------------------------------
+| "some text2:text1"                                                  |
+| "          " "this text will be spaced to the right of the above"   |
+
+
 
 Feedback/feature requests welcome.
 http://groups.google.com/group/roger-projects,  roger-projects@googlegroups.com
