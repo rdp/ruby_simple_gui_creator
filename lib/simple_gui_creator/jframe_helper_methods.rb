@@ -46,6 +46,18 @@ class javax::swing::JFrame
      dispose # <sigh>
    end
    
+   def sleep_until_closed
+     require 'thread'
+     mutex = Mutex.new
+     cv = ConditionVariable.new
+	 mutex.synchronize {	 
+       after_closed {
+	     cv.signal
+	   }
+	   cv.wait(mutex) # free up mutex until signal...hopefully this is the right way here...
+	 }
+   end
+   
    alias close! close
    
    def dispose_on_close
