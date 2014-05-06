@@ -21,7 +21,7 @@ require File.expand_path(File.dirname(__FILE__) + '/common')
 module SimpleGuiCreator
 
  describe 'functionality' do
-   puts "most of these require user interaction, sadly"
+   puts "most of these require user interaction, so you have to manually close windows, sadly!\n\n\n\n"
 
   it "should close its modeless dialog" do
    
@@ -108,14 +108,22 @@ module SimpleGuiCreator
   it "should have an after_close method" do
     a = JFrame.new 'close me!'
     a.set_size 200,200
-	closed = 0
+	num_closed = 0
 	a.after_closed {
-	  closed += 1
+	  num_closed += 1
 	}
     a.show
 	a.close
 	sleep 0.2
-	assert closed == 1
+	assert num_closed == 1
+  end
+  
+  it "should have a sleep until closed method" do
+    a = JFrame.new 'close me!'
+    a.set_size 200,200
+	a.show
+	Thread.new { sleep 0.1; a.close }
+	a.sleep_until_closed
   end
   
   it "should have an after_restored method" do
