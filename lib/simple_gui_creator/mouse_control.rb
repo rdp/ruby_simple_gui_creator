@@ -58,12 +58,17 @@ module MouseControl
   attach_function :GetAsyncKeyState, [:int], :uint
   
   class << self
+    @keep_going = true
+    def shutdown
+      @keep_going = false
+    end
     
     def jitter_forever_in_own_thread
   
       old_x, old_y = get_mouse_location
       Thread.new {
-        loop {
+        @keep_going = true
+        while(@keep_going)
           move_y = 8 # just enough for VLC when full screened...
           cur_x, cur_y = get_mouse_location
           if(cur_x == old_x && cur_y == old_y)
@@ -80,7 +85,7 @@ module MouseControl
             old_x, old_y = get_mouse_location
             sleep 3
           end
-        }
+        end
       }
       
     end
