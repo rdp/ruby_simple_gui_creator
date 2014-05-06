@@ -95,7 +95,7 @@ module SimpleGuiCreator
 	  size_y = @current_y + 45 # 40, but why when the init was 10? huh?
       @frame.set_size size_x, size_y
       rescue => e
-        puts "Parsing failed on line number: #{idx+1} #{e}\n line was: #{line.inspect}!"
+        puts "Parsing template failed on line number: #{idx+1} #{e}\n line was: #{line.inspect}!"
         raise
       end
     }
