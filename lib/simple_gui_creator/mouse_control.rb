@@ -18,44 +18,10 @@ This file is part of Sensible Cinema.
 require 'rubygems'
 require 'ffi'
 require 'java'
+require 'os'
 
-module MouseControl
-  extend FFI::Library
-  MouseInfo =  java.awt.MouseInfo
-
-  ffi_lib 'user32'
-  ffi_convention :stdcall
-  
-  MOUSEEVENTF_MOVE = 1
-  INPUT_MOUSE = 0
-  MOUSEEVENTF_ABSOLUTE = 0x8000
-  MOUSEEVENTF_LEFTDOWN = 0x0002
-  MOUSEEVENTF_LEFTUP   = 0x0004
-  
-  
-  class MouseInput < FFI::Struct
-    layout :dx, :long,
-           :dy, :long,
-           :mouse_data, :ulong,
-           :flags, :ulong,
-           :time, :ulong,
-           :extra, :ulong
-  end
-  
-  class InputEvent < FFI::Union
-    layout :mi, MouseInput
-  end 
-  
-  class Input < FFI::Struct
-    layout :type, :ulong,
-           :evt, InputEvent
-  end
-  
-  # UINT SendInput(UINT nInputs, LPINPUT pInputs, int cbSize);
-  attach_function :SendInput, [ :uint, :pointer, :int ], :uint
-
-  # poller...
-  attach_function :GetAsyncKeyState, [:int], :uint
+module MouseControl # base
+  MouseInfo = java.awt.MouseInfo
   
   class << self
     @keep_going = true
@@ -86,46 +52,14 @@ module MouseControl
             sleep 3
           end
         end
+        puts 'mouse control, shutting down thread'
       }
-      
-    end
-    
-    def move_mouse_relative dx, dy 
-      myinput = MouseControl::Input.new
-      myinput[:type] = MouseControl::INPUT_MOUSE
-      in_evt = myinput[:evt][:mi]
-      in_evt[:mouse_data] = 0 # null it out
-      in_evt[:flags] = MouseControl::MOUSEEVENTF_MOVE
-      in_evt[:time] = 0
-      in_evt[:extra] = 0
-      in_evt[:dx] = dx
-      in_evt[:dy] = dy
-      SendInput(1, myinput, MouseControl::Input.size)
     end
     
     def single_click_left_mouse_button
       left_mouse_down!
       left_mouse_up!
       p "CLICKED LEFT MOUSE BUTTON"
-    end
-    
-    def left_mouse_down!
-      send_left_mouse_button MOUSEEVENTF_LEFTDOWN
-    end
-    
-    def left_mouse_up!
-      send_left_mouse_button MOUSEEVENTF_LEFTUP
-    end
-
-    VK_LBUTTON = 0x01 # mouse left button for GetAsyncKeyState (seeing if mouse down currently or not)
-    
-    def left_mouse_button_state
-      GetAsyncKeyState(VK_LBUTTON) # ignore a first response, which also tells us if it has changed at all since last call
-      if GetAsyncKeyState(VK_LBUTTON) == 0 # zero means up
-        :up
-      else
-        :down
-      end
     end
     
     # [x, y]
@@ -136,19 +70,16 @@ module MouseControl
     
     attr_accessor :total_movements
     
-    private
-    
-    def send_left_mouse_button action_type
-      myinput = MouseControl::Input.new
-      myinput[:type] = MouseControl::INPUT_MOUSE
-      in_evt = myinput[:evt][:mi]
-      in_evt[:flags] = action_type
-      SendInput(1, myinput, MouseControl::Input.size)
-    end
-
-    
   end
     
 end
 
 MouseControl.total_movements=0 # ruby is a bit freaky with these...
+
+if OS.windows?
+  require_relative 'mouse_control_windows'
+elsif OS.mac?
+  require_relative 'mouse_control_mac'
+else
+  raise 'unsupported os for mouse yet'
+end
