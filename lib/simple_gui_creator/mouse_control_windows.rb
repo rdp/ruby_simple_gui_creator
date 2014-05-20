@@ -21,7 +21,6 @@ require 'java'
 
 module MouseControl # add some more stuff to it :)
   extend FFI::Library
-  MouseInfo =  java.awt.MouseInfo
 
   ffi_lib 'user32'
   ffi_convention :stdcall
