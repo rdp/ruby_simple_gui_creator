@@ -73,8 +73,7 @@ class RuMouse
 
     X11.XQueryPointer(display, root, win_root_ptr, win_child_ptr, r_x, r_y, win_x, win_y, mark_ptr)
     X11.XCloseDisplay(display)
-
-    { x: win_x.read_int32, y: win_y.read_int32 }
+    { x: win_x.read_int, y: win_y.read_int }
   end
 
   def screen_size
