@@ -78,7 +78,7 @@ MouseControl.total_movements=0 # ruby is a bit freaky with these...
 
 if OS.windows?
   require_relative 'mouse_control_windows'
-elsif OS.mac?
+elsif OS.mac? || OS.linux?
   require_relative 'mouse_control_mac'
 else
   raise 'unsupported os for mouse yet'

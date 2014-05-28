@@ -16,7 +16,7 @@ end
 
 module Xtst
   extend FFI::Library
-  ffi_lib 'Xtst'
+  ffi_lib 'Xtst.so.6'
   attach_function :XTestFakeButtonEvent, [:pointer, :uint, :bool, :int], :int
 end
 
