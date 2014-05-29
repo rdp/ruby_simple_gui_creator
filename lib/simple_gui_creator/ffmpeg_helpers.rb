@@ -63,16 +63,13 @@ module FFmpegHelpers
 	start_time = Time.now
     while !out_handle.closed?
       begin
-	    if OS.jruby?
-		  raise 'need jruby 1.7.0 for working Process.kill 0 (which we use) in windows...' unless JRUBY_VERSION >= '1.7.0'
-		end
         Process.kill 0, out_handle.pid # ping it for liveness
-	    sleep 0.1
-	  rescue Errno::EPERM => e
-	    # this can output twice in the case of one process piped to another? huh wuh?
-	    puts 'detected ffmpeg is done [ping said so] in wait_for_ffmpeg_close method'
-	    out_handle.close
-	  end
+	      sleep 0.1
+	    rescue Errno::EPERM => e
+	      # this can output twice in the case of one process piped to another? huh wuh?
+	      puts 'detected ffmpeg is done [ping said so] in wait_for_ffmpeg_close method'
+	      out_handle.close rescue nil # sometimes can raise 'closed stream' [at least jruby]
+	    end
     end
 	elapsed = Time.now - start_time
 	if (expected_time > 0) && (elapsed < expected_time) # XXX -1 default?
