@@ -20,6 +20,11 @@ This file is part of Sensible Cinema.
 
 require 'yaml'
 
+require 'os'
+
+if OS.jruby? && JRUBY_VERSION < '1.7.1'
+  raise 'there are a few bugs in 1.7.0.RC1 with unicode, so disallowed'
+end
     class Storage
       class << self
         attr_writer :storage_dir
