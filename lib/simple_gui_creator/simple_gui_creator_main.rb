@@ -163,21 +163,27 @@ module SimpleGuiCreator
   
   def self.to_filename string
    if File::ALT_SEPARATOR
-     File.expand_path(string).gsub('/', File::ALT_SEPARATOR)
+     out = string.gsub('/', File::ALT_SEPARATOR)
    else
-     File.expand_path(string)
+     out = File.expand_path(string) # TODO test this with Die drei Brüder folders, does it lose encoding?
    end
+   # huh?
+   # out.force_encoding(string.encoding) # jruby bug? it converts from utf-8 to IBM437 huh wuh?
+   out
   end
 
   def self.show_in_explorer filename_or_path
     raise 'nonexistent file cannot reveal in explorer?' + filename_or_path unless File.exist?(filename_or_path)
     if OS.doze?
       begin
-	    raise 'jruby doesnt like quotes in filenames?' if filename_or_path =~ /"/
-		exe = "#{__DIR__}/../../vendor/reveal_reuse_explorer.exe"
+        raise 'jruby doesnt like quotes in filenames or used to not?' if filename_or_path =~ /"/
+        exe = "#{__DIR__}/../../vendor/reveal_reuse_explorer.exe"
         c = "\"#{exe}\" \"#{to_filename filename_or_path}\""
-		backup_command = "explorer /e,/select,#{to_filename filename_or_path}"
-        system(c) || system(backup_command) # commands return immediately...so calling system on it is ok
+        if !system(c)
+          p "unable to reveal #{c}, falling back on #{backup_command}"        
+          backup_command = "explorer /e,/select,#{to_filename filename_or_path}"
+          system(backup_command) # commands return immediately...so calling system on it is ok
+        end 
       rescue => why_does_this_happen_ignore_this_exception_it_probably_actually_succeeded
 	    3 # for debugging so it can break here...not sure why this used to occur with the explorer /e style...
       end
