@@ -83,3 +83,7 @@ elsif OS.mac? || OS.linux?
 else
   raise 'unsupported os for mouse yet'
 end
+
+if $0 == __FILE__
+  MouseControl.jitter_forever_in_own_thread
+end
