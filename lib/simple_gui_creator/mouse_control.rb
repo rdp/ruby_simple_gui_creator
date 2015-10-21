@@ -85,5 +85,6 @@ else
 end
 
 if $0 == __FILE__
-  MouseControl.jitter_forever_in_own_thread
+  puts "jittering forever as mouse demo"
+  MouseControl.jitter_forever_in_own_thread.join
 end
