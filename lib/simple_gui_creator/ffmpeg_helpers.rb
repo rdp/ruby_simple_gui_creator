@@ -63,7 +63,7 @@ module FFmpegHelpers
 	start_time = Time.now
     while !out_handle.closed?
       begin
-        Process.kill 0, out_handle.pid # ping it for liveness
+        Process.kill 0, out_handle.pid # ping it for liveness, closed? is for the io which I think/guess stays open till we close the thing...
 	      sleep 0.1
 	    rescue Errno::EPERM => e
 	      # this can output twice in the case of one process piped to another? huh wuh?
