@@ -13,15 +13,15 @@ module FFmpegHelpers
   def self.enumerate_directshow_devices
     ffmpeg_list_command = "#{FFmpegNameToUse} -list_devices true -f dshow -i dummy 2>&1"
     enum = `#{ffmpeg_list_command}`
-	count = 0
+    count = 0
     while !enum.present? || !enum.split('DirectShow')[2] # last part seems necessary for ffmpeg.bat files [?]
-	  sleep 0.1 # sleep might not be needed.. = .
-	  orig = enum
-	  enum = `#{ffmpeg_list_command}`
-      out = 'ffmpeg 2nd try enum resulted in :' + enum +' first was:' + orig
+        sleep 0.1 # sleep might not be needed.. = .
+        orig = enum
+        enum = `#{ffmpeg_list_command}`
+        out = 'ffmpeg 2nd try enum resulted in :' + enum +' first was:' + orig
 	  
-      raise out if enum == '' && count == 20 # jruby and MRI both get here occasionally in error...suspected cmd.exe bug
-	  count += 1
+        raise out if enum == '' && count == 20 # jruby and MRI both get here occasionally in error...suspected cmd.exe bug
+        count += 1
     end
     enum.gsub!("\r\n", "\n") # work around JRUBY-6913, which may no longer be needed...
     video = enum.split('DirectShow')[1]
@@ -64,7 +64,7 @@ module FFmpegHelpers
     while !out_handle.closed?
       begin
         Process.kill 0, out_handle.pid # ping it for liveness, closed? is for the io which I think/guess stays open till we close the thing...
-	      sleep 0.1
+        sleep 0.1
 	    rescue Errno::EPERM => e
 	      # this can output twice in the case of one process piped to another? huh wuh?
 	      puts 'detected ffmpeg is done [ping said so] in wait_for_ffmpeg_close method'
